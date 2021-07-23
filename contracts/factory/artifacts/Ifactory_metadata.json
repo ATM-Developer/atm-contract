@@ -1,0 +1,286 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_creater",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_link",
+						"type": "address"
+					}
+				],
+				"name": "LinkCreated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_tokenAddr",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_minAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "UpdatetokenConfig",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_minAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "addToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_toUser",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_tokenSymbol",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_percentA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_lockDays",
+						"type": "uint256"
+					}
+				],
+				"name": "createLink",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCollector",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "isAllowedToken",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_link",
+						"type": "address"
+					}
+				],
+				"name": "isLink",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					}
+				],
+				"name": "setCollector",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					}
+				],
+				"name": "setOwner",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					}
+				],
+				"name": "setPledger",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "setRisk",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "_tokenAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_minAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "updateTokenConfig",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/factory/Ifactory.sol": "Ifactory"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/common/interface/IERC20.sol": {
+			"keccak256": "0x35bed2b6ad67761edc1b975f5386b5273939f8f29467081b19a4e625a9fc9bd1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cd91aef7d22186ac902486e8cdaf0740199c5156ec79aef2c8eca0b9b7249096",
+				"dweb:/ipfs/QmbBFxj3PqHxJ54NDPakQ41a7rTqmkBwH8MMpnUw2TbXrb"
+			]
+		},
+		"contracts/factory/Ifactory.sol": {
+			"keccak256": "0x05ef1061cfe12b6c7b9419682131d3124ea36672a998b1c1b3802000202781f3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://84f1bca3dc35e4f5b25f9b49588d5cfd813406ec781d75bfc056655224eb98fd",
+				"dweb:/ipfs/QmPrxuDbmhLVvENffvrm4a4v29GoBQrAcfb3pQ6t62UZAe"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,316 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"görli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"agree()": "8fae60a5",
+			"close()": "43d726d6",
+			"depledge()": "29ac54a7",
+			"getCloseInfo()": "2c6372c3",
+			"getLinkInfo()": "0d657191",
+			"getPledgedInfo()": "b578803f",
+			"getRecevabesInfo()": "8c5782ca",
+			"getStatus()": "4e69d560",
+			"isExpire()": "e25b3c95",
+			"pledge()": "88ffe867",
+			"reject()": "4dc415de",
+			"rejectClose()": "0e080192",
+			"repealCloseReq()": "be7420b1",
+			"setUserB(address)": "566fa0cb",
+			"wtihdrawSelf()": "c87e5117"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"name": "agree",
+			"outputs": [],
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "close",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "depledge",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getCloseInfo",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "closer_",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "startTime_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "expiredTime_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "closeTime_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "closeReqA_",
+					"type": "bool"
+				},
+				{
+					"internalType": "bool",
+					"name": "closeReqB_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getLinkInfo",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "symbol_",
+					"type": "string"
+				},
+				{
+					"internalType": "address",
+					"name": "token_",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "userA_",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "userB_",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountA_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountB_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "percentA_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "totalPlan_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "lockDays_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "startTime_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "status_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isAward_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getPledgedInfo",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "pledgedA_",
+					"type": "bool"
+				},
+				{
+					"internalType": "bool",
+					"name": "pledgedB_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getRecevabesInfo",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "receivableA_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isExitA_",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "receivableB_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isExitB_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getStatus",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "isExpire",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "pledge",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "reject",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "rejectClose",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "repealCloseReq",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_userB",
+					"type": "address"
+				}
+			],
+			"name": "setUserB",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "wtihdrawSelf",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}

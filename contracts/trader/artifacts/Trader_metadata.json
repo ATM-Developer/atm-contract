@@ -1,0 +1,330 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "addWhiteList",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "balance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "luca_balance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "wluca_supply",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "deposit",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "factory",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_luca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_wluca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_factory",
+						"type": "address"
+					}
+				],
+				"name": "initialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "luca",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "payment",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_factory",
+						"type": "address"
+					}
+				],
+				"name": "setFactory",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "whiteList",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawFor",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wluca",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/trader/Trader.sol": "Trader"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/common/interface/IERC20.sol": {
+			"keccak256": "0x35bed2b6ad67761edc1b975f5386b5273939f8f29467081b19a4e625a9fc9bd1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cd91aef7d22186ac902486e8cdaf0740199c5156ec79aef2c8eca0b9b7249096",
+				"dweb:/ipfs/QmbBFxj3PqHxJ54NDPakQ41a7rTqmkBwH8MMpnUw2TbXrb"
+			]
+		},
+		"contracts/common/library/Address.sol": {
+			"keccak256": "0xc0dfe0523e34ebf174233e2e30e1e9657e359bd2de7fefbb79c9460c0a003003",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ffd85709854fedbedfdd1afcc1f54f66635d8477f070b07eba672420e1e403bd",
+				"dweb:/ipfs/QmejuY8Qf53RrtYtHQAmhfmHHatGfNZVkydTDDb29HjQbh"
+			]
+		},
+		"contracts/common/library/SafeMath.sol": {
+			"keccak256": "0x01e07b6c6952f616be0d202461c62046dba69beb336737dadfac305aa629dc56",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b0aa076fb248f160aa2646a9ae18eb3727e8f3ed0be85174313d1b5d4ca0d061",
+				"dweb:/ipfs/QmZxeV11EkYyFwBV52i7twKmBXXURK8QxjbXhbprQC3Zd6"
+			]
+		},
+		"contracts/factory/Ifactory.sol": {
+			"keccak256": "0x05ef1061cfe12b6c7b9419682131d3124ea36672a998b1c1b3802000202781f3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://84f1bca3dc35e4f5b25f9b49588d5cfd813406ec781d75bfc056655224eb98fd",
+				"dweb:/ipfs/QmPrxuDbmhLVvENffvrm4a4v29GoBQrAcfb3pQ6t62UZAe"
+			]
+		},
+		"contracts/token/WLUCA/ERC20.sol": {
+			"keccak256": "0xcb326019c2fdd2fcd6490569be110c7664d1521572ef19b41758e5b1096a7449",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a07f6e7becd7c6a1cf48c4471bca535852930cff91212c07784003b0b03f51f9",
+				"dweb:/ipfs/QmeqnbZAHCfTqY8ZY2wcXow2ZQm16QeJEC4hN2gLFRc7fq"
+			]
+		},
+		"contracts/token/WLUCA/IWluca.sol": {
+			"keccak256": "0x63a30aec9cdb450994fcc627735c205def576cede682b11fcbdaf91b956e8d79",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b0d8266c123263c09c6898da72b38af1faca6362274d69068fc8b517e6410b34",
+				"dweb:/ipfs/QmRGX4BRKGg573MDdhcFrHDKA2dQYuHo2Erq2WCQf6CxdN"
+			]
+		},
+		"contracts/trader/Itrader.sol": {
+			"keccak256": "0x557331c87df54faa968bcb588b07ff5a1d01f18eccf99462efc4d27dc52ada50",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e0036288f7205a89253530e9e1df644da0f0c8d9c810b7f66723f225a5f42306",
+				"dweb:/ipfs/QmZ7voz6HSYejjUS2v9pyBS5roKsVVqLyigcusVZ1G97SP"
+			]
+		},
+		"contracts/trader/Trader.sol": {
+			"keccak256": "0xb9435394da3905b5aebd81a2f33c985d6b3e34bfdce1f5b82c5b11db0afd0f14",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d8a19100e7cd1ab93812e03cbc453acf07919df2be7c321b20c64d130ddc3d05",
+				"dweb:/ipfs/Qmd67eUUZF1hvr2zpEVuiUU6DZSTvDdffUuC4EnTynicxb"
+			]
+		}
+	},
+	"version": 1
+}
