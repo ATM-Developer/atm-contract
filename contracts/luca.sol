@@ -1,18 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-//import "../common/interface/IERC20.sol";
-interface IERC20 {
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
 
-//import "../common/library/SafeMath.sol";
 library SafeMath {
     function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
     unchecked {
@@ -103,7 +91,17 @@ library SafeMath {
     }
 }
 
-//luca/Storage.sol
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
 contract Initialized {
     bool internal initialized;
     
@@ -159,7 +157,6 @@ contract Storage is Initialized{
     }
 }
 
-//luca/ILuca.sol
 interface ILuca is IERC20{
     //event
     event Rebase(uint256 epoch, uint256 indexDelta, bool positive);
@@ -180,7 +177,6 @@ interface ILuca is IERC20{
     function setRebaser(address user) external;
 }
 
-//luca/token.sol
 contract Token is Storage, IERC20{
     using SafeMath for uint256;
     
@@ -226,15 +222,15 @@ contract Token is Storage, IERC20{
             fragment = fragment.add(scaledAmount);
             require(scalingFactor <= _maxScalingFactor(), "LUCA: max scaling factor too low");
             fragmentBalances[to] = fragmentBalances[to].add(scaledAmount);
-            emit Transfer(address(0), to, scaledAmount);
+            emit Transfer(address(0), to, amount);
     }
-   
+
     function _burn(address user, uint256 amount) internal {
             _totalSupply = _totalSupply.sub(amount);
             uint256 scaledAmount = _lucaToFragment(amount);
             fragment = fragment.sub(scaledAmount);
             fragmentBalances[user] = fragmentBalances[user].sub(scaledAmount);
-            emit Transfer(user ,address(0), scaledAmount);
+            emit Transfer(user ,address(0), amount);
     }
     
     function _transferFragment(address from, address to, uint256 value ) internal {
@@ -255,7 +251,6 @@ contract Token is Storage, IERC20{
     }
 }
 
-//luca.sol
 contract Luca is Token, ILuca{
     using SafeMath for uint256;
     

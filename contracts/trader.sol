@@ -1,19 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-//import "../common/interface/IERC20.sol";
-interface IERC20 {
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
-
-//import "../common/library/SafeMath.sol";
 library SafeMath {
     function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
     unchecked {
@@ -104,29 +91,24 @@ library SafeMath {
     }
 }
 
-//import "../token/wluca/IWluca.sol";
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+}
+
 interface Iwluca {
     function mint(address user, uint amount) external;
     function burn(uint amount) external;
 }
 
-//import "../factory/Ifactory.sol";
 interface Ifactory {
-    event UpdatetokenConfig(string indexed _symbol, address indexed _tokenAddr, uint256 _minAmount);
-    event LinkCreated(address indexed _creater, string indexed _symbol, address _link);
-    
-    function setRisk() external;
-    function setOwner(address _user) external;
-    function setCollector(address _user) external;
-    function getCollector() external view returns(address);
     function isLink(address _link) external view returns(bool);
-    function isAllowedToken(string memory _symbol, address _addr) external returns(bool);
-    function createLink(address _toUser, string memory _tokenSymbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external returns(address);
-    function addToken(address _tokenAddr, uint256 _minAmount) external;
-    function updateTokenConfig (string memory _symbol, address _tokenAddr, uint256 _minAmount) external;
 }
 
-//import ./Itrader.sol
 interface Itrader {
     function balance() external returns(uint256 luca, uint256 wluca);
     function deposit(uint256 _amount) external returns(bool);
@@ -137,7 +119,6 @@ interface Itrader {
     function setFactory(address _factory) external;
 }
 
-//Trader.sol
 contract Initialize {
     bool private initialized;
     modifier noInit(){
@@ -155,7 +136,7 @@ contract Storage is Initialize {
     address[]   public whiteList;
 }
 
-contract Trader is Storage, Itrader{
+contract Trader is Storage, Itrader {
     modifier onlyOwner(){
         require(msg.sender == owner, "Trader: access denied");
         _;

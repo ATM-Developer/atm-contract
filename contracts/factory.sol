@@ -1,22 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
-import {Link} from "./platy_link.sol";
 
-//import "../common/interface/IERC20.sol";
-interface IERC20 {
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
-
-
-//import "../common/library/SafeMath.sol";
 library SafeMath {
     function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
     unchecked {
@@ -108,18 +93,28 @@ library SafeMath {
     }
 }
 
-//import "../trader/Itrader.sol";
-interface Itrader {
-    function balance() external returns(uint256 luca, uint256 wluca);
-    function deposit(uint256 _amount) external returns(bool);
-    function withdraw(uint256 _amount) external returns(bool);
-    function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
-    function withdrawFor(address _to, uint256 _amount) external;
-    function addWhiteList(address _addr) external;
-    function setFactory(address _factory) external;
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 }
 
-//import "./Ifactory.sol";
+interface IWETH is IERC20{
+    function deposit() payable external;
+    function withdraw(uint) external;
+}
+
+interface Itrader {
+    function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
+}
+
+interface Isymbol {
+    function symbol() external view returns(string memory);
+}
+
 interface Ifactory {
     event LinkCreated(address indexed _creater, string indexed _symbol, address _link);
     event LinkActive(address _link, address _user, uint256 _methodId);
@@ -128,6 +123,7 @@ interface Ifactory {
     function setOwner(address _user) external;
     function setPledger(address _user) external;
     function setCollector(address _user) external;
+    function setLinkOrigin(address _linkOrigin) external;
     function getCollector() external view returns(address);
     function isLink(address _link) external view returns(bool);
     function isAllowedToken(string memory _symbol, address _addr) external returns(bool);
@@ -137,16 +133,11 @@ interface Ifactory {
     function linkActive(address _user, uint256 _methodId) external;
 }
 
-interface Isymbol {
-    function symbol() external view returns(string memory);
+interface Ilink {
+     function setEnv(address _luca, address _wluca, address _trader, address _weth, address _pledger) external;
+     function initialize( address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external;
 }
 
-interface IWETH is IERC20{
-    function deposit() payable external;
-    function withdraw(uint) external;
-}
-
-//factory.sol
 contract Initialize {
     bool internal initialized;
     modifier noInit(){
@@ -164,6 +155,7 @@ contract FactoryStorage is Initialize {
     address internal trader;
     address internal collector;
     address internal pledger;
+    address internal linkOrigin;
     
     address public owner;
     uint256 public totalLink;
@@ -178,7 +170,38 @@ contract FactoryStorage is Initialize {
     }
 }
 
-contract Factory is Ifactory, FactoryStorage{
+contract CloneFactory {
+  function _clone(address target) internal returns (address result) {
+    bytes20 targetBytes = bytes20(target);
+    assembly {
+      let clone := mload(0x40)
+      mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+      mstore(add(clone, 0x14), targetBytes)
+      mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+      result := create(0, clone, 0x37)
+    }
+  }
+
+//   function isClone(address target, address query) internal view returns (bool result) {
+//     bytes20 targetBytes = bytes20(target);
+//     assembly {
+//       let clone := mload(0x40)
+//       mstore(clone, 0x363d3d373d3d3d363d7300000000000000000000000000000000000000000000)
+//       mstore(add(clone, 0xa), targetBytes)
+//       mstore(add(clone, 0x1e), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+
+//       let other := add(clone, 0x40)
+//       extcodecopy(query, other, 0, 0x2d)
+//       result := and(
+//         eq(mload(clone), mload(other)),
+//         eq(mload(add(clone, 0xd)), mload(add(other, 0xd)))
+//       )
+//     }
+//   }
+
+}
+
+contract Factory is Ifactory, FactoryStorage, CloneFactory{
     using SafeMath for uint256;
     address private constant ETH = address(0);
     
@@ -192,8 +215,9 @@ contract Factory is Ifactory, FactoryStorage{
         _;
     }
 
-    function initialize(address _luca, address _wluca, address _trader, address _weth, address _collector, address _pledger) external noInit{
+    function initialize(address _linkOrigin, address _luca, address _wluca, address _trader, address _weth, address _collector, address _pledger) external noInit{
         owner = msg.sender;
+        linkOrigin = _linkOrigin;
         luca = _luca;
         wluca = _wluca;
         weth = _weth;
@@ -223,6 +247,10 @@ contract Factory is Ifactory, FactoryStorage{
     
     function setRisk() external override onlyOwner {
         risk = !risk;
+    }
+    
+    function setLinkOrigin(address _linkOrigin) external override onlyOwner{
+        linkOrigin = _linkOrigin;
     }
     
     function isLink(address _link) override external view returns(bool){
@@ -261,7 +289,8 @@ contract Factory is Ifactory, FactoryStorage{
         require(_tatalPlan >= config.minAmount, "Factory: tatalPlan too small");
         
         //create contract
-        Link link = new Link(address(this), luca, wluca, trader, weth, pledger);
+        Ilink link = Ilink(_clone(linkOrigin));
+        link.setEnv(luca, wluca, trader, weth, pledger);
         totalLink++;
         linkMap[address(link)] = true;
         

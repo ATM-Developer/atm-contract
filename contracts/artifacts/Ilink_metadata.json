@@ -1,0 +1,299 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "agree",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "close",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "depledge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCloseInfo",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "closer_",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startTime_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expiredTime_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "closeTime_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "closeReqA_",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "closeReqB_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getLinkInfo",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "symbol_",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "token_",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "userA_",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "userB_",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountA_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountB_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "percentA_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalPlan_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockDays_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startTime_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "status_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAward_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getPledgedInfo",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "pledgedA_",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "pledgedB_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getRecevabesInfo",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "receivableA_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isExitA_",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "receivableB_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isExitB_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getStatus",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isExpire",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "node",
+						"type": "address"
+					}
+				],
+				"name": "pledge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "reject",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rejectClose",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "repealCloseReq",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_userB",
+						"type": "address"
+					}
+				],
+				"name": "setUserB",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wtihdrawSelf",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"link.sol": "Ilink"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"link.sol": {
+			"keccak256": "0xb15b5679a24afbc01ce012bcb85896f8e01d84b7d9119e8abc97f137c8bf29a7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://96980cf2c328c6e7d9d95c19d46e096111e39ffd49e4d6b207d9b2ddfc73b4f5",
+				"dweb:/ipfs/QmT6SqBUqirZpemBhwEcA611i62eJ1VAJBCNMZoBAwVq5s"
+			]
+		}
+	},
+	"version": 1
+}

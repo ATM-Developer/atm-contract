@@ -1,19 +1,7 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
-//import "../common/interface/IERC20.sol";
-interface IERC20 {
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
-
-//import "../common/library/SafeMath.sol";
 library SafeMath {
     function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
     unchecked {
@@ -104,39 +92,35 @@ library SafeMath {
     }
 }
 
-//import "../trader/Itrader.sol";
-interface Itrader {
-    function balance() external returns(uint256 luca, uint256 wluca);
-    function deposit(uint256 _amount) external returns(bool);
-    function withdraw(uint256 _amount) external returns(bool);
-    function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
-    function withdrawFor(address _to, uint256 _amount) external;
-    function addWhiteList(address _addr) external;
-    function setFactory(address _factory) external;
-}
-
-//import "./factory/Ifactory.sol";
-interface Ifactory {
-    event LinkCreated(address indexed _creater, string indexed _symbol, address _link);
-    event LinkActive(address indexed _link, uint256 _methodId);
-    
-    function setRisk() external;
-    function setOwner(address _user) external;
-    function setPledger(address _user) external;
-    function setCollector(address _user) external;
-    function getCollector() external view returns(address);
-    function isLink(address _link) external view returns(bool);
-    function isAllowedToken(string memory _symbol, address _addr) external returns(bool);
-    function createLink(address _toUser, string memory _tokenSymbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) payable external returns(address);
-    function addToken(address _tokenAddr, uint256 _minAmount) external;
-    function updateTokenConfig (string memory _symbol, address _tokenAddr, uint256 _minAmount) external;
-    function linkActive(address _user, uint256 _methodId) external;
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 }
 
 interface IWETH is IERC20{
     function deposit() payable external;
     function withdraw(uint) external;
 }
+
+interface Ipledge{
+    function  stakeWLuca(address _nodeAddr, uint256 _amount, address _sender) external returns(bool);
+    function  cancleStakeWLuca(address _sender) external returns(bool);
+}
+
+interface Itrader {
+    function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
+    function withdrawFor(address _to, uint256 _amount) external;
+}
+
+interface Ifactory {
+    function getCollector() external view returns(address);
+    function linkActive(address _user, uint256 _methodId) external;
+}
+
 
 //Ilink.sol
 interface Ilink {
@@ -157,13 +141,8 @@ interface Ilink {
     function wtihdrawSelf() external;
 }
 
-interface Ipledge{
-    function  stakeWLuca(address _nodeAddr, uint256 _amount, address _sender) external returns(bool);
-    function  cancleStakeWLuca(address _sender) external returns(bool);
-}
 
 //link.sol
-
 contract Initialized {
     bool internal initialized;
     
@@ -226,11 +205,6 @@ contract LinkInfo is Enum {
         _;
     }
     
-    modifier onlyFactory(){
-        require(msg.sender == factory, "Link: only factory");
-        _;
-    }
-
     modifier onlyEditLink(){
         require(msg.sender == userA, "Link: only userA");
         require(userB == address(0) && percentA == 100, "Link: only Editable Link");
@@ -284,20 +258,21 @@ contract Link is LinkInfo, Initialized, Ilink {
     fallback() payable external{}
     receive() payable external{}
     
-    constructor(address _factory, address _luca, address _wluca, address _trader, address _weth, address _pledger){
-        factory = _factory;
+    function _linkActive(MethodId _methodId) internal{
+        Ifactory(factory).linkActive(msg.sender, uint256(_methodId));
+    }
+    
+    function setEnv(address _luca, address _wluca, address _trader, address _weth, address _pledger) external {
+        require(!initialized);
+        factory = msg.sender;
         luca = _luca;
         wluca = _wluca;
         trader = _trader;
         pledger = _pledger;
         weth = _weth;
     }
-    
-    function _linkActive(MethodId _methodId) internal{
-        Ifactory(factory).linkActive(msg.sender, uint256(_methodId));
-    }
 
-    function initialize(address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external onlyFactory noInit{
+    function initialize( address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external noInit{
         //require(_verifyDeposit(_token, _userA), "Link: userA deposit not enough");
         userA = _userA;
         userB = _userB;
@@ -459,7 +434,6 @@ contract Link is LinkInfo, Initialized, Ilink {
         }
     }
     
-    
     //Link query
     function isExpire() override public view returns(bool) {
         if (status == Status.INITED || expiredTime == 0){
@@ -520,18 +494,18 @@ contract Link is LinkInfo, Initialized, Ilink {
     function _liquidation() internal{
         if (status == Status.INITED || isExpire()) {
             _setReceivables(100);
-        }else{//AGREED
+        }else{
+            //AGREED
             uint256 day = (closeTime.sub(startTime)).div(1 days);
-            //dayFator = {(lockDays-day)/lockDays} * 0.2 *10^4
-            uint256 dayFator = (lockDays.sub(day)).mul(1000*2).div(lockDays);
-            if (day == 0) {
-                _setReceivables(100-20);
-            }else if(dayFator < 100){   //  <0.01
+            //dayFator = (lockDays-day)*10^4  / lockDays 
+            uint256 dayFator = (lockDays.sub(day)).mul(10000).div(lockDays);
+            
+            if(dayFator <= 100){         //  <1% * 10000
                 _setReceivables(99);
-            }else if(dayFator > 2000){  //  >0.2
-                _setReceivables(80);
-            }else{                      //  0.01 - 0.2
-                _setReceivables(100-(dayFator.div(100)));
+            }else if(dayFator >= 1500){  // >15% * 10000
+                _setReceivables(85);
+            }else{                       // 1% ~ 15%
+               _setReceivables((10000 - dayFator).div(100)); 
             }
             
             uint256 fee = totalPlan.sub(receivableA.add(receivableB));
