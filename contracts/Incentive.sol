@@ -2,18 +2,18 @@
 pragma solidity ^0.5.0 ;
 
 interface IERC20 {
-  function balanceOf(address _owner) external view returns (uint256);
-  function transfer(address _to, uint256 _value) external returns (bool);
-  function transferFrom(address _from, address _to, uint256 _value) external returns (bool);
+    function balanceOf(address _owner) external view returns (uint256);
+    function transfer(address _to, uint256 _value) external returns (bool);
+    function transferFrom(address _from, address _to, uint256 _value) external returns (bool);
 }
 
 interface IPledgeContract {
-  function queryNodeIndex(address _nodeAddr) external view returns(uint256);
+    function queryNodeIndex(address _nodeAddr) external view returns(uint256);
 
 }
 
 interface IIncentive {
-  function withdrawToken(address[2] calldata addrs,uint256[2] calldata uints,uint8[] calldata vs,bytes32[] calldata rssMetadata) external;
+    function withdrawToken(address[2] calldata addrs,uint256[2] calldata uints,uint8[] calldata vs,bytes32[] calldata rssMetadata) external;
 }
 
 contract Ownable {
@@ -124,7 +124,7 @@ contract  Incentive  is Ownable,IIncentive {
         admin = _admin;
     }
 
-     function() payable external{
+    function() payable external{
 
     }
 
@@ -144,15 +144,19 @@ contract  Incentive  is Ownable,IIncentive {
     function  modifierPledgeContract(address _pledgeContract) public onlyAdmin{
         pledgeContract = IPledgeContract(_pledgeContract);
     }
-
+    
+    /**
+    * @notice A method to the user withdraw revenue.
+    * The extracted proceeds are signed by at least 6 PAGERANK servers, in order to withdraw successfully
+    */
     function withdrawToken(
         address[2] calldata addrs,
         uint256[2] calldata uints,
         uint8[] calldata vs,
         bytes32[] calldata rssMetadata
     )
-        external
-        onlyGuard
+    external
+    onlyGuard
     {
         require(addrs[0] == msg.sender, "IncentiveContracts: Signing users are not the same as trading users");
         require( block.timestamp<= uints[1], "IncentiveContracts: The transaction exceeded the time limit");
@@ -161,7 +165,6 @@ contract  Incentive  is Ownable,IIncentive {
         uint256 _nonce = nonce[addrs[0]]++;
         require(len*2 == rssMetadata.length, "IncentiveContracts: Signature parameter length mismatch");
         bytes32 digest = _calcDataHash(Data( addrs[0], addrs[1], uints[0], uints[1]), _nonce);
-
         for (uint256 i = 0; i < len; i++) {
             bool result = _verifySign(
                 digest,
@@ -190,7 +193,8 @@ contract  Incentive  is Ownable,IIncentive {
 
     function _verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
         address _accessAccount = ecrecover(_digest, _sig.v, _sig.r, _sig.s);
-        return pledgeContract.queryNodeIndex(_accessAccount) < 12;
+        uint256 _nodeRank = pledgeContract.queryNodeIndex(_accessAccount);
+        return _nodeRank < 12 && _nodeRank > 0;
     }
 
     function _calcDataHash(Data memory _data, uint256 _nonce) internal pure returns (bytes32)  {
@@ -202,7 +206,7 @@ contract  Incentive  is Ownable,IIncentive {
         return digest;
     }
 
-    function uint2str(uint i) public pure returns (string memory c) {
+    function uint2str(uint i) internal pure returns (string memory c) {
         if (i == 0) return "0";
         uint j = i;
         uint length;
@@ -249,14 +253,6 @@ contract  Incentive  is Ownable,IIncentive {
 
     function toString(address account) internal pure returns(string memory) {
         return toString(abi.encodePacked(account));
-    }
-
-    function toString(uint256 value) internal pure returns(string memory) {
-        return toString(abi.encodePacked(value));
-    }
-
-    function toString(bytes32 value) internal pure returns(string memory) {
-        return toString(abi.encodePacked(value));
     }
 
     function toString(bytes memory data) internal pure returns(string memory) {
