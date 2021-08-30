@@ -87,7 +87,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "_tatalPlan",
+						"name": "_totalPlan",
 						"type": "uint256"
 					},
 					{
@@ -366,11 +366,11 @@
 	},
 	"sources": {
 		"factory.sol": {
-			"keccak256": "0x067dd4a1857a57a17cf6e513cb6e00d5dfbc7cf702139a182fa58da96796e90f",
+			"keccak256": "0x28fbac95497493488bd75d9e0ab35390f3048907aa2d96353ab9a8091b4cf7ca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://20cbbd2e8939e815cb329da4312cf2733d05a23395f629d856029a2f6ef44de9",
-				"dweb:/ipfs/QmPW8JWFAcnACHQpTMtXW63Lqr3ZDHUWB8egLHcGCA9RFy"
+				"bzz-raw://f0ea10451ecedef0d299240efecb99f6df55ea4acd15865017bb374c040812e1",
+				"dweb:/ipfs/QmeQWmhnN3sWqQBCAFypZy34v3BAbV9D7zs4GTyLqWnC9G"
 			]
 		}
 	},

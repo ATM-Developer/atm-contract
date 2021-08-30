@@ -172,7 +172,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"link.sol": "IWETH"
+			"factory.sol": "IWETH"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -186,12 +186,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"link.sol": {
-			"keccak256": "0x5f9710e01707c0471e34c551bd839fd1b98b860dcac2a2e7fbb7bd853f1fb3f9",
+		"factory.sol": {
+			"keccak256": "0x28fbac95497493488bd75d9e0ab35390f3048907aa2d96353ab9a8091b4cf7ca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7278ebfecbc7f6865e3c3274117192078ad985caabf321e4c8e0862ccfd1ed81",
-				"dweb:/ipfs/QmbsBKXjn5Xxyc1bqf12eXXVeXSQ9QJABrL4CLbBzZmMtr"
+				"bzz-raw://f0ea10451ecedef0d299240efecb99f6df55ea4acd15865017bb374c040812e1",
+				"dweb:/ipfs/QmeQWmhnN3sWqQBCAFypZy34v3BAbV9D7zs4GTyLqWnC9G"
 			]
 		}
 	},

@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"trader.sol": "SafeMath"
+			"factory.sol": "SafeMath"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"trader.sol": {
-			"keccak256": "0x09d25d364b4ec8480d2b05ac324da14bcb74981e9f741df930c13c4c1c4f40d6",
+		"factory.sol": {
+			"keccak256": "0x28fbac95497493488bd75d9e0ab35390f3048907aa2d96353ab9a8091b4cf7ca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://99a52cdbae69d2508d5141eaf35fb3ecaedb8fcfbf2ab9057bb67550e0fb5861",
-				"dweb:/ipfs/QmfY5s5LqnZ8NJpBsevStfJyet4eku7CWscGd2RrezQt67"
+				"bzz-raw://f0ea10451ecedef0d299240efecb99f6df55ea4acd15865017bb374c040812e1",
+				"dweb:/ipfs/QmeQWmhnN3sWqQBCAFypZy34v3BAbV9D7zs4GTyLqWnC9G"
 			]
 		}
 	},

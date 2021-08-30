@@ -260,7 +260,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         tokenMap[_symbol]=tokenConfig(_tokenAddr, _minAmount, true);
     }
     
-    function createLink(address _userB, string memory _symbol, uint256 _tatalPlan, uint256 _percentA, uint256 _lockDays) override external payable  checkRisk returns(address){   
+    function createLink(address _userB, string memory _symbol, uint256 _totalPlan, uint256 _percentA, uint256 _lockDays) override external payable  checkRisk returns(address){   
         //check args
         require(_userB != msg.sender, "Factory: userB is self");
         require(_percentA>=1 && _percentA<=100,"Factory: percentA need between 1 and 100");
@@ -269,7 +269,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         //check token astrict
         tokenConfig memory config = tokenMap[_symbol];
         require(config.isActive, "Factory: token not exist");
-        require(_tatalPlan >= config.minAmount, "Factory: tatalPlan too small");
+        require(_totalPlan >= config.minAmount, "Factory: totalPlan too small");
         
         //create contract
         Ilink link = Ilink(_clone(linkOrigin));
@@ -278,7 +278,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         linkMap[address(link)] = true;
         
         //payment amountA to link
-        uint256 amountA = _tatalPlan.mul(_percentA).div(100);
+        uint256 amountA = _totalPlan.mul(_percentA).div(100);
         if (config.addr == ETH){
             require(msg.value == amountA, "Factory: wrong amount of ETH");
             IWETH(weth).deposit{value: msg.value}();
@@ -288,7 +288,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         }
         
         //init link 
-        link.initialize(msg.sender, _userB, config.addr, _symbol, _tatalPlan, _percentA, _lockDays);
+        link.initialize(msg.sender, _userB, config.addr, _symbol, _totalPlan, _percentA, _lockDays);
         
         emit LinkCreated(msg.sender, _symbol, address(link));
         return address(link);

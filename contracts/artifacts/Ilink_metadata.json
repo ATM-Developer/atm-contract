@@ -6,254 +6,77 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"name": "agree",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "close",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "depledge",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getCloseInfo",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "closer_",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "startTime_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "expiredTime_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "closeTime_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "closeReqA_",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "closeReqB_",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getLinkInfo",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "symbol_",
-						"type": "string"
-					},
-					{
-						"internalType": "address",
-						"name": "token_",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "userA_",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "userB_",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountA_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountB_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "percentA_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalPlan_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "lockDays_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "startTime_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "status_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isAward_",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getPledgedInfo",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "pledgedA_",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "pledgedB_",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getRecevabesInfo",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "receivableA_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isExitA_",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint256",
-						"name": "receivableB_",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isExitB_",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getStatus",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "isExpire",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "node",
+						"name": "_userA",
 						"type": "address"
-					}
-				],
-				"name": "pledge",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "reject",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "rejectClose",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "repealCloseReq",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+					},
 					{
 						"internalType": "address",
 						"name": "_userB",
 						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_percentA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_lockDays",
+						"type": "uint256"
 					}
 				],
-				"name": "setUserB",
+				"name": "initialize",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "wtihdrawSelf",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_luca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_wluca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_trader",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_weth",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_pledger",
+						"type": "address"
+					}
+				],
+				"name": "setEnv",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -272,7 +95,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"link.sol": "Ilink"
+			"factory.sol": "Ilink"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -286,12 +109,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"link.sol": {
-			"keccak256": "0x5f9710e01707c0471e34c551bd839fd1b98b860dcac2a2e7fbb7bd853f1fb3f9",
+		"factory.sol": {
+			"keccak256": "0x28fbac95497493488bd75d9e0ab35390f3048907aa2d96353ab9a8091b4cf7ca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7278ebfecbc7f6865e3c3274117192078ad985caabf321e4c8e0862ccfd1ed81",
-				"dweb:/ipfs/QmbsBKXjn5Xxyc1bqf12eXXVeXSQ9QJABrL4CLbBzZmMtr"
+				"bzz-raw://f0ea10451ecedef0d299240efecb99f6df55ea4acd15865017bb374c040812e1",
+				"dweb:/ipfs/QmeQWmhnN3sWqQBCAFypZy34v3BAbV9D7zs4GTyLqWnC9G"
 			]
 		}
 	},
