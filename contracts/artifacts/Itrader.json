@@ -31,7 +31,6 @@
 	},
 	"data": {
 		"bytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"linkReferences": {},
 			"object": "",
@@ -39,7 +38,6 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"immutableReferences": {},
 			"linkReferences": {},
@@ -49,11 +47,66 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"addWhiteList(address)": "e7cd4a04",
+			"balance()": "b69ef8a8",
+			"deposit(uint256)": "b6b55f25",
 			"payment(address,address,address,uint256)": "8f1b407a",
+			"setFactory(address)": "5bb47808",
+			"withdraw(uint256)": "2e1a7d4d",
 			"withdrawFor(address,uint256)": "db518db2"
 		}
 	},
 	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_addr",
+					"type": "address"
+				}
+			],
+			"name": "addWhiteList",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "balance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "luca",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "wluca",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "deposit",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"inputs": [
 				{
@@ -78,6 +131,38 @@
 				}
 			],
 			"name": "payment",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_factory",
+					"type": "address"
+				}
+			],
+			"name": "setFactory",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "withdraw",
 			"outputs": [
 				{
 					"internalType": "bool",

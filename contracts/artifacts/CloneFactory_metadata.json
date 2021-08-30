@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -20,7 +20,7 @@
 		"compilationTarget": {
 			"factory.sol": "CloneFactory"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -33,11 +33,11 @@
 	},
 	"sources": {
 		"factory.sol": {
-			"keccak256": "0x29190234d174b3800ae5eb37d43baa95ad9c93973c35bdee595dd0609695977a",
+			"keccak256": "0x067dd4a1857a57a17cf6e513cb6e00d5dfbc7cf702139a182fa58da96796e90f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://54323d9b7c51b40fb7c70d81febcd964fcd6600dae9db6fe23f21ead74475f9c",
-				"dweb:/ipfs/QmaimmtHFMV7sRosKv6e64wifEtWnGBAYMXc8Gz9WU3UC7"
+				"bzz-raw://20cbbd2e8939e815cb329da4312cf2733d05a23395f629d856029a2f6ef44de9",
+				"dweb:/ipfs/QmPW8JWFAcnACHQpTMtXW63Lqr3ZDHUWB8egLHcGCA9RFy"
 			]
 		}
 	},

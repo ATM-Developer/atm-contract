@@ -1,17 +1,24 @@
 {
 	"compiler": {
-		"version": "0.8.1+commit.df193b15"
+		"version": "0.8.7+commit.e28d00a7"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
-				"stateMutability": "payable",
-				"type": "fallback"
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "luca",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
 			},
 			{
 				"inputs": [],
-				"name": "admin",
+				"name": "LUCA",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -21,23 +28,6 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "logic",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"stateMutability": "payable",
-				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -53,9 +43,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"proxy/proxy.sol": "Proxy"
+			"funding.sol": "Funding"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -67,12 +57,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"proxy/proxy.sol": {
-			"keccak256": "0xab1af6071212ad5eddbbac696c473e982aff8dffc0ae0e598db325a55b4a68ce",
+		"funding.sol": {
+			"keccak256": "0xc6d2d220ce7eccfe425e9d362f5e1850c5311431ad20c2f12b9c3ffc70430952",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://42d2b0d17637af0bdebef1c9e58edbd5278935f6488e0446b9fe615d22ed6152",
-				"dweb:/ipfs/Qma9AQCsq6nQcHLPnmXxtewn87HZzJZhwZW9CyxU1ndLoi"
+				"bzz-raw://363f8757e59c7255dfd684019e83498ce765140a21ab7ff12e08ac3382ed7a4f",
+				"dweb:/ipfs/Qmdkmjpce3qMJhUAFoybpk7gdtWvtzYJA7LNrf1gHXkRhq"
 			]
 		}
 	},

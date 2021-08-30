@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -308,7 +308,7 @@
 		"compilationTarget": {
 			"luca.sol": "Token"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -321,11 +321,11 @@
 	},
 	"sources": {
 		"luca.sol": {
-			"keccak256": "0x9f116d01bb55e0baad2bec3affd1ce3ee4a10cf90c0a11a82bc2d94bec720769",
+			"keccak256": "0x02b9e03bac057f79c795149a10e99e5b322ee0673063b6605c27c6ec989017f8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8db776cb9e2768a9261d2479130678f80b69f89c2fcb6d634cedf6ba042bb118",
-				"dweb:/ipfs/Qmbgv2cXYRCNEbFrjf9DijoZeXLvvTVTczud8enLfvEk9B"
+				"bzz-raw://f23b93efe0317bbcef03775c3393879336678287219729b56fc915b0f41516a5",
+				"dweb:/ipfs/QmSq9qSrxDxqBGW3jg4FSghMgPJxJUCJN47cLKU52Wom2a"
 			]
 		}
 	},

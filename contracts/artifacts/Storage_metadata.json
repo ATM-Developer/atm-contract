@@ -1,26 +1,13 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
 				"inputs": [],
-				"name": "decimals",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "minter",
+				"name": "factory",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -33,12 +20,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "name",
+				"name": "luca",
 				"outputs": [
 					{
-						"internalType": "string",
+						"internalType": "address",
 						"name": "",
-						"type": "string"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -58,52 +45,32 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "rebaser",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "receiver",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "scalingFactor",
-				"outputs": [
+				"inputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
 					}
 				],
+				"name": "whiteList",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
 				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "symbol",
+				"name": "wluca",
 				"outputs": [
 					{
-						"internalType": "string",
+						"internalType": "address",
 						"name": "",
-						"type": "string"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -123,9 +90,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"luca.sol": "Storage"
+			"trader.sol": "Storage"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -137,12 +104,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"luca.sol": {
-			"keccak256": "0x9f116d01bb55e0baad2bec3affd1ce3ee4a10cf90c0a11a82bc2d94bec720769",
+		"trader.sol": {
+			"keccak256": "0x09d25d364b4ec8480d2b05ac324da14bcb74981e9f741df930c13c4c1c4f40d6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8db776cb9e2768a9261d2479130678f80b69f89c2fcb6d634cedf6ba042bb118",
-				"dweb:/ipfs/Qmbgv2cXYRCNEbFrjf9DijoZeXLvvTVTczud8enLfvEk9B"
+				"bzz-raw://99a52cdbae69d2508d5141eaf35fb3ecaedb8fcfbf2ab9057bb67550e0fb5861",
+				"dweb:/ipfs/QmfY5s5LqnZ8NJpBsevStfJyet4eku7CWscGd2RrezQt67"
 			]
 		}
 	},

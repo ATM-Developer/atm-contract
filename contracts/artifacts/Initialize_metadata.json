@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -18,9 +18,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"factory.sol": "Initialize"
+			"trader.sol": "Initialize"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"factory.sol": {
-			"keccak256": "0x29190234d174b3800ae5eb37d43baa95ad9c93973c35bdee595dd0609695977a",
+		"trader.sol": {
+			"keccak256": "0x09d25d364b4ec8480d2b05ac324da14bcb74981e9f741df930c13c4c1c4f40d6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://54323d9b7c51b40fb7c70d81febcd964fcd6600dae9db6fe23f21ead74475f9c",
-				"dweb:/ipfs/QmaimmtHFMV7sRosKv6e64wifEtWnGBAYMXc8Gz9WU3UC7"
+				"bzz-raw://99a52cdbae69d2508d5141eaf35fb3ecaedb8fcfbf2ab9057bb67550e0fb5861",
+				"dweb:/ipfs/QmfY5s5LqnZ8NJpBsevStfJyet4eku7CWscGd2RrezQt67"
 			]
 		}
 	},

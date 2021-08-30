@@ -182,23 +182,6 @@ contract CloneFactory {
     }
   }
 
-//   function isClone(address target, address query) internal view returns (bool result) {
-//     bytes20 targetBytes = bytes20(target);
-//     assembly {
-//       let clone := mload(0x40)
-//       mstore(clone, 0x363d3d373d3d3d363d7300000000000000000000000000000000000000000000)
-//       mstore(add(clone, 0xa), targetBytes)
-//       mstore(add(clone, 0x1e), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
-
-//       let other := add(clone, 0x40)
-//       extcodecopy(query, other, 0, 0x2d)
-//       result := and(
-//         eq(mload(clone), mload(other)),
-//         eq(mload(add(clone, 0xd)), mload(add(other, 0xd)))
-//       )
-//     }
-//   }
-
 }
 
 contract Factory is Ifactory, FactoryStorage, CloneFactory{
@@ -297,7 +280,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         //payment amountA to link
         uint256 amountA = _tatalPlan.mul(_percentA).div(100);
         if (config.addr == ETH){
-            require(msg.value >= amountA, "not enough ETH");
+            require(msg.value == amountA, "Factory: wrong amount of ETH");
             IWETH(weth).deposit{value: msg.value}();
             IWETH(weth).transfer(address(link), msg.value);
         }else{

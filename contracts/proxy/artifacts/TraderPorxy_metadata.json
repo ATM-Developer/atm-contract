@@ -149,11 +149,11 @@
 	},
 	"sources": {
 		"proxy/proxy.sol": {
-			"keccak256": "0x181c68ecfcb9d2b9b35debcf8317c563bd6e7f48b895547115d8daae0ce3b9d3",
+			"keccak256": "0xab1af6071212ad5eddbbac696c473e982aff8dffc0ae0e598db325a55b4a68ce",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3e1c586dd51cbf27ba9869f0930da71ebc9b259679dafedf40c4340f24195601",
-				"dweb:/ipfs/QmUz1X4d4dQLygvTRueBrtLhp6uykEhFPVMcDDUdsz3oN3"
+				"bzz-raw://42d2b0d17637af0bdebef1c9e58edbd5278935f6488e0446b9fe615d22ed6152",
+				"dweb:/ipfs/Qma9AQCsq6nQcHLPnmXxtewn87HZzJZhwZW9CyxU1ndLoi"
 			]
 		},
 		"proxy/trader_proxy.sol": {

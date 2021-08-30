@@ -311,7 +311,7 @@ contract Link is LinkInfo, Initialized, Ilink {
         _linkActive(MethodId.agree);
         
         if (token == ETH){
-            require(msg.value >= amountB, "not enough ETH");
+            require(msg.value == amountB, "Link: wrong amount of ETH");
             IWETH(weth).deposit{value: msg.value}();
             IWETH(weth).transfer(address(this), msg.value);
         }else{

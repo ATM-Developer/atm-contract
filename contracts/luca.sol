@@ -300,6 +300,7 @@ contract Luca is Token, ILuca{
         if (indexDelta == 0)  return _totalSupply;
         
         if (!positive) {
+            require(indexDelta < BASE);
             scalingFactor = scalingFactor.mul(BASE.sub(indexDelta)).div(BASE);
         } else {
             uint256 newScalingFactor = scalingFactor.mul(BASE.add(indexDelta)).div(BASE);

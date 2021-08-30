@@ -104,7 +104,4 @@ contract basePorxy is Proxy {
         emit Upgraded(newLogic);
         return true;
     }
-
-  
-    
 }

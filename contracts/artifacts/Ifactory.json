@@ -31,7 +31,6 @@
 	},
 	"data": {
 		"bytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"linkReferences": {},
 			"object": "",
@@ -39,7 +38,6 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"immutableReferences": {},
 			"linkReferences": {},
@@ -49,40 +47,27 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"getCollector()": "50228201",
-			"linkActive(address,uint256)": "5e4afa80"
+			"isLink(address)": "372bd79e"
 		}
 	},
 	"abi": [
 		{
-			"inputs": [],
-			"name": "getCollector",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_user",
+					"name": "_link",
 					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_methodId",
-					"type": "uint256"
 				}
 			],
-			"name": "linkActive",
-			"outputs": [],
-			"stateMutability": "nonpayable",
+			"name": "isLink",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		}
 	]
