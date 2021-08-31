@@ -14,7 +14,7 @@ interface IPledge {
     function  addNodeAddr(address[] calldata _nodeAddrs) external;
     function  deleteNodeAddr(address[] calldata _nodeAddrs) external;
     function  modifierLucaFactory(address _lucaFactory) external;
-    function  updateAdmin(address _admin) external;
+    function  updateExecutor(address _admin) external;
     function  stakeLuca(address _nodeAddr, uint256 _amount) external;
     function  stakeWLuca(address _nodeAddr, uint256 _amount, address _sender) external returns(bool);
     function  cancleStakeLuca(uint256[] calldata _indexs) external;
@@ -32,9 +32,38 @@ interface ILucaFactory {
     function isLink(address _link) external view returns(bool);
 }
 
+abstract contract Initializable {
+    /**
+     * @dev Indicates that the contract has been initialized.
+     */
+    bool private _initialized;
 
+    /**
+     * @dev Indicates that the contract is in the process of being initialized.
+     */
+    bool private _initializing;
 
-contract Ownable {
+    /**
+     * @dev Modifier to protect an initializer function from being invoked twice.
+     */
+    modifier initializer() {
+        require(_initializing || !_initialized, "Initializable: contract is already initialized");
+
+        bool isTopLevelCall = !_initializing;
+        if (isTopLevelCall) {
+            _initializing = true;
+            _initialized = true;
+        }
+
+        _;
+
+        if (isTopLevelCall) {
+            _initializing = false;
+        }
+    }
+}
+
+contract Ownable is Initializable{
     address private _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -42,7 +71,7 @@ contract Ownable {
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () {
+    function __Ownable_init_unchained() internal initializer {
         address msgSender = msg.sender;
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -100,9 +129,9 @@ contract Ownable {
     }
 }
 
-contract  Pledge is Ownable,IPledge{
+contract  Pledge is Initializable,Ownable,IPledge{
     using SafeMath for uint256;
-    address public admin;
+    address public executor;
     IERC20 public  lucaToken;
     ILucaFactory public lucaFactory;
     uint256 public  mainNodeNum = 11;                     
@@ -122,7 +151,7 @@ contract  Pledge is Ownable,IPledge{
     mapping(address => uint256) public userStakeWLucaNum;  
     mapping(address => mapping(uint256 => uint256)) public userStakeWLucaIndex; 
     mapping(address => mapping(address => uint256)) public userLinkIndex; 
-    event UpdateAdmin(address _admin);
+    event UpdateExecutor(address _executor);
     event AddNodeAddr(address _nodeAddr);
     event DeleteNodeAddr(address _nodeAddr);
 
@@ -153,8 +182,8 @@ contract  Pledge is Ownable,IPledge{
         _;
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "PledgeContract: caller is not the admin");
+    modifier onlyExecutor() {
+        require(msg.sender == executor, "PledgeContract: caller is not the admin");
         _;
     }
 
@@ -163,13 +192,18 @@ contract  Pledge is Ownable,IPledge{
         _;
     }
 
-    function init(address _lucaToken, address _lucaFactory, address _admin) external {
-        lucaToken = IERC20(_lucaToken);
-        lucaFactory = ILucaFactory(_lucaFactory);
-        admin = _admin;
-        exchangeRate = lucaToken.fragmentToLuca(10**30);
+    function init(address _lucaToken, address _lucaFactory, address _executor) external initializer{
+        __Ownable_init_unchained();
+        __Pledge_init_unchained(_lucaToken, _lucaFactory, _executor);
     }
 
+    function __Pledge_init_unchained(address _lucaToken, address _lucaFactory, address _executor) internal initializer{
+        lucaToken = IERC20(_lucaToken);
+        lucaFactory = ILucaFactory(_lucaFactory);
+        executor = _executor;
+        exchangeRate = lucaToken.fragmentToLuca(10**30);
+    }
+    
     receive() payable external{
 
     }
@@ -178,7 +212,7 @@ contract  Pledge is Ownable,IPledge{
 
     }
     
-    function  modifierLUCAToken(address _lucaToken) external override onlyAdmin{
+    function  modifierLUCAToken(address _lucaToken) external override onlyExecutor{
         lucaToken = IERC20(_lucaToken);
     }
     
@@ -186,7 +220,7 @@ contract  Pledge is Ownable,IPledge{
     * @notice A method to add a list of trusted nodes
     * @param _nodeAddrs a list of trusted nodes
     */
-    function  addNodeAddr(address[] calldata _nodeAddrs) override external onlyAdmin{
+    function  addNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(!nodeAddrSta[_nodeAddr], "This node is already a pledged node");
@@ -206,7 +240,7 @@ contract  Pledge is Ownable,IPledge{
     * @notice A method to cancel the list of untrusted nodes
     * @param _nodeAddrs the list of untrusted nodes
     */
-    function  deleteNodeAddr(address[] calldata _nodeAddrs) override external onlyAdmin{
+    function  deleteNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(nodeAddrSta[_nodeAddr], "This node is not a pledge node");
@@ -226,13 +260,13 @@ contract  Pledge is Ownable,IPledge{
         }
     }
     
-    function  modifierLucaFactory(address _lucaFactory) override external onlyAdmin{
+    function  modifierLucaFactory(address _lucaFactory) override external onlyExecutor{
         lucaFactory = ILucaFactory(_lucaFactory);
     }
 
-    function  updateAdmin(address _admin) override external onlyOwner{
-        admin = _admin;
-        emit UpdateAdmin(_admin);
+    function  updateExecutor(address _executor) override external onlyOwner{
+        executor = _executor;
+        emit UpdateExecutor(_executor);
     }
     
     /**
