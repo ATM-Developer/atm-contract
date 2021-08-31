@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.5.0 ;
+pragma solidity ^0.8.0 ;
 
 interface IERC20 {
     function balanceOf(address _owner) external view returns (uint256);
@@ -16,7 +16,38 @@ interface IIncentive {
     function withdrawToken(address[2] calldata addrs,uint256[2] calldata uints,uint8[] calldata vs,bytes32[] calldata rssMetadata) external;
 }
 
-contract Ownable {
+abstract contract Initializable {
+    /**
+     * @dev Indicates that the contract has been initialized.
+     */
+    bool private _initialized;
+
+    /**
+     * @dev Indicates that the contract is in the process of being initialized.
+     */
+    bool private _initializing;
+
+    /**
+     * @dev Modifier to protect an initializer function from being invoked twice.
+     */
+    modifier initializer() {
+        require(_initializing || !_initialized, "Initializable: contract is already initialized");
+
+        bool isTopLevelCall = !_initializing;
+        if (isTopLevelCall) {
+            _initializing = true;
+            _initialized = true;
+        }
+
+        _;
+
+        if (isTopLevelCall) {
+            _initializing = false;
+        }
+    }
+}
+
+contract Ownable is Initializable{
     address private _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -24,7 +55,7 @@ contract Ownable {
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal{
+    function __Ownable_init_unchained() internal initializer {
         address msgSender = msg.sender;
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -81,15 +112,14 @@ contract Ownable {
         _owner = newOwner;
     }
 }
-contract  Incentive  is Ownable,IIncentive {
+contract  Incentive  is Initializable,Ownable,IIncentive {
     IPledgeContract public pledgeContract;
-    address public admin;
+    address public executor;
     bool public pause;
-    uint256 public  threshold;
     mapping(address => uint256) public nonce;
     mapping(address => uint256) public withdrawSums;
     mapping(address => mapping(uint256 => uint256)) public withdrawAmounts;
-    event UpdateAdmin(address _admin);
+    event UpdateExecutor(address _executor);
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
 
 
@@ -109,8 +139,8 @@ contract  Incentive  is Ownable,IIncentive {
         bytes32 s;
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "IncentiveContracts: caller is not the admin");
+    modifier onlyExecutor() {
+        require(msg.sender == executor, "IncentiveContracts: caller is not the executor");
         _;
     }
 
@@ -119,29 +149,30 @@ contract  Incentive  is Ownable,IIncentive {
         _;
     }
 
-    constructor(address _admin, uint256 _threshold) public {
-        threshold = _threshold;
-        admin = _admin;
+    function init(address _executor, address _pledgeContract) external initializer{
+        __Ownable_init_unchained();
+        __Incentive_init_unchained(_executor,_pledgeContract);
+    }
+    
+    function __Incentive_init_unchained(address _executor, address _pledgeContract) internal initializer{
+        executor = _executor;
+        pledgeContract = IPledgeContract(_pledgeContract);
     }
 
-    function() payable external{
+    receive() payable external{
 
     }
 
-    function  updatePause(bool _sta) external onlyAdmin{
+    function  updatePause(bool _sta) external onlyExecutor{
         pause = _sta;
     }
 
-    function  updateThreshold(uint256 _threshold) external onlyAdmin{
-        threshold = _threshold;
+    function  updateExecutor(address _executor) external onlyOwner{
+        executor = _executor;
+        emit UpdateExecutor(_executor);
     }
 
-    function  updateAdmin(address _admin) external onlyOwner{
-        admin = _admin;
-        emit UpdateAdmin(_admin);
-    }
-
-    function  modifierPledgeContract(address _pledgeContract) public onlyAdmin{
+    function  modifierPledgeContract(address _pledgeContract) public onlyExecutor{
         pledgeContract = IPledgeContract(_pledgeContract);
     }
     
@@ -156,6 +187,7 @@ contract  Incentive  is Ownable,IIncentive {
         bytes32[] calldata rssMetadata
     )
     external
+    override
     onlyGuard
     {
         require(addrs[0] == msg.sender, "IncentiveContracts: Signing users are not the same as trading users");
@@ -173,13 +205,13 @@ contract  Incentive  is Ownable,IIncentive {
             if (result){
                 counter++;
             }
-            if (counter >= threshold){
+            if (counter >= 6){
                 break;
             }
         }
         require(
-            counter >= threshold,
-            "The number of signed accounts did not reach the minimum threshold"
+            counter >= 6,
+            "The number of signed accounts has not reached the minimum threshold of six"
         );
         withdrawSums[addrs[0]] +=  uints[0];
         withdrawAmounts[addrs[0]][_nonce] =  uints[0];
