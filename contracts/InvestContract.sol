@@ -136,8 +136,8 @@ contract Ownable is Initializable{
 
 contract  InvestContract is Initializable,Ownable{
     using SafeMath for uint256;
-    IERC20 public UsdcToken;// 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48;//mainnet   rinkeby
-    uint256 public launchAmount = 5 * 10**18;//5000000 * 10**18;
+    IERC20 public UsdcToken;
+    uint256 public launchAmount = 5000000 * 10**18;
     UniswapV2Factory public constant UNISWAP_FACTORY = UniswapV2Factory(
         0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f
     );
@@ -169,7 +169,7 @@ contract  InvestContract is Initializable,Ownable{
         lucaToken = IERC20(_lucaToken);
         UsdcToken = IERC20(_usdc);
         lockTime = 20 days;
-        investTime = 730 days;
+        investTime = 6 days;
         launchTime = block.timestamp;
     }
     
@@ -219,6 +219,24 @@ contract  InvestContract is Initializable,Ownable{
         return true;
     }
     
+    function  calcLiquidity(address _sender) internal view returns(uint256, uint256, uint256){
+        InvestMsg memory investMsg = userInvestMsg[_sender];
+        uint256 _LiquiditySum = investMsg.amount.mul(liquiditySum).div(investUsdcSum);
+        uint256 _startTime = launchTime + investTime;
+        uint256 _liquidityAmount = 0;
+        uint256 unitTime = lockTime.div(4);
+        if(block.timestamp > _startTime.add(unitTime*4)){
+            _liquidityAmount = _LiquiditySum;
+        }else if(block.timestamp > _startTime.add(unitTime*3)){
+            _liquidityAmount = _LiquiditySum.mul(3).div(4);
+        }else if(block.timestamp > _startTime.add(unitTime*2)){
+            _liquidityAmount = _LiquiditySum.div(2);
+        }else if(block.timestamp > _startTime.add(unitTime)){
+            _liquidityAmount = _LiquiditySum.mul(1).div(4);
+        }
+        _liquidityAmount = _liquidityAmount.sub(investMsg.mark);
+        return (_liquidityAmount, investMsg.mark, _LiquiditySum);
+    }
     
     function  forwardLiquidity() external {
         uint256 endTime = launchTime + investTime;
@@ -243,25 +261,7 @@ contract  InvestContract is Initializable,Ownable{
         (uint256 _LiquidityAmount,uint256 _mark,uint256 _LiquiditySum) = calcLiquidity(_sender);
         return (_LiquidityAmount,_mark,_LiquiditySum);
     }
-    
-    function  calcLiquidity(address _sender) internal view returns(uint256, uint256, uint256){
-        InvestMsg memory investMsg = userInvestMsg[_sender];
-        uint256 _LiquiditySum = investMsg.amount.mul(liquiditySum).div(investUsdcSum);
-        uint256 _startTime = launchTime + investTime;
-        uint256 _liquidityAmount = 0;
-        uint256 unitTime = lockTime.div(4);
-        if(block.timestamp > _startTime.add(unitTime*4)){
-            _liquidityAmount = _LiquiditySum;
-        }else if(block.timestamp > _startTime.add(unitTime*3)){
-            _liquidityAmount = _LiquiditySum.mul(3).div(4);
-        }else if(block.timestamp > _startTime.add(unitTime*2)){
-            _liquidityAmount = _LiquiditySum.div(2);
-        }else if(block.timestamp > _startTime.add(unitTime)){
-            _liquidityAmount = _LiquiditySum.mul(1).div(4);
-        }
-        _liquidityAmount = _liquidityAmount.sub(investMsg.mark);
-        return (_liquidityAmount, investMsg.mark, _LiquiditySum);
-    }
+
     
 }
 library SafeMath {
