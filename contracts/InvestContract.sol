@@ -162,14 +162,14 @@ contract  InvestContract is Initializable,Ownable{
     
     function init(address _lucaToken,address _usdc) external initializer{
         __Ownable_init_unchained();
-        __Invest_init_unchained(_lucaToken);
-        UsdcToken = IERC20(_usdc);
+        __Invest_init_unchained(_lucaToken,_usdc);
     }
     
-    function __Invest_init_unchained(address _lucaToken) internal initializer{
+    function __Invest_init_unchained(address _lucaToken,address _usdc) internal initializer{
         lucaToken = IERC20(_lucaToken);
+        UsdcToken = IERC20(_usdc);
         lockTime = 20 days;
-        investTime = 6 days;
+        investTime = 730 days;
         launchTime = block.timestamp;
     }
     
@@ -181,6 +181,10 @@ contract  InvestContract is Initializable,Ownable{
 
     }
 
+    function  updateLucaToken(address _lucaToken) external onlyOwner{
+        lucaToken = IERC20(_lucaToken);
+    }
+    
     function  updateInvestTime(uint256 _investTime) external onlyOwner{
         investTime = _investTime;
     }
@@ -210,7 +214,6 @@ contract  InvestContract is Initializable,Ownable{
         userInvestMsg[_sender].mark = userInvestMsg[_sender].mark.add(_liquidityAmount);
         uint256 _LiquidityBalance = lucaToUsdcPair.balanceOf(address(this));
         require(_LiquidityBalance >= _liquidityAmount, "The contract transaction pair has insufficient liquidity");
-        liquiditySum = _LiquidityBalance.sub(_liquidityAmount);
         require(lucaToUsdcPair.transfer(_sender, _liquidityAmount), "Liquidity withdrawal failure");
         emit WithdrawLiquidity(_sender, _liquidityAmount, block.timestamp);
         return true;
