@@ -198,7 +198,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         _;
     }
 
-    function initialize(address _linkOrigin, address _luca, address _wluca, address _trader, address _weth, address _collector, address _pledger) external noInit{
+    function initialize(string memory _network, address _linkOrigin, address _luca, address _wluca, address _trader, address _weth, address _collector, address _pledger) external noInit{
         owner = msg.sender;
         linkOrigin = _linkOrigin;
         luca = _luca;
@@ -209,7 +209,7 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         pledger = _pledger;
         
         _addTokenMap("LUCA", _luca, 1);
-        _addTokenMap("ETH", ETH, 1);
+        _addTokenMap(_network, ETH, 1);
     }
     
     function setOwner(address _user)  override external onlyOwner {
