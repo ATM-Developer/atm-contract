@@ -134,7 +134,6 @@ contract  Pledge is Initializable,Ownable,IPledge{
     address public executor;
     IERC20 public  lucaToken;
     ILucaFactory public lucaFactory;
-    uint256 public  mainNodeNum = 11;                     
     uint256 public exchangeRate;
     uint256 public  nodeNum;                           
     mapping(address => uint256) nodeAddrIndex;  
