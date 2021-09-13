@@ -114,14 +114,15 @@ contract Ownable is Initializable{
 }
 contract  Incentive  is Initializable,Ownable,IIncentive {
     IPledgeContract public pledgeContract;
+    bytes32 public DOMAIN_SEPARATOR;
     address public executor;
     bool public pause;
+    uint256 public threshold = 6;
     mapping(address => uint256) public nonce;
     mapping(address => uint256) public withdrawSums;
     mapping(address => mapping(uint256 => uint256)) public withdrawAmounts;
     event UpdateExecutor(address _executor);
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
-
 
     struct Data {
         address userAddr;
@@ -157,6 +158,17 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
     function __Incentive_init_unchained(address _executor, address _pledgeContract) internal initializer{
         executor = _executor;
         pledgeContract = IPledgeContract(_pledgeContract);
+        uint chainId;
+        assembly {
+            chainId := chainId
+        }
+        DOMAIN_SEPARATOR = keccak256(
+            abi.encode(
+                keccak256('EIP712Domain(uint256 chainId,address verifyingContract)'),
+                chainId,
+                address(this)
+            )
+        );
     }
 
     receive() payable external{
@@ -172,6 +184,10 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
         emit UpdateExecutor(_executor);
     }
 
+    function  updateThreshold(uint256 _threshold) external onlyExecutor{
+        threshold = _threshold;
+    }
+
     function  modifierPledgeContract(address _pledgeContract) public onlyExecutor{
         pledgeContract = IPledgeContract(_pledgeContract);
     }
@@ -180,15 +196,15 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
     * @notice A method to the user withdraw revenue.
     * The extracted proceeds are signed by at least 6 PAGERANK servers, in order to withdraw successfully
     */
-    function withdrawToken(
+     function withdrawToken(
         address[2] calldata addrs,
         uint256[2] calldata uints,
         uint8[] calldata vs,
         bytes32[] calldata rssMetadata
     )
-    external
-    override
-    onlyGuard
+        override
+        external
+        onlyGuard
     {
         require(addrs[0] == msg.sender, "IncentiveContracts: Signing users are not the same as trading users");
         require( block.timestamp<= uints[1], "IncentiveContracts: The transaction exceeded the time limit");
@@ -196,22 +212,23 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
         uint256 counter;
         uint256 _nonce = nonce[addrs[0]]++;
         require(len*2 == rssMetadata.length, "IncentiveContracts: Signature parameter length mismatch");
-        bytes32 digest = _calcDataHash(Data( addrs[0], addrs[1], uints[0], uints[1]), _nonce);
+        bytes32 digest = getDigest(Data( addrs[0], addrs[1], uints[0], uints[1]), _nonce);
         for (uint256 i = 0; i < len; i++) {
-            bool result = _verifySign(
+            bool result = verifySign(
                 digest,
                 Sig(vs[i], rssMetadata[i*2], rssMetadata[i*2+1])
             );
             if (result){
                 counter++;
             }
-            if (counter >= 6){
+            if (counter >= threshold){
                 break;
             }
         }
+        
         require(
-            counter >= 6,
-            "The number of signed accounts has not reached the minimum threshold of six"
+            counter >= threshold,
+            "The number of signed accounts did not reach the minimum threshold"
         );
         withdrawSums[addrs[0]] +=  uints[0];
         withdrawAmounts[addrs[0]][_nonce] =  uints[0];
@@ -222,82 +239,23 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
         );
         emit WithdrawToken(addrs[0], _nonce, uints[0]);
     }
-
-    function _verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
-        address _accessAccount = ecrecover(_digest, _sig.v, _sig.r, _sig.s);
+    
+    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+        bytes32 hash = keccak256(abi.encodePacked(prefix, _digest));
+        address _accessAccount = ecrecover(hash, _sig.v, _sig.r, _sig.s);
         uint256 _nodeRank = pledgeContract.queryNodeIndex(_accessAccount);
         return _nodeRank < 12 && _nodeRank > 0;
     }
-
-    function _calcDataHash(Data memory _data, uint256 _nonce) internal pure returns (bytes32)  {
-        string memory msgData = strConcat(toString(_data.userAddr),toString(_data.contractAddr), uint2str( _data.amount), uint2str(_data.expiration),uint2str(_nonce));
-        bytes memory prefix = "\x19Ethereum Signed Message:\n";
-        bytes memory dataBytes= bytes(msgData);
-        uint256 len = dataBytes.length;
-        bytes32 digest = keccak256(abi.encodePacked(prefix, bytes(uint2str(len)),msgData));
-        return digest;
-    }
-
-    function uint2str(uint i) internal pure returns (string memory c) {
-        if (i == 0) return "0";
-        uint j = i;
-        uint length;
-        while (j != 0){
-            length++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(length);
-        uint k = length - 1;
-        while (i != 0){
-            bstr[k--] =bytes1(uint8(48 + i % 10));
-            i /= 10;
-        }
-        c = string(bstr);
-    }
-
-    function strConcat(string memory _a, string memory _b, string memory _c, string memory _d, string memory _e) internal pure returns (string memory _concatenatedString) {
-        bytes memory _ba = bytes(_a);
-        bytes memory _bb = bytes(_b);
-        bytes memory _bc = bytes(_c);
-        bytes memory _bd = bytes(_d);
-        bytes memory _be = bytes(_e);
-        string memory abcde = new string(_ba.length + _bb.length + _bc.length + _bd.length + _be.length);
-        bytes memory babcde = bytes(abcde);
-        uint k = 0;
-        uint i = 0;
-        for (i = 0; i < _ba.length; i++) {
-            babcde[k++] = _ba[i];
-        }
-        for (i = 0; i < _bb.length; i++) {
-            babcde[k++] = _bb[i];
-        }
-        for (i = 0; i < _bc.length; i++) {
-            babcde[k++] = _bc[i];
-        }
-        for (i = 0; i < _bd.length; i++) {
-            babcde[k++] = _bd[i];
-        }
-        for (i = 0; i < _be.length; i++) {
-            babcde[k++] = _be[i];
-        }
-        return string(babcde);
-    }
-
-    function toString(address account) internal pure returns(string memory) {
-        return toString(abi.encodePacked(account));
-    }
-
-    function toString(bytes memory data) internal pure returns(string memory) {
-        bytes memory alphabet = "0123456789abcdef";
-
-        bytes memory str = new bytes(2 + data.length * 2);
-        str[0] = "0";
-        str[1] = "x";
-        for (uint i = 0; i < data.length; i++) {
-            str[2+i*2] = alphabet[uint(uint8(data[i] >> 4))];
-            str[3+i*2] = alphabet[uint(uint8(data[i] & 0x0f))];
-        }
-        return string(str);
+    
+    function getDigest(Data memory _data, uint256 _nonce) internal view returns(bytes32 digest){
+        digest = keccak256(
+            abi.encodePacked(
+                '\x19\x01',
+                DOMAIN_SEPARATOR,
+                keccak256(abi.encode(_data.userAddr, _data.contractAddr,  _data.amount, _data.expiration, _nonce))
+            )
+        );
     }
 }
 
