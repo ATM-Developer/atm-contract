@@ -100,7 +100,7 @@ interface IERC20 {
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 }
 
-interface Iwluca {
+interface IMintableToken {
     function mint(address user, uint amount) external;
     function burn(uint amount) external;
 }
@@ -111,16 +111,14 @@ interface Ifactory {
 
 interface Itrader {
     function balance() external returns(uint256 luca, uint256 wluca);
-    function deposit(uint256 _amount) external returns(bool);
-    function withdraw(uint256 _amount) external returns(bool);
     function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
     function withdrawFor(address _to, uint256 _amount) external;
-    function addWhiteList(address _addr) external;
-    function setFactory(address _factory) external;
+    function suck(address _to, uint256 _amount) external;
 }
 
 contract Initialize {
     bool private initialized;
+    
     modifier noInit(){
         require(!initialized, "initialized");
         _;
@@ -132,29 +130,25 @@ contract Storage is Initialize {
     address     public owner;
     address     public wluca;
     address     public luca;
+    address     public gta;
     address     public factory;
-    address[]   public whiteList;
-}
-
-contract Trader is Storage, Itrader {
+   
     modifier onlyOwner(){
         require(msg.sender == owner, "Trader: access denied");
         _;
     }
     
     modifier verifyCaller(){
-        require(msg.sender == factory || Ifactory(factory).isLink(msg.sender) || _isInWhiteList() , "Trader: access denied");
+        require(msg.sender == factory || Ifactory(factory).isLink(msg.sender), "Trader: access denied");
         _;
     }
-    
-    modifier verifyAllowed(address _token, address _from, uint256 amount){
-        require(IERC20(_token).allowance(_from, address(this)) >= amount, "Trader: not enough allowed token");
-        _;
-    }
-    
-    function initialize(address _luca, address _wluca, address _factory) external noInit {
+}
+
+contract Trader is Storage, Itrader{
+    function initialize(address _luca, address _wluca,  address _gta, address _factory) external noInit {
         wluca = _wluca;
         luca = _luca;
+        gta = _gta;
         factory = _factory;
         owner = msg.sender;
     }
@@ -163,25 +157,23 @@ contract Trader is Storage, Itrader {
         return (IERC20(luca).balanceOf(address(this)), IERC20(wluca).totalSupply());
     }
     
-    function deposit(uint256 _amount) override external verifyCaller returns(bool) {
-        require(IERC20(luca).transferFrom(msg.sender, address(this), _amount), "Trader:  not enough allowed luca");
-        Iwluca(wluca).mint(msg.sender, _amount);
-        return true;
+    function file(bytes32 item, address data) external onlyOwner{
+      if( item == "wluca") wluca = data;
+      else if (item == "luca") luca = data;
+      else if (item == "gta") gta = data;
+      else if (item == "factory")  factory = data;
+      else revert("not this Storage item");
     }
     
-    function withdraw(uint256 _amount) override external verifyCaller returns(bool) {
-        require(IERC20(wluca).transferFrom(msg.sender, address(this), _amount), "Trader: not enough allowed wluca");
-        Iwluca(wluca).burn(_amount);
-        IERC20(luca).transfer(msg.sender, _amount);
-        return true;
+    function file() external view returns(address _wluca, address _luca, address _gta, address _factory){
+        return(wluca, luca, gta, factory);
     }
-    
     
     //use for factory
-    function payment(address _token, address _from, address _to, uint256 _amount) override external  verifyCaller  verifyAllowed(_token, _from, _amount)returns(bool){
+    function payment(address _token, address _from, address _to, uint256 _amount) override external verifyCaller returns(bool){
         if (_token == luca) {
             IERC20(luca).transferFrom(_from, address(this), _amount);
-            Iwluca(wluca).mint(_to, _amount);
+            IMintableToken(wluca).mint(_to, _amount);
             return true;
         } 
         
@@ -191,27 +183,12 @@ contract Trader is Storage, Itrader {
     //use for link
     function withdrawFor(address _to, uint256 _amount) override external verifyCaller {
         require(IERC20(wluca).transferFrom(msg.sender, address(this), _amount), "Trader: not enough allowed wluca");
-        Iwluca(wluca).burn(_amount);
+        IMintableToken(wluca).burn(_amount);
         IERC20(luca).transfer(_to, _amount);
     }
     
-    
-    function addWhiteList(address _addr) override external {
-        require(msg.sender == owner,"Trader: onlyOwner");
-        whiteList.push(_addr);
+    //use for airdrop gta
+    function suck(address _to, uint256 _amount) override external verifyCaller {
+        IMintableToken(gta).mint(_to, _amount);
     }
-    
-    function setFactory(address _factory) override external onlyOwner{
-        factory = _factory;
-    }
-    
-    
-    function _isInWhiteList() internal view returns(bool){
-        for (uint i = 0; i < whiteList.length; ++i){
-             if (msg.sender == whiteList[i]) return true;
-        }
-        
-        return false;
-    }
-
 }

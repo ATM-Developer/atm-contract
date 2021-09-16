@@ -47,7 +47,8 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"payment(address,address,address,uint256)": "8f1b407a"
+			"payment(address,address,address,uint256)": "8f1b407a",
+			"suck(address,uint256)": "0465b2b8"
 		}
 	},
 	"abi": [
@@ -55,22 +56,22 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_token",
+					"name": "token",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_from",
+					"name": "from",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "to",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_amount",
+					"name": "amount",
 					"type": "uint256"
 				}
 			],
@@ -82,6 +83,24 @@
 					"type": "bool"
 				}
 			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "user",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				}
+			],
+			"name": "suck",
+			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		}

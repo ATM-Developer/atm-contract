@@ -137,7 +137,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"faucet.sol": "Faucet"
+			"contracts/faucet.sol": "Faucet"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -151,7 +151,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"faucet.sol": {
+		"contracts/faucet.sol": {
 			"keccak256": "0x00d992958d62b2bbb2d7c12851d6d94356df6f7e8ce798fd179706e5afb66472",
 			"license": "MIT",
 			"urls": [

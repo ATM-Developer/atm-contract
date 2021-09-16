@@ -114,6 +114,67 @@
 			},
 			{
 				"inputs": [],
+				"name": "file",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "_wluca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_luca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_weth",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_trader",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_pledger",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_collector",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_linkOrigin",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "item",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "data",
+						"type": "address"
+					}
+				],
+				"name": "file",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getCollector",
 				"outputs": [
 					{
@@ -127,6 +188,11 @@
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_network",
+						"type": "string"
+					},
 					{
 						"internalType": "address",
 						"name": "_linkOrigin",
@@ -250,46 +316,7 @@
 						"type": "address"
 					}
 				],
-				"name": "setCollector",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_linkOrigin",
-						"type": "address"
-					}
-				],
-				"name": "setLinkOrigin",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					}
-				],
 				"name": "setOwner",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					}
-				],
-				"name": "setPledger",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -351,7 +378,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"factory.sol": "Factory"
+			"contracts/factory.sol": "Factory"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -365,12 +392,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"factory.sol": {
-			"keccak256": "0x28fbac95497493488bd75d9e0ab35390f3048907aa2d96353ab9a8091b4cf7ca",
+		"contracts/factory.sol": {
+			"keccak256": "0x2e1aec0b5dcf594f8e103ac33341303a06137038887b3ebdf5826a0e77e63c1c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f0ea10451ecedef0d299240efecb99f6df55ea4acd15865017bb374c040812e1",
-				"dweb:/ipfs/QmeQWmhnN3sWqQBCAFypZy34v3BAbV9D7zs4GTyLqWnC9G"
+				"bzz-raw://3c8218dd1084dea5e59b585cb7c55ca88a272df93974fa17e4c0e5502f51ef47",
+				"dweb:/ipfs/QmdCBPH9EDG7rvbd4ykg4LrY14d2mBZL1su3B9LWDUFvrE"
 			]
 		}
 	},

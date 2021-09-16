@@ -108,7 +108,8 @@ interface IWETH is IERC20{
 }
 
 interface Itrader {
-    function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
+    function payment(address token, address from, address to, uint256 amount) external returns(bool); 
+    function suck(address user, uint256 amount) external;
 }
 
 interface Isymbol {
@@ -116,21 +117,18 @@ interface Isymbol {
 }
 
 interface Ifactory {
+    function setRisk() external;
+    function setOwner(address) external;
+    function getCollector() external view returns(address);
+    function isLink(address) external view returns(bool);
+    function isAllowedToken(string memory, address) external returns(bool);
+    function createLink(address, string memory, uint256, uint256, uint256) payable external returns(address);
+    function addToken(address, uint256) external;
+    function updateTokenConfig (string memory, address, uint256) external;
+    function linkActive(address, uint256) external;
+    
     event LinkCreated(address indexed _creater, string indexed _symbol, address _link);
     event LinkActive(address _link, address _user, uint256 _methodId);
-    
-    function setRisk() external;
-    function setOwner(address _user) external;
-    function setPledger(address _user) external;
-    function setCollector(address _user) external;
-    function setLinkOrigin(address _linkOrigin) external;
-    function getCollector() external view returns(address);
-    function isLink(address _link) external view returns(bool);
-    function isAllowedToken(string memory _symbol, address _addr) external returns(bool);
-    function createLink(address _toUser, string memory _tokenSymbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) payable external returns(address);
-    function addToken(address _tokenAddr, uint256 _minAmount) external;
-    function updateTokenConfig (string memory _symbol, address _tokenAddr, uint256 _minAmount) external;
-    function linkActive(address _user, uint256 _methodId) external;
 }
 
 interface Ilink {
@@ -147,14 +145,27 @@ contract Initialize {
     }
 }
 
+contract CloneFactory {
+  function _clone(address target) internal returns (address result) {
+    bytes20 targetBytes = bytes20(target);
+    assembly {
+      let clone := mload(0x40)
+      mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+      mstore(add(clone, 0x14), targetBytes)
+      mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+      result := create(0, clone, 0x37)
+    }
+  }
+}
+
 contract FactoryStorage is Initialize {
     bool    internal risk;     
     address internal luca;
     address internal wluca;
     address internal weth;
     address internal trader;
-    address internal collector;
     address internal pledger;
+    address internal collector;
     address internal linkOrigin;
     
     address public owner;
@@ -168,20 +179,6 @@ contract FactoryStorage is Initialize {
         uint256 minAmount;   
         bool    isActive;    
     }
-}
-
-contract CloneFactory {
-  function _clone(address target) internal returns (address result) {
-    bytes20 targetBytes = bytes20(target);
-    assembly {
-      let clone := mload(0x40)
-      mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
-      mstore(add(clone, 0x14), targetBytes)
-      mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
-      result := create(0, clone, 0x37)
-    }
-  }
-
 }
 
 contract Factory is Ifactory, FactoryStorage, CloneFactory{
@@ -208,32 +205,35 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         collector = _collector;
         pledger = _pledger;
         
-        _addTokenMap("LUCA", _luca, 1);
-        _addTokenMap(_network, ETH, 1);
+        _addTokenMap("LUCA", _luca, 100);
+        _addTokenMap(_network, ETH, 100);
     }
     
-    function setOwner(address _user)  override external onlyOwner {
+    function file(bytes32 item, address data) external onlyOwner{
+      if( item == "wluca") wluca = data;
+      else if (item == "luca") luca = data;
+      else if (item == "weth")  weth = data;
+      else if (item == "trader")  trader = data;
+      else if (item == "pledger")  pledger = data;
+      else if (item == "collector")  collector = data;
+      else if (item == "linkOrigin")  linkOrigin = data;
+      else revert("not this Storage item");
+    }
+    
+    function file() external view returns(address _wluca, address _luca, address _weth, address _trader, address _pledger, address _collector, address _linkOrigin){
+        return(wluca, luca, weth, trader, pledger, collector, linkOrigin);
+    }
+    
+    function setOwner(address _user)  override external onlyOwner{
         owner = _user;
     }
-    
-    function setPledger(address _user)  override external onlyOwner {
-        pledger = _user;
-    }
-    
-    function setCollector(address _user) override external onlyOwner {
-        collector = _user;
-    }
-    
-    function getCollector() override external view returns(address){
-        return collector;
-    }
-    
+  
     function setRisk() external override onlyOwner {
         risk = !risk;
     }
     
-    function setLinkOrigin(address _linkOrigin) external override onlyOwner{
-        linkOrigin = _linkOrigin;
+    function getCollector() override external view returns(address){
+        return collector;
     }
     
     function isLink(address _link) override external view returns(bool){
@@ -289,8 +289,13 @@ contract Factory is Ifactory, FactoryStorage, CloneFactory{
         
         //init link 
         link.initialize(msg.sender, _userB, config.addr, _symbol, _totalPlan, _percentA, _lockDays);
-        
         emit LinkCreated(msg.sender, _symbol, address(link));
+        
+        //airdrop GTA
+        if (config.addr == luca && _percentA == 100){
+            Itrader(trader).suck(msg.sender, amountA.mul(_lockDays).div(100));
+        }
+        
         return address(link);
     }
     

@@ -20,6 +20,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "gta",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "luca",
 				"outputs": [
 					{
@@ -34,25 +47,6 @@
 			{
 				"inputs": [],
 				"name": "owner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "whiteList",
 				"outputs": [
 					{
 						"internalType": "address",
@@ -90,7 +84,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"trader.sol": "Storage"
+			"contracts/trader.sol": "Storage"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -104,12 +98,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"trader.sol": {
-			"keccak256": "0x09d25d364b4ec8480d2b05ac324da14bcb74981e9f741df930c13c4c1c4f40d6",
+		"contracts/trader.sol": {
+			"keccak256": "0x14aa45b4c712a59f12136017eb4d1f072fed7c4491e2bdacefea7ef3d7669026",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://99a52cdbae69d2508d5141eaf35fb3ecaedb8fcfbf2ab9057bb67550e0fb5861",
-				"dweb:/ipfs/QmfY5s5LqnZ8NJpBsevStfJyet4eku7CWscGd2RrezQt67"
+				"bzz-raw://9f250d7d66e6f13a011ddc7cd0f847fb33952b1b9720bbb4fc17ce714cb022ee",
+				"dweb:/ipfs/QmNap9DLQCzYTLqeep8GKVqaBochVNNoWjBuJXRrEkXaPF"
 			]
 		}
 	},

@@ -59,12 +59,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_tokenAddr",
+						"name": "",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_minAmount",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -77,27 +77,27 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_toUser",
+						"name": "",
 						"type": "address"
 					},
 					{
 						"internalType": "string",
-						"name": "_tokenSymbol",
+						"name": "",
 						"type": "string"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_percentA",
+						"name": "",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_lockDays",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -129,12 +129,12 @@
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "",
 						"type": "string"
 					},
 					{
 						"internalType": "address",
-						"name": "_addr",
+						"name": "",
 						"type": "address"
 					}
 				],
@@ -153,7 +153,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_link",
+						"name": "",
 						"type": "address"
 					}
 				],
@@ -172,12 +172,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_user",
+						"name": "",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_methodId",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -190,50 +190,11 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					}
-				],
-				"name": "setCollector",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_linkOrigin",
-						"type": "address"
-					}
-				],
-				"name": "setLinkOrigin",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_user",
+						"name": "",
 						"type": "address"
 					}
 				],
 				"name": "setOwner",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					}
-				],
-				"name": "setPledger",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -249,17 +210,17 @@
 				"inputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "",
 						"type": "string"
 					},
 					{
 						"internalType": "address",
-						"name": "_tokenAddr",
+						"name": "",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_minAmount",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -282,7 +243,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"factory.sol": "Ifactory"
+			"contracts/factory.sol": "Ifactory"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -296,12 +257,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"factory.sol": {
-			"keccak256": "0x28fbac95497493488bd75d9e0ab35390f3048907aa2d96353ab9a8091b4cf7ca",
+		"contracts/factory.sol": {
+			"keccak256": "0x2e1aec0b5dcf594f8e103ac33341303a06137038887b3ebdf5826a0e77e63c1c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f0ea10451ecedef0d299240efecb99f6df55ea4acd15865017bb374c040812e1",
-				"dweb:/ipfs/QmeQWmhnN3sWqQBCAFypZy34v3BAbV9D7zs4GTyLqWnC9G"
+				"bzz-raw://3c8218dd1084dea5e59b585cb7c55ca88a272df93974fa17e4c0e5502f51ef47",
+				"dweb:/ipfs/QmdCBPH9EDG7rvbd4ykg4LrY14d2mBZL1su3B9LWDUFvrE"
 			]
 		}
 	},

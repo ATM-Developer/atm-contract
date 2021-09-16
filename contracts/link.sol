@@ -114,13 +114,13 @@ interface Ipledge{
 interface Itrader {
     function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
     function withdrawFor(address _to, uint256 _amount) external;
+    function suck(address _to, uint256 _amount) external;
 }
 
 interface Ifactory {
     function getCollector() external view returns(address);
     function linkActive(address _user, uint256 _methodId) external;
 }
-
 
 //Ilink.sol
 interface Ilink {
@@ -140,7 +140,6 @@ interface Ilink {
     function depledge() external;
     function wtihdrawSelf() external;
 }
-
 
 //link.sol
 contract Initialized {
@@ -322,6 +321,12 @@ contract Link is LinkInfo, Initialized, Ilink {
         startTime = block.timestamp;
         expiredTime = startTime.add(lockDays.mul(1 days));
         _agree();
+        
+        //airdrop gta 
+        if(token == luca){
+            Itrader(trader).suck(userA, amountA.mul(lockDays).div(100));
+            Itrader(trader).suck(userB, amountB.mul(lockDays).div(100));
+        }
     }
     
     //pledge
@@ -383,7 +388,6 @@ contract Link is LinkInfo, Initialized, Ilink {
          _exitSelf();
         
     }
-    
     
     //Link renew
     function close() override external unCLOSED unPLEDGED onlyLinkUser {

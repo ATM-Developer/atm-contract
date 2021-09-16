@@ -134,7 +134,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"proxy/trader_proxy.sol": "TraderPorxy"
+			"contracts/proxy/trader_proxy.sol": "TraderPorxy"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -148,7 +148,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"proxy/proxy.sol": {
+		"contracts/proxy/proxy.sol": {
 			"keccak256": "0xab1af6071212ad5eddbbac696c473e982aff8dffc0ae0e598db325a55b4a68ce",
 			"license": "MIT",
 			"urls": [
@@ -156,7 +156,7 @@
 				"dweb:/ipfs/Qma9AQCsq6nQcHLPnmXxtewn87HZzJZhwZW9CyxU1ndLoi"
 			]
 		},
-		"proxy/trader_proxy.sol": {
+		"contracts/proxy/trader_proxy.sol": {
 			"keccak256": "0xbf2a9200c4913e28b6a3475790a2c2964af926ab81a09f369dc0e0a11fe1eb01",
 			"license": "MIT",
 			"urls": [

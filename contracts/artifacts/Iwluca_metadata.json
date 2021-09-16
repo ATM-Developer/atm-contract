@@ -50,7 +50,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"trader.sol": "Iwluca"
+			"contracts/trader.sol": "Iwluca"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -64,12 +64,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"trader.sol": {
-			"keccak256": "0x09d25d364b4ec8480d2b05ac324da14bcb74981e9f741df930c13c4c1c4f40d6",
+		"contracts/trader.sol": {
+			"keccak256": "0xff3ec33338dbd5d0889bd85a0c5fd5d6b5b744a79bba4a7ce15e1227f4ee4ab4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://99a52cdbae69d2508d5141eaf35fb3ecaedb8fcfbf2ab9057bb67550e0fb5861",
-				"dweb:/ipfs/QmfY5s5LqnZ8NJpBsevStfJyet4eku7CWscGd2RrezQt67"
+				"bzz-raw://6195fb425f67ca4cfe985ae616d32261bacd7eab5cae89117a9c62eca355b0b6",
+				"dweb:/ipfs/QmRGEjnJLRAz5ZbtWE9RfvRkXMofEBwVtAS8f6NyuF7xp4"
 			]
 		}
 	},

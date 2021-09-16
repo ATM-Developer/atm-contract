@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"wluca.sol": "Address"
+			"contracts/wluca.sol": "Address"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -32,7 +32,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"wluca.sol": {
+		"contracts/wluca.sol": {
 			"keccak256": "0x266e1123a84893f6d949ead3417d42c71df977ec8ca363657170af8adc0d23c2",
 			"license": "MIT",
 			"urls": [

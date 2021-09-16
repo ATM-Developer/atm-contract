@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_link",
+						"type": "address"
+					}
+				],
+				"name": "isLink",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/pledge.sol": "ILucaFactory"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/pledge.sol": {
+			"keccak256": "0x316928ec1a266e5c85c742a4c768d6aa525bc8fa783efb288f3bb74dea57bde8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://81f2f617e01908506ea554ae90bca7798e814bae0ff8a1af5d51efcf90252154",
+				"dweb:/ipfs/QmPDTTfpWjgfNprAX4rKvxjKpm3k53FYKVJpBjCS4DAkrj"
+			]
+		}
+	},
+	"version": 1
+}

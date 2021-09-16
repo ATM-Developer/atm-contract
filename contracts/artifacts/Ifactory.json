@@ -53,10 +53,7 @@
 			"isAllowedToken(string,address)": "65498de8",
 			"isLink(address)": "372bd79e",
 			"linkActive(address,uint256)": "5e4afa80",
-			"setCollector(address)": "fb5b82d0",
-			"setLinkOrigin(address)": "00547b5c",
 			"setOwner(address)": "13af4035",
-			"setPledger(address)": "aff075f4",
 			"setRisk()": "5a819f4d",
 			"updateTokenConfig(string,address,uint256)": "e4f13f57"
 		}
@@ -116,12 +113,12 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_tokenAddr",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_minAmount",
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -134,27 +131,27 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_toUser",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "string",
-					"name": "_tokenSymbol",
+					"name": "",
 					"type": "string"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_amount",
+					"name": "",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_percentA",
+					"name": "",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_lockDays",
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -186,12 +183,12 @@
 			"inputs": [
 				{
 					"internalType": "string",
-					"name": "_symbol",
+					"name": "",
 					"type": "string"
 				},
 				{
 					"internalType": "address",
-					"name": "_addr",
+					"name": "",
 					"type": "address"
 				}
 			],
@@ -210,7 +207,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_link",
+					"name": "",
 					"type": "address"
 				}
 			],
@@ -229,12 +226,12 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_user",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_methodId",
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -247,50 +244,11 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_user",
-					"type": "address"
-				}
-			],
-			"name": "setCollector",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_linkOrigin",
-					"type": "address"
-				}
-			],
-			"name": "setLinkOrigin",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_user",
+					"name": "",
 					"type": "address"
 				}
 			],
 			"name": "setOwner",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_user",
-					"type": "address"
-				}
-			],
-			"name": "setPledger",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -306,17 +264,17 @@
 			"inputs": [
 				{
 					"internalType": "string",
-					"name": "_symbol",
+					"name": "",
 					"type": "string"
 				},
 				{
 					"internalType": "address",
-					"name": "_tokenAddr",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_minAmount",
+					"name": "",
 					"type": "uint256"
 				}
 			],
