@@ -9,6 +9,13 @@ interface IERC20 {
     function fragmentToLuca(uint256 value) external view returns (uint256);
 }
 
+interface IGovernor {
+    function propose(uint256 _options, string memory _proposalContent) external;
+    function vote(uint256 _proposalId, uint256[] calldata _amouns, uint256[] calldata _types) external;
+    function withdrawStake(uint256[] calldata _proposalIds) external;
+
+}
+
 abstract contract Initializable {
     /**
      * @dev Indicates that the contract has been initialized.
@@ -106,7 +113,7 @@ contract Ownable is Initializable{
     }
 }
 
-contract Governor is Initializable,Ownable{
+contract Governor is Initializable,Ownable,IGovernor{
     using SafeMath for uint256;
     address public executor;
     IERC20 public  governanceToken;
@@ -170,7 +177,7 @@ contract Governor is Initializable,Ownable{
     /**
     * @notice A method in which users pledge a certain amount of governance tokens to initiate a proposal
     */
-    function propose(uint256 _options, string memory _proposalContent) external onlyExecutor{
+    function propose(uint256 _options, string memory _proposalContent) override external onlyExecutor{
         address _sender = msg.sender;
         uint256 _time = block.timestamp;
         uint256 proposalId = ++proposalCount;
@@ -183,17 +190,13 @@ contract Governor is Initializable,Ownable{
         emit Propose(_sender, proposalId, _time);
     }
     
-    function  Test(uint256 _proposalId) external {
-        ProposalMsg storage _proposalMsg = proposalMsg[_proposalId];
-        _proposalMsg.expire = block.timestamp;
-    }
     /**
     * @notice A method whereby users pledge governance tokens to vote on proposals
     * @param _amouns vote array
     * @param _proposalId the proposal id  
     * @param _types Voting type array
     */
-    function vote(uint256 _proposalId, uint256[] calldata _amouns, uint256[] calldata _types) external {
+    function vote(uint256 _proposalId, uint256[] calldata _amouns, uint256[] calldata _types) override external {
         address _sender = msg.sender;
         uint256 _time = block.timestamp;
         uint256 sum = 0;
@@ -215,7 +218,7 @@ contract Governor is Initializable,Ownable{
     * @notice A method to the users withdraws the pledge deposit
     * @param _proposalIds  proposal ID collection
     */
-    function withdrawStake(uint256[] calldata _proposalIds) external {
+    function withdrawStake(uint256[] calldata _proposalIds) override external {
         address _sender = msg.sender;
         uint256 _amount = 0;
         for (uint256 i = 0; i < _proposalIds.length; i++) {
