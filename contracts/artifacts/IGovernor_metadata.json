@@ -1,0 +1,100 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_options",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_proposalContent",
+						"type": "string"
+					}
+				],
+				"name": "propose",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_proposalId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "_amouns",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "_types",
+						"type": "uint256[]"
+					}
+				],
+				"name": "vote",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_proposalIds",
+						"type": "uint256[]"
+					}
+				],
+				"name": "withdrawStake",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/governor.sol": "IGovernor"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/governor.sol": {
+			"keccak256": "0xabf01be9ead7ae568fa6da59dd67e5657a129261ce8b2be0a9f09b6920364ad7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a442d99111e969366aefc71f0ed0a2a838f3400d4f788be1df1f2346178f4b65",
+				"dweb:/ipfs/QmPc57xJf4PQRTMvAdWt9C6xtT3V1kH1tXACBTSZ6vd7JG"
+			]
+		}
+	},
+	"version": 1
+}

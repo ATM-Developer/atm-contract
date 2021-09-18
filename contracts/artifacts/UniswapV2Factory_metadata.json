@@ -1,0 +1,70 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenA",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenB",
+						"type": "address"
+					}
+				],
+				"name": "getPair",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "pair",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/invest.sol": "UniswapV2Factory"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/invest.sol": {
+			"keccak256": "0xcaab9d5f593dab2ef86f3824127feaaf1127adc36954f070dfc60e863934c974",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5ce665b3a6aee99d5cfb9d9b95f21aef7ee34dae370e19fd0279adc8989a603b",
+				"dweb:/ipfs/QmaS8gJYSC8JMthekLMc5L7kFMh65HZ8sDZmkndzy5BGbi"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,127 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "file",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_userA",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_userB",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_percentA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_lockDays",
+						"type": "uint256"
+					}
+				],
+				"name": "initialize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_luca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_wluca",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_trader",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_weth",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_pledger",
+						"type": "address"
+					}
+				],
+				"name": "setEnv",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/factory.sol": "Ilink"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/factory.sol": {
+			"keccak256": "0x0b0ceea6d2a6a0b466dfe67948eda5024b4846927d2ef8d97a47a11a1b7b78f9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e48acb5eb8d5aab98c97518aa9abeb395dc52b8e908e44abe63bbceaf20385b9",
+				"dweb:/ipfs/QmPW1jZXSYd6yVqzaGgMcDjYm2UBktMRZmUJgAbVX78ZCC"
+			]
+		}
+	},
+	"version": 1
+}

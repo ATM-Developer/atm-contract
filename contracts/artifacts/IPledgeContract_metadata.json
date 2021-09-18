@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_nodeAddr",
+						"type": "address"
+					}
+				],
+				"name": "queryNodeIndex",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/airdrop.sol": "IPledgeContract"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/airdrop.sol": {
+			"keccak256": "0xa9e204b306c53cb0d761f3451673b20b431208584dd01469886c19f244b7c950",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://92c7f830c452120a6484e7831c44da2bd349fdfdf98883f3b1304b387a56caef",
+				"dweb:/ipfs/QmSUBPx2PE6uFKoQ4ZykpYwhox9Tgd2u266HaVjCkm7W1K"
+			]
+		}
+	},
+	"version": 1
+}

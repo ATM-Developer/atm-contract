@@ -114,12 +114,18 @@ interface Ipledge{
 interface Itrader {
     function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
     function withdrawFor(address _to, uint256 _amount) external;
-    function suck(address _to, uint256 _amount) external;
+    function suck(address _to, uint256 _amount, uint256 _lockDay) external;
 }
 
 interface Ifactory {
-    function getCollector() external view returns(address);
     function linkActive(address _user, uint256 _methodId) external;
+}
+
+interface Ifile {
+    function luca() external view returns(address);
+    function pledge() external view returns(address);
+    function collector() external view returns(address);
+    function linkLoad() external view returns (address, address, address, address, address);//luca, wluca, weth, trader, pledger
 }
 
 //Ilink.sol
@@ -167,13 +173,8 @@ contract Enum {
 }
 
 contract LinkInfo is Enum {
+    address internal file;
     address internal factory;
-    address internal luca;
-    address internal wluca;
-    address internal trader;
-    address internal collector;
-    address internal pledger;
-    address internal weth;
     bool    internal closeReqA;
     bool    internal closeReqB;
     bool    internal pledgedA;
@@ -200,7 +201,7 @@ contract LinkInfo is Enum {
     
     
     modifier onlyLuca(){
-        require(token == luca, "Link: only luca");
+        require(token == Ifile(file).luca(), "Link: only luca");
         _;
     }
     
@@ -261,27 +262,9 @@ contract Link is LinkInfo, Initialized, Ilink {
         Ifactory(factory).linkActive(msg.sender, uint256(_methodId));
     }
     
-    function setEnv(address _luca, address _wluca, address _trader, address _weth, address _pledger) external {
-        require(!initialized);
-        factory = msg.sender;
-        luca = _luca;
-        wluca = _wluca;
-        trader = _trader;
-        pledger = _pledger;
-        weth = _weth;
-    }
-
-    function initialize( address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external noInit{
-        //require(_verifyDeposit(_token, _userA), "Link: userA deposit not enough");
-        userA = _userA;
-        userB = _userB;
-        token = _token;
-        symbol = _symbol;
-        totalPlan = _amount;
-        percentA = _percentA;
-        amountA = _amount.mul(_percentA).div(100);
-        amountB = _amount.sub(amountA);
-        lockDays = _lockDays;
+    function initialize( address _file, address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external noInit{
+        (factory, file, userA, userB, token, symbol) = (msg.sender, _file, _userA, _userB, _token, _symbol);
+        (totalPlan, percentA, amountA, amountB, lockDays) = (_amount, _percentA, _amount.mul(_percentA).div(100), _amount.sub(amountA), _lockDays);
         
         if(_percentA == 100 && userB != address(0)){
             startTime = block.timestamp;
@@ -308,8 +291,10 @@ contract Link is LinkInfo, Initialized, Ilink {
 
     function agree() override payable external onlyUserB onlyINITED{
         _linkActive(MethodId.agree);
-        
+        // (luca, wluca, weth, trader, pledger)
+        (address luca,,address weth, address trader,) = Ifile(file).linkLoad();
         if (token == ETH){
+            
             require(msg.value == amountB, "Link: wrong amount of ETH");
             IWETH(weth).deposit{value: msg.value}();
             IWETH(weth).transfer(address(this), msg.value);
@@ -324,8 +309,8 @@ contract Link is LinkInfo, Initialized, Ilink {
         
         //airdrop gta 
         if(token == luca){
-            Itrader(trader).suck(userA, amountA.mul(lockDays).div(100));
-            Itrader(trader).suck(userB, amountB.mul(lockDays).div(100));
+            Itrader(trader).suck(userA, amountA, lockDays);
+            Itrader(trader).suck(userB, amountB, lockDays);
         }
     }
     
@@ -350,7 +335,7 @@ contract Link is LinkInfo, Initialized, Ilink {
         
         require(amount > 0, "Link: 0 amount");
         _pledge();
-        Ipledge(pledger).stakeWLuca(node, amount, msg.sender);
+        Ipledge(Ifile(file).pledge()).stakeWLuca(node, amount, msg.sender);
     }
     
     function depledge() override external onlyLuca onlyPLEDGED onlyLinkUser{
@@ -364,7 +349,7 @@ contract Link is LinkInfo, Initialized, Ilink {
         
         _linkActive(MethodId.depledge);
          
-        Ipledge(pledger).cancleStakeWLuca(msg.sender);
+        Ipledge(Ifile(file).pledge()).cancleStakeWLuca(msg.sender);
        
         
         //other exited
@@ -513,7 +498,7 @@ contract Link is LinkInfo, Initialized, Ilink {
             }
             
             uint256 fee = totalPlan.sub(receivableA.add(receivableB));
-            _withdraw(Ifactory(factory).getCollector(), fee);
+            _withdraw(Ifile(file).collector(), fee);
         }
         
          isExitA = true;
@@ -523,6 +508,7 @@ contract Link is LinkInfo, Initialized, Ilink {
     }
 
     function _withdraw(address to, uint amount) internal{
+        (address luca,address wluca,address weth, address trader,) = Ifile(file).linkLoad();
         if (token == ETH){
              IWETH(weth).withdraw(amount);
              payable (to).transfer(amount);

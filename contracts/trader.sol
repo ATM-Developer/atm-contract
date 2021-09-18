@@ -109,11 +109,18 @@ interface Ifactory {
     function isLink(address _link) external view returns(bool);
 }
 
+interface Ifile {
+    function factory() external view returns(address);
+    function luca() external view returns(address);
+    function wluca() external view returns(address);
+    function agt() external view returns(address);
+}
+
 interface Itrader {
     function balance() external returns(uint256 luca, uint256 wluca);
     function payment(address _token, address _from, address _to, uint256 _amount) external returns(bool); 
     function withdrawFor(address _to, uint256 _amount) external;
-    function suck(address _to, uint256 _amount) external;
+    function suck(address _to, uint256 _amount, uint256 _lockDay) external;
 }
 
 contract Initialize {
@@ -126,51 +133,29 @@ contract Initialize {
     }
 }
 
-contract Storage is Initialize {
-    address     public owner;
-    address     public wluca;
-    address     public luca;
-    address     public gta;
-    address     public factory;
-   
-    modifier onlyOwner(){
-        require(msg.sender == owner, "Trader: access denied");
-        _;
-    }
+contract Trader is Initialize, Itrader{
+    using SafeMath for uint256;
+    address public file;
     
     modifier verifyCaller(){
+        address factory = Ifile(file).factory();
         require(msg.sender == factory || Ifactory(factory).isLink(msg.sender), "Trader: access denied");
         _;
     }
-}
-
-contract Trader is Storage, Itrader{
-    function initialize(address _luca, address _wluca,  address _gta, address _factory) external noInit {
-        wluca = _wluca;
-        luca = _luca;
-        gta = _gta;
-        factory = _factory;
-        owner = msg.sender;
+    
+    
+    function initialize(address _file) external noInit {
+         file = _file;
     }
     
     function balance() override external view returns(uint256 luca_balance, uint256 wluca_supply){
+        (address luca, address wluca) = (Ifile(file).luca(), Ifile(file).wluca());
         return (IERC20(luca).balanceOf(address(this)), IERC20(wluca).totalSupply());
-    }
-    
-    function file(bytes32 item, address data) external onlyOwner{
-      if( item == "wluca") wluca = data;
-      else if (item == "luca") luca = data;
-      else if (item == "gta") gta = data;
-      else if (item == "factory")  factory = data;
-      else revert("not this Storage item");
-    }
-    
-    function file() external view returns(address _wluca, address _luca, address _gta, address _factory){
-        return(wluca, luca, gta, factory);
     }
     
     //use for factory
     function payment(address _token, address _from, address _to, uint256 _amount) override external verifyCaller returns(bool){
+        (address luca, address wluca) = (Ifile(file).luca(), Ifile(file).wluca());
         if (_token == luca) {
             IERC20(luca).transferFrom(_from, address(this), _amount);
             IMintableToken(wluca).mint(_to, _amount);
@@ -182,13 +167,16 @@ contract Trader is Storage, Itrader{
     
     //use for link
     function withdrawFor(address _to, uint256 _amount) override external verifyCaller {
+        (address luca, address wluca) = (Ifile(file).luca(), Ifile(file).wluca());
         require(IERC20(wluca).transferFrom(msg.sender, address(this), _amount), "Trader: not enough allowed wluca");
         IMintableToken(wluca).burn(_amount);
         IERC20(luca).transfer(_to, _amount);
     }
     
-    //use for airdrop gta
-    function suck(address _to, uint256 _amount) override external verifyCaller {
-        IMintableToken(gta).mint(_to, _amount);
+    //use for airdrop agt
+    function suck(address _to, uint256 _amount, uint256 _lockDay) override external verifyCaller {
+        uint256 award = _amount.mul(_lockDay).div(100).div(10**18);
+        address agt = Ifile(file).agt();
+        if (award > 0) IMintableToken(agt).mint(_to, award.mul(10**18));
     }
 }

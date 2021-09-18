@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "./erc20.sol";
-contract GTA is ERC20{
+contract AGT is ERC20{
     address public owner;
     address public minter;
 
-    constructor() ERC20("ATM Governance token", "GTA", 18){
+    constructor() ERC20("ATM Governance Token", "AGT", 18){
         owner = msg.sender;
     }
     

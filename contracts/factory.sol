@@ -93,7 +93,12 @@ library SafeMath {
     }
 }
 
+interface Ifile{
+    function factoryLoad() external view returns (address, address, address, address, uint256, uint256);
+}
+
 interface IERC20 {
+    function symbol() external view returns(string memory);
     function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
     function transfer(address recipient, uint256 amount) external returns (bool);
@@ -109,31 +114,28 @@ interface IWETH is IERC20{
 
 interface Itrader {
     function payment(address token, address from, address to, uint256 amount) external returns(bool); 
-    function suck(address user, uint256 amount) external;
+    function suck(address user, uint256 amount, uint256 lockDays) external;
 }
 
 interface Isymbol {
     function symbol() external view returns(string memory);
 }
 
+interface Ilink {
+     function setEnv(address _luca, address _wluca, address _trader, address _weth, address _pledger) external;
+     function initialize( address file, address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external;
+}
+
 interface Ifactory {
-    function setRisk() external;
-    function setOwner(address) external;
-    function getCollector() external view returns(address);
     function isLink(address) external view returns(bool);
-    function isAllowedToken(string memory, address) external returns(bool);
-    function createLink(address, string memory, uint256, uint256, uint256) payable external returns(address);
+   // function setLockDay(uint256, uint256) external;
     function addToken(address, uint256) external;
     function updateTokenConfig (string memory, address, uint256) external;
+    function createLink(address, string memory, uint256, uint256, uint256) payable external returns(address);
     function linkActive(address, uint256) external;
     
     event LinkCreated(address indexed _creater, string indexed _symbol, address _link);
     event LinkActive(address _link, address _user, uint256 _methodId);
-}
-
-interface Ilink {
-     function setEnv(address _luca, address _wluca, address _trader, address _weth, address _pledger) external;
-     function initialize( address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external;
 }
 
 contract Initialize {
@@ -158,142 +160,108 @@ contract CloneFactory {
   }
 }
 
-contract FactoryStorage is Initialize {
-    bool    internal risk;     
-    address internal luca;
-    address internal wluca;
-    address internal weth;
-    address internal trader;
-    address internal pledger;
-    address internal collector;
-    address internal linkOrigin;
-    
-    address public owner;
+contract Factory is Initialize, CloneFactory, Ifactory{
+    using SafeMath for uint256;
+    address public file;
     uint256 public totalLink;
-   
-    mapping(address => bool) internal linkMap;
-    mapping(string => tokenConfig) internal tokenMap;
     
-    struct tokenConfig {
+    struct token {
         address addr;       
         uint256 minAmount;   
         bool    isActive;    
     }
-}
-
-contract Factory is Ifactory, FactoryStorage, CloneFactory{
-    using SafeMath for uint256;
+    
+    struct linkArgs {
+        address userB;
+        string  symbol;
+        uint256 totalPlan;
+        uint256 percentA;
+        uint256 lockDays;
+    }
+    
+    struct fileArgs {
+         address luca;
+         address weth;
+         address trader;
+         address linkTemp;
+         uint256 minLockDay;
+         uint256 maxLockDay;
+    }
+    
+    mapping(address => bool) internal linkMap;
+    mapping(string => token) public tokenMap;
     address private constant ETH = address(0);
     
-    modifier onlyOwner() {
-        require(msg.sender == owner,"Factory: only owner");
-        _;
-    }
-    
-    modifier checkRisk() {
-        require(!risk, "Factory: Danger!");
+    modifier onlyFile() {
+        require(msg.sender == file, "only file");
         _;
     }
 
-    function initialize(string memory _network, address _linkOrigin, address _luca, address _wluca, address _trader, address _weth, address _collector, address _pledger) external noInit{
-        owner = msg.sender;
-        linkOrigin = _linkOrigin;
-        luca = _luca;
-        wluca = _wluca;
-        weth = _weth;
-        trader = _trader;
-        collector = _collector;
-        pledger = _pledger;
-        
-        _addTokenMap("LUCA", _luca, 100);
-        _addTokenMap(_network, ETH, 100);
-    }
-    
-    function file(bytes32 item, address data) external onlyOwner{
-      if( item == "wluca") wluca = data;
-      else if (item == "luca") luca = data;
-      else if (item == "weth")  weth = data;
-      else if (item == "trader")  trader = data;
-      else if (item == "pledger")  pledger = data;
-      else if (item == "collector")  collector = data;
-      else if (item == "linkOrigin")  linkOrigin = data;
-      else revert("not this Storage item");
-    }
-    
-    function file() external view returns(address _wluca, address _luca, address _weth, address _trader, address _pledger, address _collector, address _linkOrigin){
-        return(wluca, luca, weth, trader, pledger, collector, linkOrigin);
-    }
-    
-    function setOwner(address _user)  override external onlyOwner{
-        owner = _user;
-    }
-  
-    function setRisk() external override onlyOwner {
-        risk = !risk;
-    }
-    
-    function getCollector() override external view returns(address){
-        return collector;
+    function initialize(string memory _network, address _file) external noInit{
+        file = _file;
+        _addToken(_network, ETH, 100);
     }
     
     function isLink(address _link) override external view returns(bool){
         return linkMap[_link];
     }
     
-    function isAllowedToken(string memory _symbol, address _addr) override external view returns(bool) {
-        return tokenMap[_symbol].addr == _addr;
-    }
-    
-    function addToken(address _tokenAddr, uint256 _minAmount) override external onlyOwner {
-        string memory symbol = Isymbol(_tokenAddr).symbol();
+    function addToken(address _token, uint256 _min) override external onlyFile {
+        string memory symbol = IERC20(_token).symbol();
         require(bytes(symbol).length >= 0 , "Factory: not available ERC20 Token");
         require(!tokenMap[symbol].isActive, "Factory: token exist" );
-        _addTokenMap(symbol, _tokenAddr, _minAmount);
+        _addToken(symbol, _token, _min);
     }
     
-    function _addTokenMap(string memory _symbol, address _tokenAddr, uint256 _minAmount) internal {
-        tokenMap[_symbol]=tokenConfig(_tokenAddr, _minAmount, true);
+    function _addToken(string memory _symbol, address _token, uint256 _min) internal {
+        tokenMap[_symbol] = token(_token, _min, true);
     }
     
-    function updateTokenConfig(string  memory _symbol, address _tokenAddr, uint256 _minAmount) override external onlyOwner {
+    function updateTokenConfig(string  memory _symbol, address _token, uint256 _min) override external onlyFile {
         require(tokenMap[_symbol].isActive, "Factory: token not exist" );
-        tokenMap[_symbol]=tokenConfig(_tokenAddr, _minAmount, true);
+        tokenMap[_symbol] = token(_token, _min, true);
     }
     
-    function createLink(address _userB, string memory _symbol, uint256 _totalPlan, uint256 _percentA, uint256 _lockDays) override external payable  checkRisk returns(address){   
+    function createLink(address _userB, string memory _symbol, uint256 _totalPlan, uint256 _percentA, uint256 _lockDays) override external payable returns(address){   
+        fileArgs memory f;
+        {
+          (address luca, address weth, address trader, address linkTemp, uint256 minLockDay, uint256 maxLockDay) = Ifile(file).factoryLoad();
+          f = fileArgs(luca, weth, trader, linkTemp, minLockDay, maxLockDay);
+        }
+        
         //check args
         require(_userB != msg.sender, "Factory: userB is self");
-        require(_percentA>=1 && _percentA<=100,"Factory: percentA need between 1 and 100");
-        require(_lockDays>=1 && _lockDays<=1825,"Factory: lockDays need between 1 and 1825");
+        require(_percentA >=1 && _percentA <= 100,"Factory: percentA need between 1 and 100");
+        require(_lockDays >= f.minLockDay && _lockDays <= f.maxLockDay,"Factory: lockDays out of set");
         
         //check token astrict
-        tokenConfig memory config = tokenMap[_symbol];
-        require(config.isActive, "Factory: token not exist");
-        require(_totalPlan >= config.minAmount, "Factory: totalPlan too small");
+        token memory t = tokenMap[_symbol];
+        require(t.isActive, "Factory: token not exist");
+        require(_totalPlan >= t.minAmount, "Factory: totalPlan too small");
         
         //create contract
-        Ilink link = Ilink(_clone(linkOrigin));
-        link.setEnv(luca, wluca, trader, weth, pledger);
+        Ilink link = Ilink(_clone(f.linkTemp));
+    
         totalLink++;
         linkMap[address(link)] = true;
         
         //payment amountA to link
         uint256 amountA = _totalPlan.mul(_percentA).div(100);
-        if (config.addr == ETH){
-            require(msg.value == amountA, "Factory: wrong amount of ETH");
-            IWETH(weth).deposit{value: msg.value}();
-            IWETH(weth).transfer(address(link), msg.value);
+        if (t.addr == ETH){
+            require(msg.value == amountA, "Factory: wrong amount value");
+            IWETH(f.weth).deposit{value: msg.value}();
+            IWETH(f.weth).transfer(address(link), msg.value);
         }else{
-            Itrader(trader).payment(config.addr, msg.sender, address(link), amountA);
+            Itrader(f.trader).payment(t.addr, msg.sender, address(link), amountA);
         }
         
         //init link 
-        link.initialize(msg.sender, _userB, config.addr, _symbol, _totalPlan, _percentA, _lockDays);
+        link.initialize(file, msg.sender, _userB, t.addr, _symbol, _totalPlan, _percentA, _lockDays);
         emit LinkCreated(msg.sender, _symbol, address(link));
         
-        //airdrop GTA
-        if (config.addr == luca && _percentA == 100){
-            Itrader(trader).suck(msg.sender, amountA.mul(_lockDays).div(100));
+        //mint agt
+        if (t.addr == f.luca && _percentA == 100){
+            Itrader(f.trader).suck(msg.sender, amountA, _lockDays);
         }
         
         return address(link);

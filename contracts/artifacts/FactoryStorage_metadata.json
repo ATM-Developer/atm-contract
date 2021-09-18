@@ -1,0 +1,72 @@
+{
+	"compiler": {
+		"version": "0.8.1+commit.df193b15"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalLink",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/factory.sol": "FactoryStorage"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/factory.sol": {
+			"keccak256": "0x18126f2f030a91b057bdb4ad3d12330921a1842f00a6a7e3b75033fcca8dc094",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://41a320ea40f24d29788661332b8e4f4a17e381c2c59d027f0ddb74e8695d052d",
+				"dweb:/ipfs/QmYdChxNXa7Yzc3Joq7D3cqxVzjrpa73ZBTCjwQfVhdvnF"
+			]
+		}
+	},
+	"version": 1
+}
