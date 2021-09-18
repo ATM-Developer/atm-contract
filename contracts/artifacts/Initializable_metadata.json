@@ -26,7 +26,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/governor.sol": "Initializable"
+			"contracts/invest.sol": "Initializable"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -40,12 +40,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/governor.sol": {
-			"keccak256": "0xabf01be9ead7ae568fa6da59dd67e5657a129261ce8b2be0a9f09b6920364ad7",
+		"contracts/invest.sol": {
+			"keccak256": "0x9fc5347abcc19f29fa7aa21f6180454461719a63e0bb86e51901c98e62d55173",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a442d99111e969366aefc71f0ed0a2a838f3400d4f788be1df1f2346178f4b65",
-				"dweb:/ipfs/QmPc57xJf4PQRTMvAdWt9C6xtT3V1kH1tXACBTSZ6vd7JG"
+				"bzz-raw://ed81d5f6a277e3a1f2720e2d546887a966d90d109ddf07d046a5ffcb1f1ffefe",
+				"dweb:/ipfs/QmUbLBvpL3cM5NRXr5ehEVeMFmD7oSxfCponnP3HoKAxC7"
 			]
 		}
 	},

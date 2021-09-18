@@ -6,11 +6,6 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -79,9 +74,6 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"constructor": {
-					"details": "Initializes the contract setting the deployer as the initial owner."
-				},
 				"isOwner()": {
 					"details": "Returns true if the caller is the current owner."
 				},
@@ -105,7 +97,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/airdrop.sol": "Ownable"
+			"contracts/invest.sol": "Ownable"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -119,12 +111,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/airdrop.sol": {
-			"keccak256": "0xa9e204b306c53cb0d761f3451673b20b431208584dd01469886c19f244b7c950",
+		"contracts/invest.sol": {
+			"keccak256": "0x9fc5347abcc19f29fa7aa21f6180454461719a63e0bb86e51901c98e62d55173",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://92c7f830c452120a6484e7831c44da2bd349fdfdf98883f3b1304b387a56caef",
-				"dweb:/ipfs/QmSUBPx2PE6uFKoQ4ZykpYwhox9Tgd2u266HaVjCkm7W1K"
+				"bzz-raw://ed81d5f6a277e3a1f2720e2d546887a966d90d109ddf07d046a5ffcb1f1ffefe",
+				"dweb:/ipfs/QmUbLBvpL3cM5NRXr5ehEVeMFmD7oSxfCponnP3HoKAxC7"
 			]
 		}
 	},

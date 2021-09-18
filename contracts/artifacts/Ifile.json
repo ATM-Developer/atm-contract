@@ -31,7 +31,6 @@
 	},
 	"data": {
 		"bytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"linkReferences": {},
 			"object": "",
@@ -39,7 +38,6 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"immutableReferences": {},
 			"linkReferences": {},
@@ -49,10 +47,24 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"active()": "02fb0c5e",
 			"factoryLoad()": "579c576a"
 		}
 	},
 	"abi": [
+		{
+			"inputs": [],
+			"name": "active",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
 		{
 			"inputs": [],
 			"name": "factoryLoad",

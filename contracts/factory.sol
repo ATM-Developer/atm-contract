@@ -95,6 +95,7 @@ library SafeMath {
 
 interface Ifile{
     function factoryLoad() external view returns (address, address, address, address, uint256, uint256);
+    function active() external view returns(bool);
 }
 
 interface IERC20 {
@@ -222,7 +223,8 @@ contract Factory is Initialize, CloneFactory, Ifactory{
         tokenMap[_symbol] = token(_token, _min, true);
     }
     
-    function createLink(address _userB, string memory _symbol, uint256 _totalPlan, uint256 _percentA, uint256 _lockDays) override external payable returns(address){   
+    function createLink(address _userB, string memory _symbol, uint256 _totalPlan, uint256 _percentA, uint256 _lockDays) override external payable returns(address){ 
+        require(Ifile(file).active());
         fileArgs memory f;
         {
           (address luca, address weth, address trader, address linkTemp, uint256 minLockDay, uint256 maxLockDay) = Ifile(file).factoryLoad();
@@ -268,7 +270,7 @@ contract Factory is Initialize, CloneFactory, Ifactory{
     }
     
     function linkActive(address _user, uint256 _methodId) override external{
-        require(linkMap[msg.sender], "Link: only Link");
+        require(linkMap[msg.sender], "Factory: only Link");
         emit LinkActive(msg.sender, _user, _methodId);
     }
 }

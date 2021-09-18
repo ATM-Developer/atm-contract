@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/factory.sol": "Initialize"
+			"contracts/file.sol": "Initialize"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/factory.sol": {
-			"keccak256": "0x0b0ceea6d2a6a0b466dfe67948eda5024b4846927d2ef8d97a47a11a1b7b78f9",
+		"contracts/file.sol": {
+			"keccak256": "0x987a4deab02e8d49ee1619cf37031e243f7a6026467b63a5d01056aa108361e0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e48acb5eb8d5aab98c97518aa9abeb395dc52b8e908e44abe63bbceaf20385b9",
-				"dweb:/ipfs/QmPW1jZXSYd6yVqzaGgMcDjYm2UBktMRZmUJgAbVX78ZCC"
+				"bzz-raw://f2fc834595927089a1e00dfcee2075136156bd1915647ae6f2b52a7d571d0ec2",
+				"dweb:/ipfs/QmehNowm599YHRLpPvQ1qMRGXyFf29yWCDsJurqvRRg1zt"
 			]
 		}
 	},

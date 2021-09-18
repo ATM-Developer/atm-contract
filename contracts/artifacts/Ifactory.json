@@ -50,73 +50,20 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"addToken(address,uint256)": "af81c5b9",
-			"createLink(address,string,uint256,uint256,uint256)": "4aff6754",
-			"isLink(address)": "372bd79e",
-			"linkActive(address,uint256)": "5e4afa80",
 			"updateTokenConfig(string,address,uint256)": "e4f13f57"
 		}
 	},
 	"abi": [
 		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "_link",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "_user",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "_methodId",
-					"type": "uint256"
-				}
-			],
-			"name": "LinkActive",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
-					"name": "_creater",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"internalType": "string",
-					"name": "_symbol",
-					"type": "string"
-				},
-				{
-					"indexed": false,
-					"internalType": "address",
-					"name": "_link",
-					"type": "address"
-				}
-			],
-			"name": "LinkCreated",
-			"type": "event"
-		},
-		{
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "",
+					"name": "_token",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_min",
 					"type": "uint256"
 				}
 			],
@@ -128,94 +75,18 @@
 		{
 			"inputs": [
 				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				},
-				{
 					"internalType": "string",
-					"name": "",
-					"type": "string"
-				},
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"name": "createLink",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"stateMutability": "payable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "isLink",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"name": "linkActive",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "string",
-					"name": "",
+					"name": "_symbol",
 					"type": "string"
 				},
 				{
 					"internalType": "address",
-					"name": "",
+					"name": "_token",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_min",
 					"type": "uint256"
 				}
 			],
