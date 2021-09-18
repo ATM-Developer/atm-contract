@@ -160,11 +160,7 @@ contract Governor is Initializable,Ownable,IGovernor{
     fallback() payable external{
 
     }
-    
-    function updateGovernanceToken(address _governanceToken) external onlyExecutor{
-        governanceToken = IERC20(_governanceToken);
-    }
-    
+   
     function updateVotingPeriod(uint256 _votingPeriod) external onlyExecutor{
         votingPeriod = _votingPeriod;
     }
