@@ -81,10 +81,8 @@ contract Ownable {
         _owner = newOwner;
     }
 }
-contract  AirdropContract  is Ownable,IAirdropContract {
-    address public admin;
+contract AirdropContract  is Ownable,IAirdropContract {
     bool public pause;
-    uint256 public threshold;
     uint256 public nodeNum;
     bytes32 public DOMAIN_SEPARATOR;
     mapping(address => uint256) nodeAddrIndex;
@@ -113,18 +111,12 @@ contract  AirdropContract  is Ownable,IAirdropContract {
         bytes32 s;
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "IncentiveContracts: caller is not the admin");
-        _;
-    }
-
     modifier onlyGuard() {
         require(!pause, "IncentiveContracts: The system is suspended");
         _;
     }
 
-    constructor(address _admin)  {
-        admin = _admin;
+    constructor()  {
         uint chainId;
         assembly {
             chainId := chainId
@@ -146,20 +138,11 @@ contract  AirdropContract  is Ownable,IAirdropContract {
 
     }
 
-    function  updatePause(bool _sta) external onlyAdmin{
+    function updatePause(bool _sta) external onlyOwner{
         pause = _sta;
     }
 
-    function  updateThreshold(uint256 _threshold) external onlyAdmin{
-        threshold = _threshold;
-    }
-
-    function  updateAdmin(address _admin) external onlyOwner{
-        admin = _admin;
-        emit UpdateAdmin(_admin);
-    }
-
-    function  addNodeAddr(address[] calldata _nodeAddrs) external onlyAdmin{
+    function addNodeAddr(address[] calldata _nodeAddrs) external onlyOwner{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(!nodeAddrSta[_nodeAddr], "This node is already a node address");
@@ -173,7 +156,7 @@ contract  AirdropContract  is Ownable,IAirdropContract {
         }
     }
 
-    function  deleteNodeAddr(address[] calldata _nodeAddrs) external onlyAdmin{
+    function deleteNodeAddr(address[] calldata _nodeAddrs) external onlyOwner{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(nodeAddrSta[_nodeAddr], "This node is not a pledge node");
@@ -213,7 +196,7 @@ contract  AirdropContract  is Ownable,IAirdropContract {
         require(len*2 == rssMetadata.length, "IncentiveContracts: Signature parameter length mismatch");
         bytes32 digest = getDigest(Data( addrs[0], addrs[1], uints[0], uints[1]), _nonce);
         for (uint256 i = 0; i < len; i++) {
-            bool result = _verifySign(
+            bool result = verifySign(
                 digest,
                 Sig(vs[i], rssMetadata[i*2], rssMetadata[i*2+1])
             );
@@ -222,7 +205,7 @@ contract  AirdropContract  is Ownable,IAirdropContract {
             }
         }
         require(
-            counter >= threshold,
+            counter >= 3,
             "The number of signed accounts did not reach the minimum threshold"
         );
         withdrawSums[addrs[0]] +=  uints[0];
@@ -235,7 +218,7 @@ contract  AirdropContract  is Ownable,IAirdropContract {
         emit WithdrawToken(addrs[0], _nonce, uints[0]);
     }
    
-    function _verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
+    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 hash = keccak256(abi.encodePacked(prefix, _digest));
         address _nodeAddr = ecrecover(hash, _sig.v, _sig.r, _sig.s);
