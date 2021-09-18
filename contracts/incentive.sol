@@ -115,13 +115,10 @@ contract Ownable is Initializable{
 contract  Incentive  is Initializable,Ownable,IIncentive {
     IPledgeContract public pledgeContract;
     bytes32 public DOMAIN_SEPARATOR;
-    address public executor;
     bool public pause;
-    uint256 public threshold = 6;
     mapping(address => uint256) public nonce;
     mapping(address => uint256) public withdrawSums;
     mapping(address => mapping(uint256 => uint256)) public withdrawAmounts;
-    event UpdateExecutor(address _executor);
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
 
     struct Data {
@@ -140,23 +137,17 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
         bytes32 s;
     }
 
-    modifier onlyExecutor() {
-        require(msg.sender == executor, "IncentiveContracts: caller is not the executor");
-        _;
-    }
-
     modifier onlyGuard() {
         require(!pause, "IncentiveContracts: The system is suspended");
         _;
     }
 
-    function init(address _executor, address _pledgeContract) external initializer{
+    function init(address _pledgeContract) external initializer{
         __Ownable_init_unchained();
-        __Incentive_init_unchained(_executor,_pledgeContract);
+        __Incentive_init_unchained(_pledgeContract);
     }
     
-    function __Incentive_init_unchained(address _executor, address _pledgeContract) internal initializer{
-        executor = _executor;
+    function __Incentive_init_unchained(address _pledgeContract) internal initializer{
         pledgeContract = IPledgeContract(_pledgeContract);
         uint chainId;
         assembly {
@@ -175,23 +166,10 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
 
     }
 
-    function  updatePause(bool _sta) external onlyExecutor{
+    function  updatePause(bool _sta) external onlyOwner{
         pause = _sta;
     }
 
-    function  updateExecutor(address _executor) external onlyOwner{
-        executor = _executor;
-        emit UpdateExecutor(_executor);
-    }
-
-    function  updateThreshold(uint256 _threshold) external onlyExecutor{
-        threshold = _threshold;
-    }
-
-    function  modifierPledgeContract(address _pledgeContract) public onlyExecutor{
-        pledgeContract = IPledgeContract(_pledgeContract);
-    }
-    
     /**
     * @notice A method to the user withdraw revenue.
     * The extracted proceeds are signed by at least 6 PAGERANK servers, in order to withdraw successfully
@@ -221,13 +199,12 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
             if (result){
                 counter++;
             }
-            if (counter >= threshold){
+            if (counter >= 6){
                 break;
             }
         }
-        
         require(
-            counter >= threshold,
+            counter >= 6,
             "The number of signed accounts did not reach the minimum threshold"
         );
         withdrawSums[addrs[0]] +=  uints[0];
