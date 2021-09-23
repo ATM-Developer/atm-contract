@@ -24,4 +24,8 @@ contract WLUCA is ERC20{
         require(msg.sender == minter, "WLUCA: only minter");
         _mint(to, value);
     }
+    
+    function burn(uint256 amount) external {
+        _burn(amount);
+    }
 }

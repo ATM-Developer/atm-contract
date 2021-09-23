@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -52,7 +52,7 @@
 		"compilationTarget": {
 			"contracts/trader.sol": "IMintableToken"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -65,11 +65,11 @@
 	},
 	"sources": {
 		"contracts/trader.sol": {
-			"keccak256": "0xe4fef4a391c390895826d63f3f464fbedffa1e90758168776de153c51c62fad4",
+			"keccak256": "0x63a57ef17d42a41358fcff68c0225ca5bef09f7645844a887ada2c97af913965",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://93f0edff6f4b4314bd5ebfba33c938e18fa9619d23765320feb23d518388e454",
-				"dweb:/ipfs/QmQ8jQbC1bdK8Xr1ikyxUvjjZofSwj7uu6Xdooo14ytbEZ"
+				"bzz-raw://d1fb196cb8eb18ffaa579e4bc1c6a760c62d44be3cd5fa08122ccf0cba035b57",
+				"dweb:/ipfs/QmV28VUmKRcuiU6U5zzokdyP6dYGamoiLFxMXpxuPUEv3v"
 			]
 		}
 	},

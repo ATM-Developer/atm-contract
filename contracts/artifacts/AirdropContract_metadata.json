@@ -6,13 +6,7 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_admin",
-						"type": "address"
-					}
-				],
+				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -101,19 +95,6 @@
 				"name": "addNodeAddr",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "admin",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -246,19 +227,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "threshold",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -274,38 +242,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_admin",
-						"type": "address"
-					}
-				],
-				"name": "updateAdmin",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "bool",
 						"name": "_sta",
 						"type": "bool"
 					}
 				],
 				"name": "updatePause",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_threshold",
-						"type": "uint256"
-					}
-				],
-				"name": "updateThreshold",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -431,11 +373,11 @@
 	},
 	"sources": {
 		"contracts/airdrop.sol": {
-			"keccak256": "0xa9e204b306c53cb0d761f3451673b20b431208584dd01469886c19f244b7c950",
+			"keccak256": "0xfded513fea87f941a817cec592b075afb9fe00d88886206d7a71865446667c06",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://92c7f830c452120a6484e7831c44da2bd349fdfdf98883f3b1304b387a56caef",
-				"dweb:/ipfs/QmSUBPx2PE6uFKoQ4ZykpYwhox9Tgd2u266HaVjCkm7W1K"
+				"bzz-raw://f1e513d17166b773d2d0103039e4ca58308c750af2747da42318656b64288cb5",
+				"dweb:/ipfs/QmRXj68PMHND1eaQGjwV8owp3fmnFoyWt5HUiQYyBmoFCo"
 			]
 		}
 	},

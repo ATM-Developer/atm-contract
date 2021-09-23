@@ -224,7 +224,7 @@ contract Factory is Initialize, CloneFactory, Ifactory{
     }
     
     function createLink(address _userB, string memory _symbol, uint256 _totalPlan, uint256 _percentA, uint256 _lockDays) override external payable returns(address){ 
-        require(Ifile(file).active());
+        require(Ifile(file).active(),"Factory: emergency shutdown");
         fileArgs memory f;
         {
           (address luca, address weth, address trader, address linkTemp, uint256 minLockDay, uint256 maxLockDay) = Ifile(file).factoryLoad();

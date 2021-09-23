@@ -47,55 +47,253 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"initialize(address,address,address,address,string,uint256,uint256,uint256)": "7c4b6a1b",
-			"setEnv(address,address,address,address,address)": "f1fdd510"
+			"agree()": "8fae60a5",
+			"close()": "43d726d6",
+			"depledge()": "29ac54a7",
+			"getCloseInfo()": "2c6372c3",
+			"getLinkInfo()": "0d657191",
+			"getPledgedInfo()": "b578803f",
+			"getRecevabesInfo()": "8c5782ca",
+			"getStatus()": "4e69d560",
+			"isExpire()": "e25b3c95",
+			"pledge(address)": "f216ed8a",
+			"reject()": "4dc415de",
+			"rejectClose()": "0e080192",
+			"repealCloseReq()": "be7420b1",
+			"setUserB(address)": "566fa0cb",
+			"wtihdrawSelf()": "c87e5117"
 		}
 	},
 	"abi": [
 		{
-			"inputs": [
+			"inputs": [],
+			"name": "agree",
+			"outputs": [],
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "close",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "depledge",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getCloseInfo",
+			"outputs": [
 				{
 					"internalType": "address",
-					"name": "file",
+					"name": "closer_",
 					"type": "address"
 				},
 				{
-					"internalType": "address",
-					"name": "_userA",
-					"type": "address"
+					"internalType": "uint256",
+					"name": "startTime_",
+					"type": "uint256"
 				},
 				{
-					"internalType": "address",
-					"name": "_userB",
-					"type": "address"
+					"internalType": "uint256",
+					"name": "expiredTime_",
+					"type": "uint256"
 				},
 				{
-					"internalType": "address",
-					"name": "_token",
-					"type": "address"
+					"internalType": "uint256",
+					"name": "closeTime_",
+					"type": "uint256"
 				},
+				{
+					"internalType": "bool",
+					"name": "closeReqA_",
+					"type": "bool"
+				},
+				{
+					"internalType": "bool",
+					"name": "closeReqB_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getLinkInfo",
+			"outputs": [
 				{
 					"internalType": "string",
-					"name": "_symbol",
+					"name": "symbol_",
 					"type": "string"
 				},
 				{
+					"internalType": "address",
+					"name": "token_",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "userA_",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "userB_",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
-					"name": "_amount",
+					"name": "amountA_",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_percentA",
+					"name": "amountB_",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "_lockDays",
+					"name": "percentA_",
 					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "totalPlan_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "lockDays_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "startTime_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "status_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isAward_",
+					"type": "bool"
 				}
 			],
-			"name": "initialize",
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getPledgedInfo",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "pledgedA_",
+					"type": "bool"
+				},
+				{
+					"internalType": "bool",
+					"name": "pledgedB_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getRecevabesInfo",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "receivableA_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isExitA_",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "receivableB_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isExitB_",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getStatus",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "isExpire",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "node",
+					"type": "address"
+				}
+			],
+			"name": "pledge",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "reject",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "rejectClose",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "repealCloseReq",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -104,31 +302,18 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_luca",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_wluca",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_trader",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_weth",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "_pledger",
+					"name": "_userB",
 					"type": "address"
 				}
 			],
-			"name": "setEnv",
+			"name": "setUserB",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "wtihdrawSelf",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

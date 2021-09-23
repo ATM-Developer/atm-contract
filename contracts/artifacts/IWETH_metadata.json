@@ -81,19 +81,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "symbol",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
 					{
@@ -185,7 +172,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/factory.sol": "IWETH"
+			"contracts/link.sol": "IWETH"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -199,12 +186,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/factory.sol": {
-			"keccak256": "0x8ba0ae95cd119696ab47bee7f17f2c09505d9aefeb9a38ee28b2133f7ebf9d08",
+		"contracts/link.sol": {
+			"keccak256": "0x69a4ecd7fd4acead560f8fb682208f38333bbef53d50c136a1d76059499da9f3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://77528bc616f51c65f77d7a992876694aef233fcba46d0572f3d4a3bf83f5b9b2",
-				"dweb:/ipfs/QmdUJVC8g4197mLmf1M4V13hUV7e1QyZQLqgzGwAup8J7f"
+				"bzz-raw://87bc4b2a686180ba5469ec99329cb088188d0d664b3981027a41cbd1000f528c",
+				"dweb:/ipfs/QmWnMyk2H8RJeoEXoFDaCPtFNAUtxspHShCgVr7EybS647"
 			]
 		}
 	},

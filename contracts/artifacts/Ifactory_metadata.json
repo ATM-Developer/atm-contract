@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -9,41 +9,19 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_token",
+						"name": "_link",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_min",
-						"type": "uint256"
 					}
 				],
-				"name": "addToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
+				"name": "isLink",
+				"outputs": [
 					{
-						"internalType": "string",
-						"name": "_symbol",
-						"type": "string"
-					},
-					{
-						"internalType": "address",
-						"name": "_token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_min",
-						"type": "uint256"
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
-				"name": "updateTokenConfig",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			}
 		],
@@ -60,9 +38,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/file.sol": "Ifactory"
+			"contracts/trader.sol": "Ifactory"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -74,12 +52,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/file.sol": {
-			"keccak256": "0x987a4deab02e8d49ee1619cf37031e243f7a6026467b63a5d01056aa108361e0",
+		"contracts/trader.sol": {
+			"keccak256": "0x63a57ef17d42a41358fcff68c0225ca5bef09f7645844a887ada2c97af913965",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f2fc834595927089a1e00dfcee2075136156bd1915647ae6f2b52a7d571d0ec2",
-				"dweb:/ipfs/QmehNowm599YHRLpPvQ1qMRGXyFf29yWCDsJurqvRRg1zt"
+				"bzz-raw://d1fb196cb8eb18ffaa579e4bc1c6a760c62d44be3cd5fa08122ccf0cba035b57",
+				"dweb:/ipfs/QmV28VUmKRcuiU6U5zzokdyP6dYGamoiLFxMXpxuPUEv3v"
 			]
 		}
 	},

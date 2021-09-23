@@ -123,7 +123,7 @@ interface Ifactory {
 
 interface Ifile {
     function luca() external view returns(address);
-    function pledge() external view returns(address);
+    function pledger() external view returns(address);
     function collector() external view returns(address);
     function linkLoad() external view returns (address, address, address, address, address);//luca, wluca, weth, trader, pledger
 }
@@ -264,7 +264,7 @@ contract Link is LinkInfo, Initialized, Ilink {
     
     function initialize( address _file, address _userA, address _userB, address _token, string memory _symbol, uint256 _amount, uint256 _percentA, uint256 _lockDays) external noInit{
         (factory, file, userA, userB, token, symbol) = (msg.sender, _file, _userA, _userB, _token, _symbol);
-        (totalPlan, percentA, amountA, amountB, lockDays) = (_amount, _percentA, _amount.mul(_percentA).div(100), _amount.sub(amountA), _lockDays);
+        (totalPlan, percentA, amountA, amountB, lockDays) = (_amount, _percentA, _amount.mul(_percentA).div(100), _amount.mul(100 - _percentA).div(100), _lockDays);
         
         if(_percentA == 100 && userB != address(0)){
             startTime = block.timestamp;
@@ -335,7 +335,7 @@ contract Link is LinkInfo, Initialized, Ilink {
         
         require(amount > 0, "Link: 0 amount");
         _pledge();
-        Ipledge(Ifile(file).pledge()).stakeWLuca(node, amount, msg.sender);
+        Ipledge(Ifile(file).pledger()).stakeWLuca(node, amount, msg.sender);
     }
     
     function depledge() override external onlyLuca onlyPLEDGED onlyLinkUser{
@@ -349,7 +349,7 @@ contract Link is LinkInfo, Initialized, Ilink {
         
         _linkActive(MethodId.depledge);
          
-        Ipledge(Ifile(file).pledge()).cancleStakeWLuca(msg.sender);
+        Ipledge(Ifile(file).pledger()).cancleStakeWLuca(msg.sender);
        
         
         //other exited
@@ -501,19 +501,21 @@ contract Link is LinkInfo, Initialized, Ilink {
             _withdraw(Ifile(file).collector(), fee);
         }
         
-         isExitA = true;
-         isExitB = true;
-         _withdraw(userA, receivableA);
-         if (receivableB > 0) _withdraw(userB, receivableB);
+        isExitA = true;
+        isExitB = true;
+        _withdraw(userA, receivableA);
+        if (receivableB > 0) _withdraw(userB, receivableB);
     }
-
+    
+  
     function _withdraw(address to, uint amount) internal{
-        (address luca,address wluca,address weth, address trader,) = Ifile(file).linkLoad();
+        (address luca, address wluca, address weth, address trader,) = Ifile(file).linkLoad();
         if (token == ETH){
              IWETH(weth).withdraw(amount);
-             payable (to).transfer(amount);
+             payable(to).transfer(amount);
         }else if(token == luca){
             IERC20(wluca).approve(trader, amount);
+           if (true) return;
             Itrader(trader).withdrawFor(to, amount);
         }else{
             IERC20(token).transfer(to, amount);

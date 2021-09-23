@@ -6,25 +6,43 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"name": "balance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "luca",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "wluca",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "token",
+						"name": "_token",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "from",
+						"name": "_from",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "to",
+						"name": "_to",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "_amount",
 						"type": "uint256"
 					}
 				],
@@ -43,21 +61,39 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "user",
+						"name": "_to",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "_amount",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "lockDays",
+						"name": "_lockDay",
 						"type": "uint256"
 					}
 				],
 				"name": "suck",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawFor",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -76,7 +112,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/factory.sol": "Itrader"
+			"contracts/trader.sol": "Itrader"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -90,12 +126,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/factory.sol": {
-			"keccak256": "0x8ba0ae95cd119696ab47bee7f17f2c09505d9aefeb9a38ee28b2133f7ebf9d08",
+		"contracts/trader.sol": {
+			"keccak256": "0x63a57ef17d42a41358fcff68c0225ca5bef09f7645844a887ada2c97af913965",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://77528bc616f51c65f77d7a992876694aef233fcba46d0572f3d4a3bf83f5b9b2",
-				"dweb:/ipfs/QmdUJVC8g4197mLmf1M4V13hUV7e1QyZQLqgzGwAup8J7f"
+				"bzz-raw://d1fb196cb8eb18ffaa579e4bc1c6a760c62d44be3cd5fa08122ccf0cba035b57",
+				"dweb:/ipfs/QmV28VUmKRcuiU6U5zzokdyP6dYGamoiLFxMXpxuPUEv3v"
 			]
 		}
 	},

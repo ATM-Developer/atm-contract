@@ -165,6 +165,7 @@ contract Trader is Initialize, Itrader{
         return IERC20(_token).transferFrom(_from, _to, _amount);
     }
     
+   
     //use for link
     function withdrawFor(address _to, uint256 _amount) override external verifyCaller {
         (address luca, address wluca) = (Ifile(file).luca(), Ifile(file).wluca());

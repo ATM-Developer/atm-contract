@@ -7,12 +7,12 @@
 		"abi": [
 			{
 				"inputs": [],
-				"name": "active",
+				"name": "agt",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "address",
 						"name": "",
-						"type": "bool"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -20,37 +20,38 @@
 			},
 			{
 				"inputs": [],
-				"name": "factoryLoad",
+				"name": "factory",
 				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					},
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "luca",
+				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					},
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wluca",
+				"outputs": [
 					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -70,7 +71,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/factory.sol": "Ifile"
+			"contracts/trader.sol": "Ifile"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -84,12 +85,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/factory.sol": {
-			"keccak256": "0x8ba0ae95cd119696ab47bee7f17f2c09505d9aefeb9a38ee28b2133f7ebf9d08",
+		"contracts/trader.sol": {
+			"keccak256": "0x63a57ef17d42a41358fcff68c0225ca5bef09f7645844a887ada2c97af913965",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://77528bc616f51c65f77d7a992876694aef233fcba46d0572f3d4a3bf83f5b9b2",
-				"dweb:/ipfs/QmdUJVC8g4197mLmf1M4V13hUV7e1QyZQLqgzGwAup8J7f"
+				"bzz-raw://d1fb196cb8eb18ffaa579e4bc1c6a760c62d44be3cd5fa08122ccf0cba035b57",
+				"dweb:/ipfs/QmV28VUmKRcuiU6U5zzokdyP6dYGamoiLFxMXpxuPUEv3v"
 			]
 		}
 	},

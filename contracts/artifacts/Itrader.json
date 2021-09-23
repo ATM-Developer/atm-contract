@@ -47,31 +47,51 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"balance()": "b69ef8a8",
 			"payment(address,address,address,uint256)": "8f1b407a",
-			"suck(address,uint256,uint256)": "d618d8b7"
+			"suck(address,uint256,uint256)": "d618d8b7",
+			"withdrawFor(address,uint256)": "db518db2"
 		}
 	},
 	"abi": [
 		{
+			"inputs": [],
+			"name": "balance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "luca",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "wluca",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "token",
+					"name": "_token",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "from",
+					"name": "_from",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "to",
+					"name": "_to",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				}
 			],
@@ -90,21 +110,39 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "user",
+					"name": "_to",
 					"type": "address"
 				},
 				{
 					"internalType": "uint256",
-					"name": "amount",
+					"name": "_amount",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "lockDays",
+					"name": "_lockDay",
 					"type": "uint256"
 				}
 			],
 			"name": "suck",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "withdrawFor",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

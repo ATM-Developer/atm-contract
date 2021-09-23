@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/token/erc20.sol": "SafeMath"
+			"contracts/token/luca.sol": "SafeMath"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/token/erc20.sol": {
-			"keccak256": "0x3ce426816263cd057c292bdea0ab52e864ba71cf900256cf810cdceceee9018c",
+		"contracts/token/luca.sol": {
+			"keccak256": "0x02b9e03bac057f79c795149a10e99e5b322ee0673063b6605c27c6ec989017f8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://73197d353567e085171420417695bf0b3cb3e51db7da14e9c01071b9e12b9f9b",
-				"dweb:/ipfs/QmcK4b8emBQdmZPbYQTZ6GBjKQnFuDoFgaqAcwjCwT2Uec"
+				"bzz-raw://f23b93efe0317bbcef03775c3393879336678287219729b56fc915b0f41516a5",
+				"dweb:/ipfs/QmSq9qSrxDxqBGW3jg4FSghMgPJxJUCJN47cLKU52Wom2a"
 			]
 		}
 	},

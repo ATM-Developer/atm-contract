@@ -31,7 +31,6 @@
 	},
 	"data": {
 		"bytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"linkReferences": {},
 			"object": "",
@@ -39,7 +38,6 @@
 			"sourceMap": ""
 		},
 		"deployedBytecode": {
-			"functionDebugData": {},
 			"generatedSources": [],
 			"immutableReferences": {},
 			"linkReferences": {},
@@ -49,8 +47,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"addToken(address,uint256)": "af81c5b9",
-			"updateTokenConfig(string,address,uint256)": "e4f13f57"
+			"isLink(address)": "372bd79e"
 		}
 	},
 	"abi": [
@@ -58,41 +55,19 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_token",
+					"name": "_link",
 					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_min",
-					"type": "uint256"
 				}
 			],
-			"name": "addToken",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
+			"name": "isLink",
+			"outputs": [
 				{
-					"internalType": "string",
-					"name": "_symbol",
-					"type": "string"
-				},
-				{
-					"internalType": "address",
-					"name": "_token",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_min",
-					"type": "uint256"
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
 				}
 			],
-			"name": "updateTokenConfig",
-			"outputs": [],
-			"stateMutability": "nonpayable",
+			"stateMutability": "view",
 			"type": "function"
 		}
 	]

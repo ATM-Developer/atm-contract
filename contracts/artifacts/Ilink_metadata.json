@@ -6,49 +6,234 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "agree",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "close",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "depledge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCloseInfo",
+				"outputs": [
 					{
 						"internalType": "address",
-						"name": "file",
+						"name": "closer_",
 						"type": "address"
 					},
 					{
-						"internalType": "address",
-						"name": "_userA",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "startTime_",
+						"type": "uint256"
 					},
 					{
-						"internalType": "address",
-						"name": "_userB",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "expiredTime_",
+						"type": "uint256"
 					},
 					{
-						"internalType": "address",
-						"name": "_token",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "closeTime_",
+						"type": "uint256"
 					},
+					{
+						"internalType": "bool",
+						"name": "closeReqA_",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "closeReqB_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getLinkInfo",
+				"outputs": [
 					{
 						"internalType": "string",
-						"name": "_symbol",
+						"name": "symbol_",
 						"type": "string"
 					},
 					{
+						"internalType": "address",
+						"name": "token_",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "userA_",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "userB_",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "amountA_",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_percentA",
+						"name": "amountB_",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_lockDays",
+						"name": "percentA_",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalPlan_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockDays_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startTime_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "status_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAward_",
+						"type": "bool"
 					}
 				],
-				"name": "initialize",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getPledgedInfo",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "pledgedA_",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "pledgedB_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getRecevabesInfo",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "receivableA_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isExitA_",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "receivableB_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isExitB_",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getStatus",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isExpire",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "node",
+						"type": "address"
+					}
+				],
+				"name": "pledge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "reject",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rejectClose",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "repealCloseReq",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -57,31 +242,18 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_luca",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_wluca",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_trader",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_weth",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_pledger",
+						"name": "_userB",
 						"type": "address"
 					}
 				],
-				"name": "setEnv",
+				"name": "setUserB",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "wtihdrawSelf",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -100,7 +272,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/factory.sol": "Ilink"
+			"contracts/link.sol": "Ilink"
 		},
 		"evmVersion": "istanbul",
 		"libraries": {},
@@ -114,12 +286,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/factory.sol": {
-			"keccak256": "0x8ba0ae95cd119696ab47bee7f17f2c09505d9aefeb9a38ee28b2133f7ebf9d08",
+		"contracts/link.sol": {
+			"keccak256": "0x69a4ecd7fd4acead560f8fb682208f38333bbef53d50c136a1d76059499da9f3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://77528bc616f51c65f77d7a992876694aef233fcba46d0572f3d4a3bf83f5b9b2",
-				"dweb:/ipfs/QmdUJVC8g4197mLmf1M4V13hUV7e1QyZQLqgzGwAup8J7f"
+				"bzz-raw://87bc4b2a686180ba5469ec99329cb088188d0d664b3981027a41cbd1000f528c",
+				"dweb:/ipfs/QmWnMyk2H8RJeoEXoFDaCPtFNAUtxspHShCgVr7EybS647"
 			]
 		}
 	},

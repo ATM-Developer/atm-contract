@@ -47,19 +47,21 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"active()": "02fb0c5e",
-			"factoryLoad()": "579c576a"
+			"agt()": "b31c440e",
+			"factory()": "c45a0155",
+			"luca()": "4411b761",
+			"wluca()": "57ff71e6"
 		}
 	},
 	"abi": [
 		{
 			"inputs": [],
-			"name": "active",
+			"name": "agt",
 			"outputs": [
 				{
-					"internalType": "bool",
+					"internalType": "address",
 					"name": "",
-					"type": "bool"
+					"type": "address"
 				}
 			],
 			"stateMutability": "view",
@@ -67,37 +69,38 @@
 		},
 		{
 			"inputs": [],
-			"name": "factoryLoad",
+			"name": "factory",
 			"outputs": [
 				{
 					"internalType": "address",
 					"name": "",
 					"type": "address"
-				},
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "luca",
+			"outputs": [
 				{
 					"internalType": "address",
 					"name": "",
 					"type": "address"
-				},
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "wluca",
+			"outputs": [
 				{
 					"internalType": "address",
 					"name": "",
 					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
 				}
 			],
 			"stateMutability": "view",

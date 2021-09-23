@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.1+commit.df193b15"
 	},
 	"language": "Solidity",
 	"output": {
@@ -95,6 +95,11 @@
 						"type": "address"
 					},
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -106,6 +111,24 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "min",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "max",
+						"type": "uint256"
+					}
+				],
+				"name": "fileLockDay",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -178,12 +201,17 @@
 					},
 					{
 						"internalType": "address",
+						"name": "_linkTemp",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "_pledger",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "_linkTemp",
+						"name": "_collector",
 						"type": "address"
 					}
 				],
@@ -421,7 +449,7 @@
 		"compilationTarget": {
 			"contracts/file.sol": "File"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -434,11 +462,11 @@
 	},
 	"sources": {
 		"contracts/file.sol": {
-			"keccak256": "0x987a4deab02e8d49ee1619cf37031e243f7a6026467b63a5d01056aa108361e0",
+			"keccak256": "0x14864c63b52412eaf97dded4716e143c1919995070194c16dfe4c121547679b7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f2fc834595927089a1e00dfcee2075136156bd1915647ae6f2b52a7d571d0ec2",
-				"dweb:/ipfs/QmehNowm599YHRLpPvQ1qMRGXyFf29yWCDsJurqvRRg1zt"
+				"bzz-raw://51b804a6cc5528261a0c15ee859fc669c1e5fa4c8a9003091516f101b7b61ff8",
+				"dweb:/ipfs/QmXFsbTsbW2cbBmnW6m7LTnDBk7BHQgpB7XdksYhKAbDwg"
 			]
 		}
 	},

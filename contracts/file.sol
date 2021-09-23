@@ -51,16 +51,11 @@ contract File is Owner, Initialize {
     //link steings 
     address public collector;
     
-    function initialize(address _luca, address _wluca,  address _agt, address _weth, address _factory, address _trader, address _pledger, address _linkTemp) external noInit {
-        owner = msg.sender;
-        luca = _luca;
-        wluca = _wluca;
-        agt = _agt;
-        weth = _weth;
-        factory = _factory;
-        trader = _trader;
-        pledger = _pledger;
-        linkTemp = _linkTemp;
+    function initialize(address _luca, address _wluca,  address _agt, address _weth, address _factory, address _trader, address _linkTemp, address _pledger, address _collector) external noInit {
+        (luca, wluca, agt, weth) = (_luca, _wluca, _agt, _weth);
+        (factory, trader, linkTemp) = (_factory, _trader, _linkTemp);
+        (pledger, collector) = (_pledger, _collector);
+        (owner, active, minLockDay, maxLockDay) = (msg.sender, true, 1, 1825);
     }
     
     //token seting
@@ -81,13 +76,18 @@ contract File is Owner, Initialize {
         else revert("not this module");
     }
     
+    function fileLockDay(uint256 min, uint256 max) external onlyOwner{
+        require(max > min);
+        minLockDay = min;
+        maxLockDay = max;
+    }
 
     function linkLoad() external view returns (address, address, address, address, address){
         return (luca, wluca, weth, trader, pledger);
     }
     
-    function factoryLoad() external view returns (address, address, address, uint256, uint256){
-        return (luca, weth, trader, minLockDay, maxLockDay);
+    function factoryLoad() external view returns (address, address, address, address, uint256, uint256){
+        return (luca, weth, trader, linkTemp, minLockDay, maxLockDay);
     }
     
     function setCollector(address addr) external onlyOwner {
