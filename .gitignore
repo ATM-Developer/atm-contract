@@ -4,4 +4,5 @@ target/
 .externalToolBuilders
 .settings
 *.iml
+*.json
 
