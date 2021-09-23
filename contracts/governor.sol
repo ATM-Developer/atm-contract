@@ -138,7 +138,7 @@ contract Governor is Initializable,Ownable,IGovernor{
     }
 
     modifier onlyExecutor() {
-        require(msg.sender == executor ||  true, "The caller is not the executor");
+        require(msg.sender == executor, "The caller is not the executor");
         _;
     }
 
