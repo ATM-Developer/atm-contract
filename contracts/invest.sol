@@ -134,7 +134,7 @@ contract Ownable is Initializable{
     }
 }
 
-contract  Invest is Initializable,Ownable{
+contract Invest is Initializable,Ownable{
     using SafeMath for uint256;
     IERC20 public UsdcToken;
     uint256 public launchAmount = 5000000 * 10**18;
@@ -156,18 +156,38 @@ contract  Invest is Initializable,Ownable{
         uint256 mark; 
     }
     
-    function init(address _lucaToken,address _usdc,address _uniswapFactory,address _uniswapRouter) external initializer{
+    function init(
+        address _lucaToken,
+        address _usdc,
+        address _uniswapFactory,
+        address _uniswapRouter,
+        uint256 _lockTime,
+        uint256 _investTime
+    ) 
+        external 
+        initializer
+    {
         __Ownable_init_unchained();
-        __Invest_init_unchained(_lucaToken,_usdc,_uniswapFactory,_uniswapRouter);
+        __Invest_init_unchained(_lucaToken,_usdc,_uniswapFactory,_uniswapRouter,_lockTime,_investTime);
     }
     
-    function __Invest_init_unchained(address _lucaToken,address _usdc,address _uniswapFactory,address _uniswapRouter) internal initializer{
+    function __Invest_init_unchained(
+        address _lucaToken,
+        address _usdc,
+        address _uniswapFactory,
+        address _uniswapRouter,
+        uint256 _lockTime,
+        uint256 _investTime
+    ) 
+        internal 
+        initializer
+    {
         lucaToken = IERC20(_lucaToken);
         UsdcToken = IERC20(_usdc);
         uniswapFactory = UniswapV2Factory(_uniswapFactory);
         uniswapRouter = UniswapRouterV2(_uniswapRouter);
-        lockTime = 20 days;
-        investTime = 730 days;
+        lockTime = _lockTime;
+        investTime = _investTime;
         launchTime = block.timestamp;
     }
     
@@ -179,23 +199,7 @@ contract  Invest is Initializable,Ownable{
 
     }
 
-    function  updateLucaToken(address _lucaToken) external onlyOwner{
-        lucaToken = IERC20(_lucaToken);
-    }
-    
-    function  updateInvestTime(uint256 _investTime) external onlyOwner{
-        investTime = _investTime;
-    }
-    
-    function  updateLaunchAmount(uint256 _launchAmount) external onlyOwner{
-        launchAmount = _launchAmount;
-    }
-    
-    function  updateLockTime(uint256 _lockTime) external onlyOwner{
-        lockTime = _lockTime;
-    }
-    
-    function  investLuca(uint256 _amount) external{
+    function investLuca(uint256 _amount) external{
         uint256 endTime = launchTime + investTime;
         require(block.timestamp < endTime, "The time to invest is over");
         address _sender = msg.sender;
@@ -205,7 +209,7 @@ contract  Invest is Initializable,Ownable{
         emit InvestLuca(_sender, _amount, block.timestamp);
     }
     
-   function  withdrawLiquidity() external returns(bool){
+   function withdrawLiquidity() external returns(bool){
         address _sender = msg.sender;
         (uint256 _liquidityAmount,,) = calcLiquidity(_sender);
         require(_liquidityAmount > 0, "Users can withdraw liquidity to zero");
@@ -217,8 +221,7 @@ contract  Invest is Initializable,Ownable{
         return true;
     }
     
-    
-    function  forwardLiquidity() external {
+    function forwardLiquidity() external {
         uint256 endTime = launchTime + investTime;
         require(block.timestamp > endTime, "Investment time is not over");
         uint256 _amount = investUsdcSum;
@@ -229,20 +232,20 @@ contract  Invest is Initializable,Ownable{
             address(lucaToken),
             _amount,
             launchAmount,
-            0,
-            0,
+            1,
+            1,
             address(this),
             block.timestamp.add(2 hours)
         );
         lucaToUsdcPair = IERC20(uniswapFactory.getPair(address(UsdcToken),address(lucaToken)));
     }
     
-    function  queryInvestMsg(address _sender) external view returns(uint256,uint256,uint256){
+    function queryInvestMsg(address _sender) external view returns(uint256,uint256,uint256){
         (uint256 _LiquidityAmount,uint256 _mark,uint256 _LiquiditySum) = calcLiquidity(_sender);
         return (_LiquidityAmount,_mark,_LiquiditySum);
     }
     
-    function  calcLiquidity(address _sender) internal view returns(uint256, uint256, uint256){
+    function calcLiquidity(address _sender) internal view returns(uint256, uint256, uint256){
         InvestMsg memory investMsg = userInvestMsg[_sender];
         uint256 _LiquiditySum = investMsg.amount.mul(liquiditySum).div(investUsdcSum);
         uint256 _startTime = launchTime + investTime;

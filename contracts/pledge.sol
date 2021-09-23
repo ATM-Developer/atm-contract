@@ -10,16 +10,14 @@ interface IERC20 {
 }
 
 interface IPledge {
-    function  modifierLUCAToken(address _lucaToken) external;
-    function  addNodeAddr(address[] calldata _nodeAddrs) external;
-    function  deleteNodeAddr(address[] calldata _nodeAddrs) external;
-    function  modifierLucaFactory(address _lucaFactory) external;
-    function  updateExecutor(address _admin) external;
-    function  stakeLuca(address _nodeAddr, uint256 _amount) external;
-    function  stakeWLuca(address _nodeAddr, uint256 _amount, address _sender) external returns(bool);
-    function  cancleStakeLuca(uint256[] calldata _indexs) external;
-    function  cancleStakeWLuca(address _sender) external returns(bool);
-    function  nodeRank(uint256 start, uint256 end) external;
+    function addNodeAddr(address[] calldata _nodeAddrs) external;
+    function deleteNodeAddr(address[] calldata _nodeAddrs) external;
+    function updateExecutor(address _admin) external;
+    function stakeLuca(address _nodeAddr, uint256 _amount) external;
+    function stakeWLuca(address _nodeAddr, uint256 _amount, address _sender) external returns(bool);
+    function cancleStakeLuca(uint256[] calldata _indexs) external;
+    function cancleStakeWLuca(address _sender) external returns(bool);
+    function nodeRank(uint256 start, uint256 end) external;
 
     event StakeLuca(uint256 indexed _stakeNum, address _userAddr, address _nodeAddr, uint256 _amount, uint256 _time);
     event EndStakeLuca(uint256 indexed _stakeNum, address indexed _userAddr, address _nodeAddr, uint256 _time);
@@ -210,16 +208,12 @@ contract  Pledge is Initializable,Ownable,IPledge{
     fallback() payable external{
 
     }
-    
-    function  modifierLUCAToken(address _lucaToken) external override onlyExecutor{
-        lucaToken = IERC20(_lucaToken);
-    }
-    
+  
     /**
     * @notice A method to add a list of trusted nodes
     * @param _nodeAddrs a list of trusted nodes
     */
-    function  addNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
+    function addNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(!nodeAddrSta[_nodeAddr], "This node is already a pledged node");
@@ -239,7 +233,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
     * @notice A method to cancel the list of untrusted nodes
     * @param _nodeAddrs the list of untrusted nodes
     */
-    function  deleteNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
+    function deleteNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(nodeAddrSta[_nodeAddr], "This node is not a pledge node");
@@ -258,12 +252,8 @@ contract  Pledge is Initializable,Ownable,IPledge{
             emit DeleteNodeAddr(_nodeAddrs[i]);
         }
     }
-    
-    function  modifierLucaFactory(address _lucaFactory) override external onlyExecutor{
-        lucaFactory = ILucaFactory(_lucaFactory);
-    }
 
-    function  updateExecutor(address _executor) override external onlyOwner{
+    function updateExecutor(address _executor) override external onlyOwner{
         executor = _executor;
         emit UpdateExecutor(_executor);
     }
@@ -275,7 +265,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
     * @param _nodeAddr trusted node
     * @param _amount the pledge number
     */
-    function  stakeLuca(address _nodeAddr, uint256 _amount) override external onlyNodeAddr(_nodeAddr){
+    function stakeLuca(address _nodeAddr, uint256 _amount) override external onlyNodeAddr(_nodeAddr){
         address _sender = msg.sender;
         require(lucaToken.transferFrom(_sender,address(this),_amount), "Token transfer failed");
         uint256 fragment = lucaToken.lucaToFragment(_amount);
@@ -291,7 +281,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
     * @param _amount the pledge number
     * @param _sender the pledge user
     */
-    function  stakeWLuca(
+    function stakeWLuca(
         address _nodeAddr, 
         uint256 _amount, 
         address _sender
@@ -309,7 +299,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
     * @notice A method to the user cancels the pledges
     * @param _indexs the user pledges a collection of ids
     */
-    function  cancleStakeLuca(uint256[] calldata _indexs) override external {
+    function cancleStakeLuca(uint256[] calldata _indexs) override external {
         address _sender = msg.sender;
         uint256 _amount;
         for (uint256 i = 0; i < _indexs.length; i++) {
@@ -335,7 +325,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
     * @notice A method to the user cancels the pledge of the link contract
     * @param _user user address
     */
-    function  cancleStakeWLuca(address _user) override external  onlyLinkContract(msg.sender) returns(bool){
+    function cancleStakeWLuca(address _user) override external  onlyLinkContract(msg.sender) returns(bool){
         address _sender = msg.sender;
         uint256 _index = userLinkIndex[_sender][_user];
         require(_index > 0, "The corresponding pledge information does not exist");
@@ -350,7 +340,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
         return true;
     }
         
-    function  queryStakeLuca(
+    function queryStakeLuca(
         address _userAddr,
         uint256 _page,
         uint256 _limit
@@ -397,7 +387,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
         }
     }
 
-    function  queryStakeWLuca(
+    function queryStakeWLuca(
         address _userAddr,
         uint256 _page,
         uint256 _limit
@@ -467,16 +457,16 @@ contract  Pledge is Initializable,Ownable,IPledge{
         return (_addrArray, _stakeAmount);
     }
     
-    function  queryNodeIndex(address _nodeAddr) external view returns(uint256){
+    function queryNodeIndex(address _nodeAddr) external view returns(uint256){
         return nodeAddrIndex[_nodeAddr];
     }
 
-    function  queryNodeStakeAmount(address _nodeAddr) external view returns(uint256){
+    function queryNodeStakeAmount(address _nodeAddr) external view returns(uint256){
         uint256 lucaStakeAmount = lucaToken.fragmentToLuca(nodeFragmentAmount[_nodeAddr]).add(nodeWLucaAmount[_nodeAddr]);
         return lucaStakeAmount;
     }
 
-    function  nodeRank(uint256 start, uint256 end) override public {
+    function nodeRank(uint256 start, uint256 end) override public {
         uint256 _exchangeRate= lucaToken.fragmentToLuca(10**30);
         exchangeRate = _exchangeRate;
         uint256 _nodeNum = nodeNum;
@@ -499,7 +489,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
         }
     }
 
-    function  _stake(address _nodeAddr, uint256 _amount, address _sender, address _linkAddr, bool _sta) internal  returns(bool){
+    function _stake(address _nodeAddr, uint256 _amount, address _sender, address _linkAddr, bool _sta) internal  returns(bool){
         uint256 _nodeNum = nodeNum;
         uint256 _nodeAddrIndex = nodeAddrIndex[_nodeAddr];
         if (_nodeAddrIndex == 0){
@@ -529,7 +519,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
         return true;
     }
 
-    function  addNodeStake(uint256 _nodeAddrIndex) internal {
+    function addNodeStake(uint256 _nodeAddrIndex) internal {
         uint256 _exchangeRate = exchangeRate;
         for (uint256 i = _nodeAddrIndex; i > 1; i--) {
             address _nodeAddr = nodeIndexAddr[i];
@@ -548,7 +538,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
         }
     }
 
-    function  cancelNodeStake(address _addr) internal {
+    function cancelNodeStake(address _addr) internal {
         uint256 _nodeNum = nodeNum;
         uint256 _exchangeRate = exchangeRate;
         uint256 _nodeAddrIndex = nodeAddrIndex[_addr];
