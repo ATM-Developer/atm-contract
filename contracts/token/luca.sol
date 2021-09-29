@@ -150,11 +150,6 @@ contract Storage is Initialized{
         require(msg.sender == minter, "LUCA: only minter");
         _;
     }
-    
-    modifier onlyReceiver() {
-        require(msg.sender == receiver, "LUCA: only receiver");
-        _;
-    }
 }
 
 interface ILuca is IERC20{
@@ -217,23 +212,26 @@ contract Token is Storage, IERC20{
     
     //internal 
     function _mint(address to, uint256 amount) internal {
-            _totalSupply = _totalSupply.add(amount);
-            uint256 scaledAmount = _lucaToFragment(amount);
-            fragment = fragment.add(scaledAmount);
-            require(scalingFactor <= _maxScalingFactor(), "LUCA: max scaling factor too low");
-            fragmentBalances[to] = fragmentBalances[to].add(scaledAmount);
-            emit Transfer(address(0), to, amount);
+        require(to != address(0), "to addres cannot be 0");
+        _totalSupply = _totalSupply.add(amount);
+        uint256 scaledAmount = _lucaToFragment(amount);
+        fragment = fragment.add(scaledAmount);
+        require(scalingFactor <= _maxScalingFactor(), "LUCA: max scaling factor too low");
+        fragmentBalances[to] = fragmentBalances[to].add(scaledAmount);
+        emit Transfer(address(0), to, amount);
     }
 
     function _burn(address user, uint256 amount) internal {
-            _totalSupply = _totalSupply.sub(amount);
-            uint256 scaledAmount = _lucaToFragment(amount);
-            fragment = fragment.sub(scaledAmount);
-            fragmentBalances[user] = fragmentBalances[user].sub(scaledAmount);
-            emit Transfer(user ,address(0), amount);
+        require(user != address(0), "user address cannot be 0");
+        _totalSupply = _totalSupply.sub(amount);
+        uint256 scaledAmount = _lucaToFragment(amount);
+        fragment = fragment.sub(scaledAmount);
+        fragmentBalances[user] = fragmentBalances[user].sub(scaledAmount);
+        emit Transfer(user ,address(0), amount);
     }
     
     function _transferFragment(address from, address to, uint256 value ) internal {
+        require(to != address(0), "to address cannot be 0");
         fragmentBalances[from] = fragmentBalances[from].sub(value);
         fragmentBalances[to] = fragmentBalances[to].add(value);
     }
@@ -254,25 +252,29 @@ contract Token is Storage, IERC20{
 contract Luca is Token, ILuca{
     using SafeMath for uint256;
     
-    function initialize(string memory name, string memory symbol, uint256 totalSupply) public {
+    function initialize(string memory name, string memory symbol, uint256 totalSupply) external {
         _initialize(name, symbol, 18, totalSupply*10**18);
     }
     
     function setReceiver(address user) override external onlyOwner{
+        require(user != address(0), "user address cannot be 0");
         receiver = user;
     }
     
     function setMinter(address user) override external onlyOwner{
+        require(user != address(0), "user address cannot be 0");
         minter =  user;
     }
     
     function setRebaser(address user) override external onlyOwner{
+        require(user != address(0), "user address cannot be 0");
         rebaser = user;
     }
     
     function rebaseByMilli(uint256 epoch, uint256 milli, bool positive) override external onlyRebaser returns (uint256){
-        require(milli <= 1000, "LUCA: milli need less than 1000");
-        return _rebase(epoch, milli.mul(BASE.div(1000)), positive);
+        require(milli < 1000, "LUCA: milli need less than 1000");
+        return _rebase(epoch, milli.mul(BASE).div(1000), positive);
+
     }
     
     function rebase(uint256 epoch, uint256 indexDelta, bool positive) override external onlyRebaser returns (uint256){
