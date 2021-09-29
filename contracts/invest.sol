@@ -138,7 +138,7 @@ contract Ownable is Initializable{
 contract Invest is Initializable,Ownable{
     using SafeMath for uint256;
     IERC20 public UsdcToken;
-    uint256 public launchAmount = 5000000 * 10**18;
+    uint256 public constant launchAmount = 5000000 * 10**18;
     UniswapV2Factory public uniswapFactory;
     UniswapRouterV2 public uniswapRouter;
     IERC20 public lucaToken;
@@ -148,6 +148,7 @@ contract Invest is Initializable,Ownable{
     uint256 public lockTime;
     uint256 public investTime;
     uint256 public launchTime;
+    bool private liquiditySta;
     mapping(address => InvestMsg) public userInvestMsg;  
     event InvestLuca(address usrAddr, uint256 amount, uint256 timestamp);
     event WithdrawLiquidity(address usrAddr, uint256 liquidityAmount, uint256 timestamp);
@@ -204,9 +205,9 @@ contract Invest is Initializable,Ownable{
         uint256 endTime = launchTime + investTime;
         require(block.timestamp < endTime, "The time to invest is over");
         address _sender = msg.sender;
-        require(UsdcToken.transferFrom(_sender,address(this),_amount), "Token transfer failed");
         investUsdcSum = investUsdcSum.add(_amount);
         userInvestMsg[_sender].amount = userInvestMsg[_sender].amount.add(_amount);
+        require(UsdcToken.transferFrom(_sender,address(this),_amount), "Token transfer failed");
         emit InvestLuca(_sender, _amount, block.timestamp);
     }
     
@@ -223,6 +224,8 @@ contract Invest is Initializable,Ownable{
     }
     
     function forwardLiquidity() external {
+        require(!liquiditySta, "Liquidity has been added");
+        liquiditySta = true;
         uint256 endTime = launchTime + investTime;
         require(block.timestamp > endTime, "Investment time is not over");
         uint256 _amount = investUsdcSum;
@@ -259,7 +262,7 @@ contract Invest is Initializable,Ownable{
         }else if(block.timestamp > _startTime.add(unitTime*2)){
             _liquidityAmount = _LiquiditySum.div(2);
         }else if(block.timestamp > _startTime.add(unitTime)){
-            _liquidityAmount = _LiquiditySum.mul(1).div(4);
+            _liquidityAmount = _LiquiditySum.div(4);
         }
         _liquidityAmount = _liquidityAmount.sub(investMsg.mark);
         return (_liquidityAmount, investMsg.mark, _LiquiditySum);
