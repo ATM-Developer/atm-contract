@@ -146,6 +146,7 @@ contract  Incentive  is Initializable,Ownable,IIncentive {
     }
     
     function __Incentive_init_unchained(address _pledgeContract) internal initializer{
+        require(_pledgeContract != address(0), "_pledgeContract address cannot be 0");
         pledgeContract = IPledgeContract(_pledgeContract);
         uint chainId;
         assembly {

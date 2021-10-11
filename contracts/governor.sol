@@ -171,6 +171,7 @@ contract Governor is Initializable,Ownable,IGovernor{
     * @notice A method in which users pledge a certain amount of governance tokens to initiate a proposal
     */
     function propose(uint256 _options, string memory _proposalContent) override external onlyExecutor{
+        require(_options > 0, "_options should be greater than 0!");
         address _sender = msg.sender;
         uint256 _time = block.timestamp;
         uint256 proposalId = ++proposalCount;
@@ -202,8 +203,8 @@ contract Governor is Initializable,Ownable,IGovernor{
             sum = sum.add(_amouns[i]);
             emit Vote(_sender, _proposalId, _types[i], _amouns[i], _time);
         }
-        require(governanceToken.transferFrom(_sender,address(this),sum), "Token transfer failed");
         userStakeNum[_sender][_proposalId] = userStakeNum[_sender][_proposalId].add(sum);
+        require(governanceToken.transferFrom(_sender,address(this),sum), "Token transfer failed");
         
     }
     

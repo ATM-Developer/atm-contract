@@ -436,6 +436,7 @@ contract  Pledge is Initializable,Ownable,IPledge{
     }
 
     function queryNodeRank(uint256 start, uint256 end) external view returns (address[] memory, uint256[] memory) {
+        require(start > 0, "start must larger than 0");
         if (end > nodeNum){
             end = nodeNum;
         }
