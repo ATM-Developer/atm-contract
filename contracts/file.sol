@@ -24,6 +24,7 @@ contract Owner {
     }
     
     function setOwner(address addr) external onlyOwner{
+        require(addr != address(0), "addr address cannot be 0");
         owner = addr;
     }
 }
@@ -91,6 +92,7 @@ contract File is Owner, Initialize {
     }
     
     function setCollector(address addr) external onlyOwner {
+        require(addr != address(0), "addr address cannot be 0");
         collector = addr;
     }
     

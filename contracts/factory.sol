@@ -199,6 +199,7 @@ contract Factory is Initialize, CloneFactory, Ifactory{
     }
 
     function initialize(string memory _network, address _file) external noInit{
+        require(_file != address(0), "_file address cannot be 0");
         file = _file;
         _addToken(_network, ETH, 100);
     }
@@ -209,7 +210,7 @@ contract Factory is Initialize, CloneFactory, Ifactory{
     
     function addToken(address _token, uint256 _min) override external onlyFile {
         string memory symbol = IERC20(_token).symbol();
-        require(bytes(symbol).length >= 0 , "Factory: not available ERC20 Token");
+        require(bytes(symbol).length > 0 , "Factory: not available ERC20 Token");
         require(!tokenMap[symbol].isActive, "Factory: token exist" );
         _addToken(symbol, _token, _min);
     }

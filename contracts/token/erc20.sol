@@ -120,18 +120,18 @@ contract ERC20 {
         return allowances[owner][spender];
     }
     
-    function approve(address spender, uint256 amount) public returns(bool) {
+    function approve(address spender, uint256 amount) external returns(bool) {
         allowances[msg.sender][spender] = amount;
         emit Approval(msg.sender, spender, amount);
         return true;
     }
 
-    function transfer(address to, uint256 amount) public returns (bool) {
+    function transfer(address to, uint256 amount) external returns (bool) {
         _transfer(msg.sender, to, amount);
         return true;
     }
 
-    function transferFrom(address owner, address to, uint256 amount) public returns(bool) {
+    function transferFrom(address owner, address to, uint256 amount) external returns(bool) {
         require(allowances[owner][msg.sender] >= amount, "ERC20: transfer amount exceeds allowance");
         allowances[owner][msg.sender] = allowances[owner][msg.sender].sub(amount);
         _transfer(owner, to, amount);
@@ -139,12 +139,14 @@ contract ERC20 {
     }
 
     function _transfer(address from, address to, uint256 amount) internal {
+        require(to != address(0), "to address cannot be 0");
         balances[from] = balances[from].sub(amount);
         balances[to] =  balances[to].add(amount);
         emit Transfer(from, to, amount);
     }
     
     function _mint(address to, uint256 amount) internal {
+        require(to != address(0), "to address cannot be 0");
         balances[to] = balances[to].add(amount);
         totalSupply = totalSupply.add(amount);
         emit Transfer(address(0), to, amount);

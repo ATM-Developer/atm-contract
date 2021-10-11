@@ -12,11 +12,13 @@ contract WLUCA is ERC20{
     
     function setOwner(address user) external{
         require(msg.sender == owner, "WLUCA: only owner");
+        require(user != address(0), "user address cannot be 0");
         owner = user;
     }
     
     function setMinter(address user) external{
         require(msg.sender == owner, "WLUCA: only owner");
+        require(user != address(0), "user address cannot be 0");
         minter = user;
     }
 

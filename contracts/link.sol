@@ -231,11 +231,6 @@ contract LinkInfo is Enum {
         _;
     }
 
-    modifier onlyCLOSED(){
-        require(status == Status.CLOSED, "Link: olny closed");
-        _;
-    }
-
     modifier unCLOSED(){
         require(status != Status.CLOSED, "Link: only unclosed");
         _;
@@ -515,7 +510,6 @@ contract Link is LinkInfo, Initialized, Ilink {
              payable(to).transfer(amount);
         }else if(token == luca){
             IERC20(wluca).approve(trader, amount);
-           if (true) return;
             Itrader(trader).withdrawFor(to, amount);
         }else{
             IERC20(token).transfer(to, amount);
