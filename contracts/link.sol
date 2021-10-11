@@ -277,6 +277,13 @@ contract Link is LinkInfo, Initialized, Ilink {
         startTime = block.timestamp;
         expiredTime = startTime.add(lockDays.mul(1 days));
         _agree();
+        
+        (address luca,,,address trader,) = Ifile(file).linkLoad();
+        //airdrop gta 
+        if(token == luca){
+            Itrader(trader).suck(userA, amountA, lockDays);
+            Itrader(trader).suck(userB, amountB, lockDays);
+        }
     }
 
     function reject() override external onlyUserB onlyINITED{
@@ -357,16 +364,13 @@ contract Link is LinkInfo, Initialized, Ilink {
         }
         
         if (!pledgedA && !pledgedB) _agree();
-        
     }
     
     function wtihdrawSelf() override external onlyLuca onlyPLEDGED onlyLinkUser{
          require(isExpire(),"Link: only Expire");
          _linkActive(MethodId.wtihdrawSelf);
-          
          _setReceivables(100);
          _exitSelf();
-        
     }
     
     //Link renew

@@ -263,7 +263,7 @@ contract Factory is Initialize, CloneFactory, Ifactory{
         emit LinkCreated(msg.sender, _symbol, address(link));
         
         //mint agt
-        if (t.addr == f.luca && _percentA == 100){
+        if (t.addr == f.luca && _percentA == 100 && _userB != address(0)){
             Itrader(f.trader).suck(msg.sender, amountA, _lockDays);
         }
         
