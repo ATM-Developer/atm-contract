@@ -164,13 +164,14 @@ contract Invest is Initializable,Ownable{
         address _uniswapFactory,
         address _uniswapRouter,
         uint256 _lockTime,
-        uint256 _investTime
+        uint256 _investTime,
+        uint256 _startTime
     ) 
         external 
         initializer
     {
         __Ownable_init_unchained();
-        __Invest_init_unchained(_lucaToken,_usdc,_uniswapFactory,_uniswapRouter,_lockTime,_investTime);
+        __Invest_init_unchained(_lucaToken,_usdc,_uniswapFactory,_uniswapRouter,_lockTime,_investTime,_startTime);
     }
     
     function __Invest_init_unchained(
@@ -179,7 +180,8 @@ contract Invest is Initializable,Ownable{
         address _uniswapFactory,
         address _uniswapRouter,
         uint256 _lockTime,
-        uint256 _investTime
+        uint256 _investTime,
+        uint256 _startTime
     ) 
         internal 
         initializer
@@ -190,7 +192,7 @@ contract Invest is Initializable,Ownable{
         uniswapRouter = UniswapRouterV2(_uniswapRouter);
         lockTime = _lockTime;
         investTime = _investTime;
-        launchTime = block.timestamp;
+        launchTime = _startTime;
     }
     
     receive() payable external{
@@ -229,8 +231,8 @@ contract Invest is Initializable,Ownable{
         uint256 endTime = launchTime + investTime;
         require(block.timestamp > endTime, "Investment time is not over");
         uint256 _amount = investUsdcSum;
-        UsdcToken.approve(address(uniswapRouter), 2**256-1);
-        lucaToken.approve(address(uniswapRouter),  2**256-1);
+        UsdcToken.approve(address(uniswapRouter), _amount);
+        lucaToken.approve(address(uniswapRouter),  launchAmount);
         (,,liquiditySum) = uniswapRouter.addLiquidity(
             address(UsdcToken),
             address(lucaToken),
