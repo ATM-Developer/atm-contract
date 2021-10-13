@@ -205,7 +205,7 @@ contract Invest is Initializable,Ownable{
 
     function investLuca(uint256 _amount) external{
         uint256 endTime = launchTime + investTime;
-        require(block.timestamp < endTime, "The time to invest is over");
+        require(block.timestamp >= launchTime && block.timestamp <= endTime, "The time to invest is over");
         address _sender = msg.sender;
         investUsdcSum = investUsdcSum.add(_amount);
         userInvestMsg[_sender].amount = userInvestMsg[_sender].amount.add(_amount);
