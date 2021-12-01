@@ -523,7 +523,7 @@ contract Link is LinkInfo, Initialized, Ilink {
     function _setReceivables(uint256 factor) internal{
         receivableA = amountA.mul(factor).div(100);
 
-        if (status == Status.AGREED && amountB != 0){
+        if ((status == Status.AGREED) && amountB != 0){
             receivableB = amountB.mul(factor).div(100);
         }
     }
