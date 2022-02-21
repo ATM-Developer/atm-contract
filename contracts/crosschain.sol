@@ -304,12 +304,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
             emit StakeToken(tokenAddr, _sender, receiveAddr, 0, _amount, fee, _chain);
         }
     }
-function eeee() external {
-        lucaToken.mint(100000000000000000000);
-    }
-function eeee2() external {
-        trader.suck(address(this),100000000000000000000);
-    }
+
     /**
     * @notice A method to the user withdraw revenue.
     * The extracted proceeds are signed by at least 6 PAGERANK servers, in order to withdraw successfully
