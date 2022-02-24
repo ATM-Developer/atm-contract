@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at BscScan.com on 2022-02-23
-*/
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0 ;
 
@@ -89,6 +85,7 @@ contract Management is IManagement{
     }
    
     function excContractPropose(address _targetAddr, bytes memory _data) override external{
+        require(bytesToUint(_data) != 2401778032 && bytesToUint(_data) != 822583150, "Calls to methods of proxy contracts are not allowed");
         _propose(_targetAddr, address(0), _data, 0, 0, 6, "excContract");
     }
 
@@ -194,6 +191,15 @@ contract Management is IManagement{
             nodeNum--;
             require(nodeNum >= minNodeNum, "The number of node addresses cannot be less than MINNODENUM");
         }
+    }
+
+    function bytesToUint(bytes memory _data) internal pure returns (uint256){
+        require(_data.length >= 4, "Insufficient byte length");
+        uint256 number;
+        for(uint i= 0; i<4; i++){
+            number = number + uint8(_data[i])*(2**(8*(4-(i+1))));
+        }
+        return  number;
     }
 
     function queryVotes(
