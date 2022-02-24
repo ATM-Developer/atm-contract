@@ -6,11 +6,6 @@ interface IProxy {
     function upgrad(address newLogic) external returns(bool);
 }
 
-interface IToken {
-    function changeAdmin(address newAdmin) external returns(bool);
-    function upgrad(address newLogic) external returns(bool);
-}
-
 interface IManagement {
     function argPropose(uint256 _minNodeNum, uint256 _executeNodeNum) external;
     function addNodePropose(address _addr) external;
@@ -36,7 +31,6 @@ contract Management is IManagement{
     event Propose(address indexed proposer, uint256 proposalId, string label);
     event Vote(address indexed voter, uint256 proposalId);
     
-
     struct ProposalMsg {
         address[] proposers;
         bool proposalSta; 
