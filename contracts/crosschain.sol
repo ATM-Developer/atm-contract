@@ -136,6 +136,11 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
     mapping(uint256 => address) public nodeIndexAddr;
     mapping(address => bool) public nodeAddrSta;
     mapping(uint256 => Stake) public stakeMsg;
+    event UpdatePause(bool sta);
+    event WithdrawChargeAmount(address tokenAddr, uint256 amount);
+    event AddNodeAddr(address[] nodeAddrs);
+    event DeleteNodeAddr(address[] nodeAddrs);
+    event UpdateChainCharge(string chain, bool sta, address[] tokens, uint256[] fees);
     event TransferToken(address indexed _tokenAddr, address _receiveAddr, uint256 _fragment, uint256 _amount, string chain, string txid);
     event StakeToken(address indexed _tokenAddr, address indexed _userAddr, string receiveAddr, uint256 fragment, uint256 amount, uint256 fee,string chain);
     IERC20 public agtToken;
@@ -221,6 +226,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
 
     function updatePause(bool _sta) external onlyOwner{
         pause = _sta;
+        emit UpdatePause(_sta);
     }
 
     function updateChainCharge(string calldata _chain, bool _sta, address[] calldata _tokens, uint256[] calldata _fees) external onlyOwner{
@@ -229,6 +235,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         for (uint256 i = 0; i< _tokens.length; i++){
             chargeRate[_chain][_tokens[i]] = _fees[i];
         }
+        emit UpdateChainCharge(_chain, _sta, _tokens, _fees);
     }
 
     function withdrawChargeAmount(address[] calldata tokenAddrs) external onlyOwner{
@@ -237,10 +244,13 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
                 uint256 _amount = lucaToken.fragmentToLuca(chargeAmount[tokenAddrs[i]]);
                 require(lucaToken.transfer(msg.sender,_amount), "Token transfer failed");
                 chargeAmount[tokenAddrs[i]] = 0;
+                emit WithdrawChargeAmount(tokenAddrs[i], _amount);
             }else{
                 IERC20 token = IERC20(tokenAddrs[i]);
-                require(token.transfer(msg.sender,chargeAmount[tokenAddrs[i]]), "Token transfer failed");
+                uint256 _amount = chargeAmount[tokenAddrs[i]];
+                require(token.transfer(msg.sender,_amount), "Token transfer failed");
                 chargeAmount[tokenAddrs[i]] = 0;
+                emit WithdrawChargeAmount(tokenAddrs[i], _amount);
             }
             
         }
@@ -259,6 +269,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
                 nodeIndexAddr[_nodeAddrIndex] = _nodeAddr;
             }
         }
+        emit AddNodeAddr(_nodeAddrs);
     }
 
     function deleteNodeAddr(address[] calldata _nodeAddrs) external onlyOwner{
@@ -277,6 +288,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
                 nodeNum--;
             }
         }
+        emit DeleteNodeAddr(_nodeAddrs);
     }
 
     function stakeToken(string memory _chain, string memory receiveAddr, address tokenAddr, uint256 _amount) override external {
