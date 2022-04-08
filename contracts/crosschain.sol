@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0 ;
+pragma solidity 0.8.0 ;
 
 interface IERC20 {
     function transfer(address _to, uint256 _value) external returns (bool);
@@ -136,7 +136,6 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
     mapping(uint256 => address) public nodeIndexAddr;
     mapping(address => bool) public nodeAddrSta;
     mapping(uint256 => Stake) public stakeMsg;
-    event UpdateAdmin(address _admin);
     event TransferToken(address indexed _tokenAddr, address _receiveAddr, uint256 _fragment, uint256 _amount, string chain, string txid);
     event StakeToken(address indexed _tokenAddr, address indexed _userAddr, string receiveAddr, uint256 fragment, uint256 amount, uint256 fee,string chain);
     IERC20 public agtToken;
@@ -192,6 +191,9 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         address _agt,
         bool _sta
     ) internal initializer{
+        require( _lucaToken != address(0),"lucaToken address cannot be 0");
+        require( _trader != address(0),"trader address cannot be 0");
+        require( _agt != address(0),"agt address cannot be 0");
         lucaToken = IERC20(_lucaToken);
         trader = Itrader(_trader);
         agtToken = IERC20(_agt);
@@ -279,6 +281,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
 
     function stakeToken(string memory _chain, string memory receiveAddr, address tokenAddr, uint256 _amount) override external {
         address _sender = msg.sender;
+        require( tokenAddr == address(lucaToken) || tokenAddr == address(agtToken) , "Crosschain: The token does not support transfers");
         require( chainSta[_chain], "Crosschain: The chain does not support transfer");
         if (address(lucaToken) == tokenAddr){
             require(lucaToken.transferFrom(_sender,address(this),_amount), "Token transfer failed");
@@ -305,21 +308,18 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         }
     }
 
-    /**
-    * @notice A method to the user withdraw revenue.
-    * The extracted proceeds are signed by at least 6 PAGERANK servers, in order to withdraw successfully
-    */
     function transferToken(
-        address[2] calldata addrs,//[userAddr,tokenAddr]
-        uint256[3] calldata uints,//[fragment,_amount,time]
-        string[] calldata strs,//[chain,txid]
+        address[2] calldata addrs,
+        uint256[3] calldata uints,
+        string[] calldata strs,
         uint8[] calldata vs,
         bytes32[] calldata rssMetadata
     )
-    external
-    override
-    onlyGuard
+        external
+        override
+        onlyGuard
     {
+        require( addrs[1] == address(lucaToken) || addrs[1] == address(agtToken) , "Crosschain: The token does not support transfers");
         require( block.timestamp<= uints[1], "Crosschain: The transaction exceeded the time limit");
         require( !status[strs[0]][strs[1]], "Crosschain: The transaction has been withdrawn");
         status[strs[0]][strs[1]] = true;
@@ -386,20 +386,6 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
                 "Token transfer failed"
             );
             emit TransferToken(addrs[1], addrs[0], 0, amount, strs[0], strs[1]);
-        }else{
-            IERC20 token = IERC20(addrs[1]);
-            uint256 amount = uints[1];
-            uint256 balance = token.balanceOf(address(this));
-            if (balance < amount){
-                lucaToken.mint(amount);
-            }
-            balance = lucaToken.balanceOf(address(this));
-            require(balance >= amount,"Insufficient token balance");
-            require(
-                token.transfer(addrs[0],amount),
-                "Token transfer failed"
-            );
-            emit TransferToken(addrs[1], addrs[0], 0, amount, strs[0], strs[1]);
         }
     }
 
@@ -407,6 +393,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 hash = keccak256(abi.encodePacked(prefix, _digest));
         address _nodeAddr = ecrecover(hash, _sig.v, _sig.r, _sig.s);
+        require(_nodeAddr !=address(0),"Illegal signature");
         return nodeAddrSta[_nodeAddr];
     }
     
@@ -449,4 +436,3 @@ library SafeMath {
         return c;
     }
 }
-
