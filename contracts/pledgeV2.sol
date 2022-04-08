@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0 ;
+pragma solidity 0.8.0 ;
 
 interface IERC20 {
     function transfer(address _to, uint256 _value) external returns (bool);
@@ -156,6 +156,9 @@ contract  PledgeV2 is Initializable,Ownable,IPledge{
     mapping(string => uint256) public chainsIndex;  
     mapping(uint256 => string) public indexChains;  
     mapping(string => mapping(address => uint256)) public nodeChainLucaAmount; 
+    event UpdateGuarder(address guarder);
+    event DeleteChain(string chain);
+    event UpadeNodesStake(string chain, address[] addrs, uint256[] uints);
     event UpadeNodesStake(address nodeAddr, uint256 amount, string chain);
 
     struct StakeNodeMsg {
@@ -271,6 +274,7 @@ contract  PledgeV2 is Initializable,Ownable,IPledge{
     
     function updateGuarder(address _guarder) external onlyOwner{
         guarder = _guarder;
+        emit UpdateGuarder(_guarder);
     }
 
     /**
@@ -378,7 +382,7 @@ contract  PledgeV2 is Initializable,Ownable,IPledge{
             }
             updateStake(_chain, _addrArray, _stakeAmount);
         }
-        
+        emit DeleteChain(_chain);
 
     }
 
@@ -394,6 +398,7 @@ contract  PledgeV2 is Initializable,Ownable,IPledge{
         require( block.timestamp<= expiredTime, "IncentiveContracts: The transaction exceeded the time limit");
         updateChainList(chain, addrs, uints);
         updateStake(chain, addrs, uints);
+        emit UpadeNodesStake(chain, addrs, uints);
     }
         
     function queryChainStake(string calldata chain) external view returns (address[] memory, uint256[] memory){
@@ -575,7 +580,6 @@ contract  PledgeV2 is Initializable,Ownable,IPledge{
             chainsIndex[chain] = _chainsNum;
             indexChains[_chainsNum] = chain;
         }
-       
     }
 
     function updateStake(string memory chain, address[] memory addrs, uint256[] memory uints) internal {
