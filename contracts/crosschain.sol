@@ -320,6 +320,14 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         }
     }
 
+    /**
+    * @notice A method in which issue transfer tokens to users. 
+    * @param addrs [User address, token contract address]
+    * @param uints [Number of luca fragments (0 for non-luca tokens), number of transfers, expiration time]
+    * @param strs [chain name, transaction id]
+    * @param vs  array of signature data
+    * @param rssMetadata array of signature data
+    */
     function transferToken(
         address[2] calldata addrs,
         uint256[3] calldata uints,
@@ -332,7 +340,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         onlyGuard
     {
         require( addrs[1] == address(lucaToken) || addrs[1] == address(agtToken) , "Crosschain: The token does not support transfers");
-        require( block.timestamp<= uints[1], "Crosschain: The transaction exceeded the time limit");
+        require( block.timestamp<= uints[2], "Crosschain: The transaction exceeded the time limit");
         require( !status[strs[0]][strs[1]], "Crosschain: The transaction has been withdrawn");
         status[strs[0]][strs[1]] = true;
         uint256 len = vs.length;
