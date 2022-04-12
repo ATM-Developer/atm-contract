@@ -3,30 +3,24 @@ pragma solidity 0.8.0 ;
 
 interface IERC20 {
     function transfer(address _to, uint256 _value) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+    function mint(uint256 amount) external;
+    function burn(uint256 amount) external;
     function transferFrom(address _from, address _to, uint256 _value) external returns (bool);
     function lucaToFragment(uint256 value) external view returns (uint256);
     function fragmentToLuca(uint256 value) external view returns (uint256);
 }
-
-interface IPledge {
-    function addNodeAddr(address[] calldata _nodeAddrs) external;
-    function deleteNodeAddr(address[] calldata _nodeAddrs) external;
-    function updateExecutor(address _admin) external;
-    function stakeLuca(address _nodeAddr, uint256 _amount) external;
-    function stakeWLuca(address _nodeAddr, uint256 _amount, address _sender) external returns(bool);
-    function cancleStakeLuca(uint256[] calldata _indexs) external;
-    function cancleStakeWLuca(address _sender) external returns(bool);
-    function nodeRank(uint256 start, uint256 end) external;
-
-    event StakeLuca(uint256 indexed _stakeNum, address _userAddr, address _nodeAddr, uint256 _amount, uint256 _time);
-    event EndStakeLuca(uint256 indexed _stakeNum, address indexed _userAddr, address _nodeAddr, uint256 _time);
-    event StakeWLuca(uint256 indexed _stakeNum, address indexed _userAddr, address _nodeAddr, address _linkAddr, uint256 _amount, uint256 _time);
-    event EndStakeWLuca(uint256 indexed _stakeNum, address indexed _userAddr, address _nodeAddr, address _linkAddr, uint256 _time);
+interface Itrader {
+    function suck(address _to, uint256 _amount) external;
 }
-
-
-interface ILucaFactory {
-    function isLink(address _link) external view returns(bool);
+interface ICrosschain {
+    function transferToken(
+         address[2] calldata addrs,
+        uint256[3] calldata uints,
+        string[] calldata strs,
+        uint8[] calldata vs,
+        bytes32[] calldata rssMetadata) external;
+    function stakeToken(string memory _chain, string memory  receiveAddr, address tokenAddr, uint256 _amount) external ;
 }
 
 abstract contract Initializable {
@@ -126,128 +120,159 @@ contract Ownable is Initializable{
     }
 }
 
-contract  PledgeV2 is Initializable,Ownable,IPledge{
+contract Crosschain  is Initializable,Ownable,ICrosschain {
     using SafeMath for uint256;
-    address public executor;
-    IERC20 public  lucaToken;
-    ILucaFactory public lucaFactory;
-    uint256 public exchangeRate;
-    uint256 public  nodeNum;                           
-    mapping(address => uint256) nodeAddrIndex;  
-    mapping(uint256 => address) public nodeIndexAddr;  
-    mapping(address => uint256) nodeFragmentAmount;     
-    mapping(address => uint256) public nodeWLucaAmount;     
+    bool public pause;
+    uint256 public nodeNum;
+    uint256 public stakeNum;
+    bytes32 public DOMAIN_SEPARATOR;
+    bool public bscSta;
+    IERC20 public lucaToken;
+    mapping(string => mapping(address => uint256)) public chargeRate;
+    mapping(address => uint256) chargeAmount;
+    mapping(string => bool) public chainSta;
+    mapping(string => mapping(string => bool)) status;
+    mapping(address => uint256) nodeAddrIndex;
+    mapping(uint256 => address) public nodeIndexAddr;
     mapping(address => bool) public nodeAddrSta;
-    uint256 public  stakeLucaNum;         
-    mapping(uint256 => StakeLucaMsg) public stakeLucaMsg;  
-    mapping(address => uint256) public userStakeLucaNum;  
-    mapping(address => mapping(uint256 => uint256)) public userStakeLucaIndex;
-    uint256 public  stakeWLucaNum;          
-    mapping(uint256 => StakeWLucaMsg) public stakeWLucaMsg;  
-    mapping(address => uint256) public userStakeWLucaNum;  
-    mapping(address => mapping(uint256 => uint256)) public userStakeWLucaIndex; 
-    mapping(address => mapping(address => uint256)) public userLinkIndex; 
-    event UpdateExecutor(address _executor);
-    event AddNodeAddr(address _nodeAddr);
-    event DeleteNodeAddr(address _nodeAddr);
-    //v2
-    address public guarder;
-    uint256 public  chainsNum;                           
-    mapping(string => uint256) public chainsIndex;  
-    mapping(uint256 => string) public indexChains;  
-    mapping(string => mapping(address => uint256)) public nodeChainLucaAmount; 
-    event UpdateGuarder(address guarder);
-    event DeleteChain(string chain);
-    event UpadeNodesStake(string chain, address[] addrs, uint256[] uints);
-    event UpadeNodesStake(address nodeAddr, uint256 amount, string chain);
-
-    struct StakeNodeMsg {
-        uint256 fragment;  
-        uint256 wLucaAmount;
-    }
-
-    struct StakeLucaMsg {
-        address userAddr;    
-        address nodeAddr;   
-        uint256 start;  
-        uint256 end;  
-        uint256 fragment;  
-    }
-
-    struct StakeWLucaMsg {
-        address userAddr;    
-        address linkAddr;
-        address nodeAddr;   
-        uint256 start;  
-        uint256 end;  
-        uint256 wLucaAmount;  
-    }
-
-    modifier onlyNodeAddr(address _nodeAddr) {
-        require(nodeAddrSta[_nodeAddr], "PledgeContract: The pledge address is not a node address");
-        _;
-    }
-
-    modifier onlyExecutor() {
-        require(msg.sender == executor, "PledgeContract: caller is not the admin");
-        _;
-    }
-
-    modifier onlyGuarder() {
-        require(msg.sender == guarder, "PledgeContract: caller is not the guarder");
-        _;
-    }
-
-    modifier onlyLinkContract(address _addr) {
-        require( lucaFactory.isLink(_addr), "PledgeContract: This method can only be called by the link contract");
-        _;
-    }
-
-    function init(address _lucaToken, address _lucaFactory, address _executor) external initializer{
-        __Ownable_init_unchained();
-        __Pledge_init_unchained(_lucaToken, _lucaFactory, _executor);
-    }
-
-    function __Pledge_init_unchained(address _lucaToken, address _lucaFactory, address _executor) internal initializer{
-        lucaToken = IERC20(_lucaToken);
-        lucaFactory = ILucaFactory(_lucaFactory);
-        executor = _executor;
-        exchangeRate = lucaToken.fragmentToLuca(10**30);
-    }
+    mapping(uint256 => Stake) public stakeMsg;
+    event UpdatePause(bool sta);
+    event WithdrawChargeAmount(address tokenAddr, uint256 amount);
+    event AddNodeAddr(address[] nodeAddrs);
+    event DeleteNodeAddr(address[] nodeAddrs);
+    event UpdateChainCharge(string chain, bool sta, address[] tokens, uint256[] fees);
+    event TransferToken(address indexed _tokenAddr, address _receiveAddr, uint256 _fragment, uint256 _amount, string chain, string txid);
+    event StakeToken(address indexed _tokenAddr, address indexed _userAddr, string receiveAddr, uint256 fragment, uint256 amount, uint256 fee,string chain);
+    IERC20 public agtToken;
+    Itrader public trader;
     
+    struct Data {
+        address userAddr;
+        address contractAddr;
+        uint256 fragment;
+        uint256 amount;
+        uint256 expiration;
+        string chain;
+        string txid;
+    }
+
+    struct Stake {
+        address tokenAddr;
+        address userAddr;
+        string receiveAddr;
+        uint256 fragment;
+        uint256 amount;
+        uint256 fee;
+        string chain;
+    }
+
+    struct Sig {
+        /* v parameter */
+        uint8 v;
+        /* r parameter */
+        bytes32 r;
+        /* s parameter */
+        bytes32 s;
+    }
+
+    modifier onlyGuard() {
+        require(!pause, "Crosschain: The system is suspended");
+        _;
+    }
+
+    function init( 
+        address _lucaToken, 
+        address _trader, 
+        address _agt,
+        bool _sta
+    )  external initializer{
+        __Ownable_init_unchained();
+        __Crosschain_init_unchained(_lucaToken, _trader, _agt, _sta);
+    }
+
+    function __Crosschain_init_unchained(
+        address _lucaToken, 
+        address _trader, 
+        address _agt,
+        bool _sta
+    ) internal initializer{
+        require( _lucaToken != address(0),"lucaToken address cannot be 0");
+        require( _trader != address(0),"trader address cannot be 0");
+        require( _agt != address(0),"agt address cannot be 0");
+        lucaToken = IERC20(_lucaToken);
+        trader = Itrader(_trader);
+        agtToken = IERC20(_agt);
+        bscSta = _sta;
+        uint chainId;
+        assembly {
+            chainId := chainId
+        }
+        DOMAIN_SEPARATOR = keccak256(
+            abi.encode(
+                keccak256('EIP712Domain(uint256 chainId,address verifyingContract)'),
+                chainId,
+                address(this)
+            )
+        );
+    }
+
     receive() payable external{
 
     }
-    
+
     fallback() payable external{
 
     }
-  
-    /**
-    * @notice A method to add a list of trusted nodes
-    * @param _nodeAddrs a list of trusted nodes
-    */
-    function addNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
+
+    function updatePause(bool _sta) external onlyOwner{
+        pause = _sta;
+        emit UpdatePause(_sta);
+    }
+
+    function updateChainCharge(string calldata _chain, bool _sta, address[] calldata _tokens, uint256[] calldata _fees) external onlyOwner{
+        chainSta[_chain] = _sta;
+        require(_tokens.length == _fees.length, "Parameter array length does not match");
+        for (uint256 i = 0; i< _tokens.length; i++){
+            chargeRate[_chain][_tokens[i]] = _fees[i];
+        }
+        emit UpdateChainCharge(_chain, _sta, _tokens, _fees);
+    }
+
+    function withdrawChargeAmount(address[] calldata tokenAddrs) external onlyOwner{
+        for (uint256 i = 0; i< tokenAddrs.length; i++){
+            if(tokenAddrs[i] == address(lucaToken)){
+                uint256 _amount = lucaToken.fragmentToLuca(chargeAmount[tokenAddrs[i]]);
+                require(lucaToken.transfer(msg.sender,_amount), "Token transfer failed");
+                chargeAmount[tokenAddrs[i]] = 0;
+                emit WithdrawChargeAmount(tokenAddrs[i], _amount);
+            }else{
+                IERC20 token = IERC20(tokenAddrs[i]);
+                uint256 _amount = chargeAmount[tokenAddrs[i]];
+                require(token.transfer(msg.sender,_amount), "Token transfer failed");
+                chargeAmount[tokenAddrs[i]] = 0;
+                emit WithdrawChargeAmount(tokenAddrs[i], _amount);
+            }
+            
+        }
+       
+    }
+
+    function addNodeAddr(address[] calldata _nodeAddrs) external onlyOwner{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
-            require(!nodeAddrSta[_nodeAddr], "This node is already a pledged node");
+            require(!nodeAddrSta[_nodeAddr], "This node is already a node address");
             nodeAddrSta[_nodeAddr] = true;
             uint256 _nodeAddrIndex = nodeAddrIndex[_nodeAddr];
             if (_nodeAddrIndex == 0){
                 _nodeAddrIndex = ++nodeNum;
                 nodeAddrIndex[_nodeAddr] = _nodeAddrIndex;
                 nodeIndexAddr[_nodeAddrIndex] = _nodeAddr;
-                addNodeStake(_nodeAddrIndex);
             }
-            emit AddNodeAddr(_nodeAddrs[i]);
         }
+        emit AddNodeAddr(_nodeAddrs);
     }
-    
-    /**
-    * @notice A method to cancel the list of untrusted nodes
-    * @param _nodeAddrs the list of untrusted nodes
-    */
-    function deleteNodeAddr(address[] calldata _nodeAddrs) override external onlyExecutor{
+
+    function deleteNodeAddr(address[] calldata _nodeAddrs) external onlyOwner{
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             address _nodeAddr = _nodeAddrs[i];
             require(nodeAddrSta[_nodeAddr], "This node is not a pledge node");
@@ -261,415 +286,147 @@ contract  PledgeV2 is Initializable,Ownable,IPledge{
                 nodeAddrIndex[_nodeAddr] = 0;
                 nodeIndexAddr[_nodeNum] = address(0x0);
                 nodeNum--;
-                cancelNodeStake(_lastNodeAddr);
             }
-            emit DeleteNodeAddr(_nodeAddrs[i]);
         }
+        emit DeleteNodeAddr(_nodeAddrs);
     }
 
-    function updateExecutor(address _executor) override external onlyOwner{
-        executor = _executor;
-        emit UpdateExecutor(_executor);
-    }
-    
-    function updateGuarder(address _guarder) external onlyOwner{
-        guarder = _guarder;
-        emit UpdateGuarder(_guarder);
-    }
-
-    /**
-    * @notice A method in which users pledge LUCA to trusted nodes. 
-    * The nodes must be in the top 11 of the pledge, 
-    * and the user's pledge can obtain the pledge income
-    * @param _nodeAddr trusted node
-    * @param _amount the pledge number
-    */
-    function stakeLuca(address _nodeAddr, uint256 _amount) override external onlyNodeAddr(_nodeAddr){
+    function stakeToken(string memory _chain, string memory receiveAddr, address tokenAddr, uint256 _amount) override external {
         address _sender = msg.sender;
-        require(lucaToken.transferFrom(_sender,address(this),_amount), "Token transfer failed");
-        uint256 fragment = lucaToken.lucaToFragment(_amount);
-        require(fragment > 0, "Share calculation anomaly");
-        _stake(_nodeAddr, fragment, _sender, address(0x0), true);
-    }
-    
-    /**
-    * @notice A method in which the user pledges trusted nodes in the link contract. 
-    * The nodes must be in the top 11 of the pledge, 
-    * and the user's pledge can obtain the pledge income
-    * @param _nodeAddr trusted node
-    * @param _amount the pledge number
-    * @param _sender the pledge user
-    */
-    function stakeWLuca(
-        address _nodeAddr, 
-        uint256 _amount, 
-        address _sender
-    ) 
-        override 
-        external 
-        onlyNodeAddr(_nodeAddr) 
-        onlyLinkContract(msg.sender) 
-        returns(bool)
-    {
-        return  _stake(_nodeAddr, _amount, _sender, msg.sender, false);
-    }
-    
-    /**
-    * @notice A method to the user cancels the pledges
-    * @param _indexs the user pledges a collection of ids
-    */
-    function cancleStakeLuca(uint256[] calldata _indexs) override external {
-        address _sender = msg.sender;
-        uint256 _amount;
-        for (uint256 i = 0; i < _indexs.length; i++) {
-            uint256 _stakeLucaMark = _indexs[i];
-            if (_stakeLucaMark > 0){
-                StakeLucaMsg storage _stakeMsg = stakeLucaMsg[_stakeLucaMark];
-                require(_stakeMsg.userAddr == _sender, "Has no authority to remove the pledge not his own");
-                require(_stakeMsg.end == 0, "The pledge has been redeemed");
-                _stakeMsg.end = block.timestamp;
-                _amount += _stakeMsg.fragment;
-                nodeFragmentAmount[_stakeMsg.nodeAddr] = nodeFragmentAmount[_stakeMsg.nodeAddr].sub(_stakeMsg.fragment);
-                if (nodeAddrSta[_stakeMsg.nodeAddr]){           
-                    cancelNodeStake(_stakeMsg.nodeAddr);
-                }
-                emit EndStakeLuca(_stakeLucaMark, _sender, _stakeMsg.nodeAddr, block.timestamp);
+        require( tokenAddr == address(lucaToken) || tokenAddr == address(agtToken) , "Crosschain: The token does not support transfers");
+        require( chainSta[_chain], "Crosschain: The chain does not support transfer");
+        if (address(lucaToken) == tokenAddr){
+            require(lucaToken.transferFrom(_sender,address(this),_amount), "Token transfer failed");
+            uint256 _charge = chargeRate[_chain][tokenAddr];
+            _amount = _amount.sub(_charge);
+            uint256 fragment = lucaToken.lucaToFragment(_amount);
+            require(fragment > 0, "Share calculation anomaly");
+            uint256 fee = lucaToken.lucaToFragment(_charge);
+            chargeAmount[tokenAddr] = chargeAmount[tokenAddr].add(fee);
+            stakeMsg[++stakeNum] = Stake(tokenAddr, _sender, receiveAddr, fragment, _amount, fee, _chain);
+            if(!bscSta){
+                lucaToken.burn(_amount);        
             }
-        }
-        _amount = lucaToken.fragmentToLuca(_amount);
-        require(lucaToken.transfer(_sender,_amount), "Token transfer failed");
-    }
-    
-    /**
-    * @notice A method to the user cancels the pledge of the link contract
-    * @param _user user address
-    */
-    function cancleStakeWLuca(address _user) override external  onlyLinkContract(msg.sender) returns(bool){
-        address _sender = msg.sender;
-        uint256 _index = userLinkIndex[_sender][_user];
-        require(_index > 0, "The corresponding pledge information does not exist");
-        userLinkIndex[_sender][_user] = 0;
-        StakeWLucaMsg  memory _stakeMsg = stakeWLucaMsg[_index];
-        stakeWLucaMsg[_index].end = block.timestamp;
-        nodeWLucaAmount[_stakeMsg.nodeAddr] = nodeWLucaAmount[_stakeMsg.nodeAddr].sub(_stakeMsg.wLucaAmount);
-        if (nodeAddrSta[_stakeMsg.nodeAddr]){          
-            cancelNodeStake(_stakeMsg.nodeAddr);
-        }
-        emit EndStakeWLuca(_index, _user, _stakeMsg.nodeAddr, _stakeMsg.linkAddr, block.timestamp);
-        return true;
-    }
-    
-    function deleteChain(string calldata _chain) external  onlyGuarder(){
-        uint256 _index = chainsIndex[_chain];
-        if (_index > 0){
-            uint256 _chainsNum = chainsNum;
-            string memory _lastChain = indexChains[_chainsNum];
-            chainsIndex[_lastChain] = _index;
-            indexChains[_index] = _lastChain;
-            chainsIndex[_chain] = 0;
-            indexChains[_chainsNum] = "";
-            chainsNum--;
-        }
-        address[] memory _addrArray = new address[](1) ;
-        uint256[] memory _stakeAmount = new uint256[](1);
-        if(nodeNum > 0){
-            _addrArray = new address[](nodeNum) ;
-            _stakeAmount = new uint256[](nodeNum) ;
-            uint256 j = 0;
-            for (uint256 i=1; i <= nodeNum; i++){
-                _addrArray[j] = nodeIndexAddr[i];
-                j++;
-            }
-            updateStake(_chain, _addrArray, _stakeAmount);
-        }
-        emit DeleteChain(_chain);
-
-    }
-
-    function upadeNodesStake(
-        address[] calldata addrs,
-        uint256[] calldata uints,
-        uint256 expiredTime,
-        string calldata chain
-    )
-        external
-        onlyGuarder()
-    {
-        require( block.timestamp<= expiredTime, "IncentiveContracts: The transaction exceeded the time limit");
-        updateChainList(chain, addrs, uints);
-        updateStake(chain, addrs, uints);
-        emit UpadeNodesStake(chain, addrs, uints);
-    }
-        
-    function queryChainStake(string calldata chain) external view returns (address[] memory, uint256[] memory){
-        address[] memory _addrArray = new address[](1) ;
-        uint256[] memory _stakeAmount = new uint256[](1);
-        if(nodeNum > 0){
-            _addrArray = new address[](nodeNum) ;
-            _stakeAmount = new uint256[](nodeNum) ;
-            uint256 j = 0;
-            for (uint256 i=1; i <= nodeNum; i++){
-                address _nodeAddr = nodeIndexAddr[i];
-                _addrArray[j] = _nodeAddr;
-                _stakeAmount[j] = nodeChainLucaAmount[chain][_nodeAddr];
-                j++;
-            }
-        }
-        return (_addrArray, _stakeAmount);
-    }
-
-    function queryStakeLuca(
-        address _userAddr,
-        uint256 _page,
-        uint256 _limit
-    )
-        external
-        view
-        returns(
-            address[] memory nodeAddrs,
-            uint256[] memory stakeMsgData,
-            uint256 _num
-        )
-    {
-        _num = userStakeLucaNum[_userAddr];
-
-        if (_limit > _num){
-            _limit = _num;
-        }
-        if (_page<2){
-            _page = 1;
-        }
-        _page--;
-        uint256 start = _page.mul(_limit);
-        uint256 end = start.add(_limit);
-        if (end > _num){
-            end = _num;
-            _limit = end.sub(start);
-        }
-        nodeAddrs = new address[](_limit);
-        stakeMsgData = new uint256[](_limit*4);
-        if (_num > 0){
-            require(end > start, "Query index range out of limit");
-            uint256 j;
-            for (uint256 i = start; i < end; i++) {
-                uint256 _index;
-                _index = userStakeLucaIndex[_userAddr][i.add(1)];
-                StakeLucaMsg memory _stakeMsg = stakeLucaMsg[_index];
-                nodeAddrs[j] = _stakeMsg.nodeAddr;
-                stakeMsgData[j*4] = _stakeMsg.start;
-                stakeMsgData[j*4+1] = _stakeMsg.end;
-                stakeMsgData[j*4+2] = lucaToken.fragmentToLuca(_stakeMsg.fragment);
-                stakeMsgData[j*4+3] = _index;
-                j++;
-            }
-        }
-    }
-
-    function queryStakeWLuca(
-        address _userAddr,
-        uint256 _page,
-        uint256 _limit
-    )
-        external
-        view
-        returns(
-            address[] memory linkAddrs,
-            address[] memory nodeAddrs,
-            uint256[] memory stakeMsgData,
-            uint256 _num
-        )
-    {
-        _num = userStakeWLucaNum[_userAddr];
-        if (_limit > _num){
-            _limit = _num;
-        }
-        if (_page<2){
-            _page = 1;
-        }
-        _page--;
-        uint256 start = _page.mul(_limit);
-        uint256 end = start.add(_limit);
-        if (end > _num){
-            end = _num;
-            _limit = end.sub(start);
-        }
-        linkAddrs = new address[](_limit);
-        nodeAddrs = new address[](_limit);
-        stakeMsgData = new uint256[](_limit*4);
-        if (_num > 0){
-            require(end > start, "Query index range out of limit");
-            uint256 j;
-            for (uint256 i = start; i < end; i++) {
-                uint256 _index;
-                _index = userStakeWLucaIndex[_userAddr][i.add(1)];
-                StakeWLucaMsg memory _stakeMsg = stakeWLucaMsg[_index];
-                linkAddrs[j] = _stakeMsg.linkAddr;
-                nodeAddrs[j] = _stakeMsg.nodeAddr;
-                stakeMsgData[j*4] = _stakeMsg.start;
-                stakeMsgData[j*4+1] = _stakeMsg.end;
-                stakeMsgData[j*4+2] = _stakeMsg.wLucaAmount;
-                stakeMsgData[j*4+3] = _index;
-                j++;
-            }
-        }
-    }
-
-    function queryNodeRank(uint256 start, uint256 end) external view returns (address[] memory, uint256[] memory) {
-        require(start > 0, "start must larger than 0");
-        if (end > nodeNum){
-            end = nodeNum;
-        }
-        address[] memory _addrArray = new address[](1) ;
-        uint256[] memory _stakeAmount = new uint256[](1) ;
-        uint256 j;
-        if (end >= start){
-            uint256 len = end.sub(start).add(1);
-            _addrArray = new address[](len) ;
-            _stakeAmount = new uint256[](len) ;
-            for (uint256 i = start; i <= end; i++) {
-                address _nodeAddr = nodeIndexAddr[i];
-                _addrArray[j] = _nodeAddr;
-                _stakeAmount[j] = lucaToken.fragmentToLuca(nodeFragmentAmount[_nodeAddr]).add(nodeWLucaAmount[_nodeAddr]);
-                j++;
-            }
-        }
-        return (_addrArray, _stakeAmount);
-    }
-    
-    function queryNodeIndex(address _nodeAddr) external view returns(uint256){
-        return nodeAddrIndex[_nodeAddr];
-    }
-
-    function queryNodeStakeAmount(address _nodeAddr) external view returns(uint256){
-        uint256 lucaStakeAmount = lucaToken.fragmentToLuca(nodeFragmentAmount[_nodeAddr]).add(nodeWLucaAmount[_nodeAddr]);
-        return lucaStakeAmount;
-    }
-
-    function nodeRank(uint256 start, uint256 end) override public {
-        uint256 _exchangeRate= lucaToken.fragmentToLuca(10**30);
-        exchangeRate = _exchangeRate;
-        uint256 _nodeNum = nodeNum;
-        if (_nodeNum > end){
-            _nodeNum = end;
-        }
-        for (uint256 i=start; i <= _nodeNum; i++){
-            for (uint256 j=i+start ; j <= _nodeNum; j++){
-                address nextAddr = nodeIndexAddr[j];
-                address prefixAddr = nodeIndexAddr[i];
-                uint256 _nextSum = nodeFragmentAmount[nextAddr].mul(_exchangeRate).div(10**30).add(nodeWLucaAmount[nextAddr]);
-                uint256 _prefixSum = nodeFragmentAmount[prefixAddr].mul(_exchangeRate).div(10**30).add(nodeWLucaAmount[prefixAddr]);
-                if (_prefixSum < _nextSum){
-                    nodeAddrIndex[prefixAddr] = j;
-                    nodeAddrIndex[nextAddr] = i;
-                    nodeIndexAddr[i] = nextAddr;
-                    nodeIndexAddr[j] = prefixAddr;
-                }
-            }
-        }
-    }
-
-    function updateChainList(string calldata chain, address[] calldata addrs, uint256[] calldata uints) internal {
-        uint256 len = uints.length;
-        require(addrs.length == len, "PledgeContract: Parameter array length does not match");
-        for (uint256 i = 0; i < len; i++) {
-           require(nodeAddrSta[addrs[i]], "PledgeContract: The pledge address is not a node address");
-        }
-        uint256 _index = chainsIndex[chain];
-        if(_index == 0){
-            uint256 _chainsNum = ++chainsNum;
-            chainsIndex[chain] = _chainsNum;
-            indexChains[_chainsNum] = chain;
-        }
-    }
-
-    function updateStake(string memory chain, address[] memory addrs, uint256[] memory uints) internal {
-        for (uint256 i = 0; i < addrs.length; i++) {
-           address _nodeAddr = addrs[i];
-           uint256 _nodeChainLucaAmount = nodeChainLucaAmount[chain][_nodeAddr];
-           uint256 _nodeWLucaAmount = nodeWLucaAmount[_nodeAddr];
-           nodeWLucaAmount[_nodeAddr] = _nodeWLucaAmount.sub(_nodeChainLucaAmount).add(uints[i]);
-           nodeChainLucaAmount[chain][_nodeAddr] = uints[i];
-           if(_nodeChainLucaAmount > uints[i]){
-               cancelNodeStake(_nodeAddr);
-               emit UpadeNodesStake(_nodeAddr, uints[i], chain);
-           }else if(_nodeChainLucaAmount < uints[i]){
-               uint256 _nodeAddrIndex = nodeAddrIndex[_nodeAddr];
-               addNodeStake(_nodeAddrIndex);
-               emit UpadeNodesStake(_nodeAddr, uints[i], chain);
-           }
-        }
-    }
-
-    function _stake(address _nodeAddr, uint256 _amount, address _sender, address _linkAddr, bool _sta) internal  returns(bool){
-        uint256 _nodeNum = nodeNum;
-        uint256 _nodeAddrIndex = nodeAddrIndex[_nodeAddr];
-        if (_nodeAddrIndex == 0){
-            _nodeAddrIndex = ++nodeNum;
-            _nodeNum = _nodeAddrIndex;
-            nodeAddrIndex[_nodeAddr] = _nodeAddrIndex;
-            nodeIndexAddr[_nodeAddrIndex] = _nodeAddr;
-        }
-        if (_sta){
-            uint256 _stakeLucaNum = ++stakeLucaNum;
-            uint256 _userStakeLucaNum = ++userStakeLucaNum[_sender];
-            userStakeLucaIndex[_sender][_userStakeLucaNum] = _stakeLucaNum;
-            nodeFragmentAmount[_nodeAddr] += _amount;
-            stakeLucaMsg[_stakeLucaNum] = StakeLucaMsg(_sender, _nodeAddr, block.timestamp, 0, _amount);
-            emit StakeLuca(_stakeLucaNum, _sender, _nodeAddr, _amount, block.timestamp);
+            emit StakeToken(tokenAddr, _sender, receiveAddr, fragment, _amount, fee, _chain);
         }else{
-            uint256 _stakeWLucaNum = ++stakeWLucaNum;
-            uint256 _userStakeWLucaNum = ++userStakeWLucaNum[_sender];
-            userStakeWLucaIndex[_sender][_userStakeWLucaNum] = _stakeWLucaNum;
-            nodeWLucaAmount[_nodeAddr] += _amount;
-            stakeWLucaMsg[_stakeWLucaNum] = StakeWLucaMsg(_sender, _linkAddr, _nodeAddr, block.timestamp, 0, _amount);
-            require(userLinkIndex[_linkAddr][_sender] == 0, "The corresponding pledge information already exists");
-            userLinkIndex[_linkAddr][_sender] = _stakeWLucaNum;
-            emit StakeWLuca(_stakeWLucaNum, _sender, _nodeAddr, _linkAddr, _amount, block.timestamp);
+            IERC20 token = IERC20(tokenAddr);
+            require(token.transferFrom(_sender,address(this),_amount), "Token transfer failed");
+            uint256 fee = chargeRate[_chain][tokenAddr];
+            _amount = _amount.sub(fee);
+            chargeAmount[tokenAddr] = chargeAmount[tokenAddr].add(fee);
+            stakeMsg[++stakeNum] = Stake(tokenAddr, _sender, receiveAddr, 0, _amount, fee, _chain);
+            token.burn(_amount); 
+            emit StakeToken(tokenAddr, _sender, receiveAddr, 0, _amount, fee, _chain);
         }
-        addNodeStake(_nodeAddrIndex);
-        return true;
     }
 
-    function addNodeStake(uint256 _nodeAddrIndex) internal {
-        uint256 _exchangeRate = exchangeRate;
-        for (uint256 i = _nodeAddrIndex; i > 1; i--) {
-            address _nodeAddr = nodeIndexAddr[i];
-            uint256 _prefixIndex = i.sub(1);
-            address prefixAddr = nodeIndexAddr[_prefixIndex];
-            uint256 _nodeSum = nodeFragmentAmount[_nodeAddr].mul(_exchangeRate).div(10**30).add(nodeWLucaAmount[_nodeAddr]);
-            uint256 _prefixSum = nodeFragmentAmount[prefixAddr].mul(_exchangeRate).div(10**30).add(nodeWLucaAmount[prefixAddr]);
-            if (_prefixSum < _nodeSum){
-                nodeAddrIndex[prefixAddr] = i;
-                nodeAddrIndex[_nodeAddr] = _prefixIndex;
-                nodeIndexAddr[i] = prefixAddr;
-                nodeIndexAddr[_prefixIndex] = _nodeAddr;
-            }else{
-                break;
+    /**
+    * @notice A method in which issue transfer tokens to users. 
+    * @param addrs [User address, token contract address]
+    * @param uints [Number of luca fragments (0 for non-luca tokens), number of transfers, expiration time]
+    * @param strs [chain name, transaction id]
+    * @param vs  array of signature data
+    * @param rssMetadata array of signature data
+    */
+    function transferToken(
+        address[2] calldata addrs,
+        uint256[3] calldata uints,
+        string[] calldata strs,
+        uint8[] calldata vs,
+        bytes32[] calldata rssMetadata
+    )
+        external
+        override
+        onlyGuard
+    {
+        require( addrs[1] == address(lucaToken) || addrs[1] == address(agtToken) , "Crosschain: The token does not support transfers");
+        require( block.timestamp<= uints[2], "Crosschain: The transaction exceeded the time limit");
+        require( !status[strs[0]][strs[1]], "Crosschain: The transaction has been withdrawn");
+        status[strs[0]][strs[1]] = true;
+        uint256 len = vs.length;
+        uint256 counter;
+        require(len*2 == rssMetadata.length, "Crosschain: Signature parameter length mismatch");
+        bytes32 digest = getDigest(Data( addrs[0], addrs[1], uints[0], uints[1], uints[2], strs[0], strs[1]));
+        for (uint256 i = 0; i < len; i++) {
+            bool result = verifySign(
+                digest,
+                Sig(vs[i], rssMetadata[i*2], rssMetadata[i*2+1])
+            );
+            if (result){
+                counter++;
             }
         }
+        require(
+            counter >= 3,
+            "The number of signed accounts did not reach the minimum threshold"
+        );
+        _transferToken(addrs, uints, strs);
+    }
+   
+    function queryCharge(address[] calldata addrs) external view returns (address[] memory, uint256[] memory) {
+        address[] memory _addrArray = new address[](1) ;
+        uint256[] memory _chargeAmount = new uint256[](1) ;
+        uint256 len = addrs.length;
+        _addrArray = new address[](len) ;
+        _chargeAmount = new uint256[](len) ;
+        for (uint256 i = 0; i < len; i++) {
+            _addrArray[i] = addrs[i];
+            if(addrs[i] == address(lucaToken)){
+                _chargeAmount[i] = lucaToken.fragmentToLuca(chargeAmount[addrs[i]]);
+            }else{
+                _chargeAmount[i] = chargeAmount[addrs[i]];
+            }
+        }
+        return (_addrArray, _chargeAmount);
     }
 
-    function cancelNodeStake(address _addr) internal {
-        uint256 _nodeNum = nodeNum;
-        uint256 _exchangeRate = exchangeRate;
-        uint256 _nodeAddrIndex = nodeAddrIndex[_addr];
-        for (uint256 i = _nodeAddrIndex; i < _nodeNum; i++) {
-            address _nodeAddr = nodeIndexAddr[i];
-            uint256 _lastIndex = i.add(1);
-            address lastAddr = nodeIndexAddr[_lastIndex];
-            uint256 _nodeSum = nodeFragmentAmount[_nodeAddr].mul(_exchangeRate).div(10**30).add(nodeWLucaAmount[_nodeAddr]);
-            uint256 _lastSum = nodeFragmentAmount[lastAddr].mul(_exchangeRate).div(10**30).add(nodeWLucaAmount[lastAddr]);
-            if (_lastSum > _nodeSum){
-                nodeAddrIndex[lastAddr] = i;
-                nodeAddrIndex[_nodeAddr] = _lastIndex;
-                nodeIndexAddr[i] = lastAddr;
-                nodeIndexAddr[_lastIndex] = _nodeAddr;
-            }else{
-                break;
+    function _transferToken(address[2] memory addrs, uint256[3] memory uints, string[] memory strs) internal {
+        if (address(lucaToken) == addrs[1]){
+            uint256 amount = lucaToken.fragmentToLuca(uints[0]);
+            if (!bscSta){
+                lucaToken.mint(amount);
             }
+            uint256 balance = lucaToken.balanceOf(address(this));
+            require(balance >= amount,"Insufficient token balance");
+            require(
+                lucaToken.transfer(addrs[0],amount),
+                "Token transfer failed"
+            );
+            emit TransferToken(addrs[1], addrs[0], uints[0], amount, strs[0], strs[1]);
+        }else if(address(agtToken) == addrs[1]){
+            uint256 amount = uints[1];
+            uint256 balance = agtToken.balanceOf(address(this));
+            if (balance < amount){
+                trader.suck(address(this),amount);
+            }
+            balance = agtToken.balanceOf(address(this));
+            require(balance >= amount,"Insufficient token balance");
+            require(
+                agtToken.transfer(addrs[0],amount),
+                "Token transfer failed"
+            );
+            emit TransferToken(addrs[1], addrs[0], 0, amount, strs[0], strs[1]);
         }
     }
 
+    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+        bytes32 hash = keccak256(abi.encodePacked(prefix, _digest));
+        address _nodeAddr = ecrecover(hash, _sig.v, _sig.r, _sig.s);
+        require(_nodeAddr !=address(0),"Illegal signature");
+        return nodeAddrSta[_nodeAddr];
+    }
+    
+    function getDigest(Data memory _data) internal view returns(bytes32 digest){
+        digest = keccak256(
+            abi.encodePacked(
+                '\x19\x01',
+                DOMAIN_SEPARATOR,
+                keccak256(abi.encode(_data.userAddr, _data.contractAddr,  _data.fragment, _data.amount, _data.expiration, _data.chain, _data.txid))
+            )
+        );
+    }
+    
 }
 library SafeMath {
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
