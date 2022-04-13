@@ -357,7 +357,7 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
             }
         }
         require(
-            counter >= 3 && counter >= len/2,
+            counter > nodeNum/2,
             "The number of signed accounts did not reach the minimum threshold"
         );
         _transferToken(addrs, uints, strs);
