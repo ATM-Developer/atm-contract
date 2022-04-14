@@ -60,12 +60,12 @@ contract Ownable is Initializable{
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
+     * @dev Initializes the contract setting the management contract as the initial owner.
      */
-    function __Ownable_init_unchained() internal initializer {
-        address msgSender = msg.sender;
-        _owner = msgSender;
-        emit OwnershipTransferred(address(0), msgSender);
+    function __Ownable_init_unchained(address _management) internal initializer {
+        require( _management != address(0),"management address cannot be 0");
+        _owner = _management;
+        emit OwnershipTransferred(address(0), _management);
     }
 
     /**
@@ -184,9 +184,10 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         address _lucaToken, 
         address _trader, 
         address _agt,
+        address _management,
         bool _sta
     )  external initializer{
-        __Ownable_init_unchained();
+        __Ownable_init_unchained(_management);
         __Crosschain_init_unchained(_lucaToken, _trader, _agt, _sta);
     }
 
@@ -238,17 +239,18 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         emit UpdateChainCharge(_chain, _sta, _tokens, _fees);
     }
 
-    function withdrawChargeAmount(address[] calldata tokenAddrs) external onlyOwner{
+    function withdrawChargeAmount(address[] calldata tokenAddrs, address receiveAddr) external onlyOwner{
+        require( receiveAddr != address(0),"receiveAddr address cannot be 0");
         for (uint256 i = 0; i< tokenAddrs.length; i++){
             if(tokenAddrs[i] == address(lucaToken)){
                 uint256 _amount = lucaToken.fragmentToLuca(chargeAmount[tokenAddrs[i]]);
-                require(lucaToken.transfer(msg.sender,_amount), "Token transfer failed");
+                require(lucaToken.transfer(receiveAddr,_amount), "Token transfer failed");
                 chargeAmount[tokenAddrs[i]] = 0;
                 emit WithdrawChargeAmount(tokenAddrs[i], _amount);
             }else{
                 IERC20 token = IERC20(tokenAddrs[i]);
                 uint256 _amount = chargeAmount[tokenAddrs[i]];
-                require(token.transfer(msg.sender,_amount), "Token transfer failed");
+                require(token.transfer(receiveAddr,_amount), "Token transfer failed");
                 chargeAmount[tokenAddrs[i]] = 0;
                 emit WithdrawChargeAmount(tokenAddrs[i], _amount);
             }
