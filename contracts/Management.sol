@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0 ;
+pragma solidity 0.8.0 ;
 
 interface IProxy {
     function changeAdmin(address newAdmin) external returns(bool);
@@ -27,7 +27,8 @@ contract Management is IManagement{
     mapping(address => uint256) nodeAddrIndex;
     mapping(uint256 => address) nodeIndexAddr;
     mapping(address => bool) public nodeAddrSta;
-    
+    bool private reentrancyLock = false;
+
     event Propose(address indexed proposer, uint256 proposalId, string label);
     event Vote(address indexed voter, uint256 proposalId);
     
@@ -45,7 +46,16 @@ contract Management is IManagement{
         mapping(address => bool) voterSta;  
     }
 
+    modifier nonReentrant() {
+        require(!reentrancyLock);
+        reentrancyLock = true;
+        _;
+        reentrancyLock = false;
+    }
+
     constructor(address[] memory _nodeAddrs, uint256 _executeNodeNum) {
+        require(_nodeAddrs.length > 1,"minNodeNum should be larger than 1");
+        require(_executeNodeNum > 1, "_executeNodeNum should be larger than 1");
         minNodeNum = _nodeAddrs.length;
         executeNodeNum = _executeNodeNum;
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
@@ -62,11 +72,13 @@ contract Management is IManagement{
     }
 
     function addNodePropose(address _addr) override external{
+        require(!nodeAddrSta[_addr], "This node is already a node address");
         bytes memory data = new bytes(0x00);
         _propose(address(0), _addr, data, 0, 0, 2, "addNode");
     }
   
     function deleteNodePropose(address _addr) override external{
+        require(nodeAddrSta[_addr], "This node is not a node address");
         _propose(address(0), _addr, new bytes(0x00), 0, 0, 3, "deleteNode");
     }
      
@@ -110,7 +122,7 @@ contract Management is IManagement{
         emit Propose(_sender, _proposalId, _label);
     }
     
-    function vote(uint256 _proposalId) override external {
+    function vote(uint256 _proposalId) override external nonReentrant(){
         address _sender = msg.sender;
         require(nodeAddrSta[_sender], "The caller is not the nodeAddr"); 
         uint256 _time = block.timestamp;
@@ -142,12 +154,10 @@ contract Management is IManagement{
             result = true;
         }else if(_typeIndex == 4){
             IProxy proxy = IProxy(_proposalMsg.targetAddr);
-            proxy.changeAdmin(_proposalMsg.addr);
-            result = true;
+            result = proxy.changeAdmin(_proposalMsg.addr);
         }else if(_typeIndex == 5){
             IProxy proxy = IProxy(_proposalMsg.targetAddr);
-            proxy.upgrad(_proposalMsg.addr);
-            result = true;
+            result = proxy.upgrad(_proposalMsg.addr);
         }else if(_typeIndex == 6){
             bytes memory _data = _proposalMsg.data;
             (result, ) = _proposalMsg.targetAddr.call(_data);
