@@ -7,7 +7,6 @@ interface IProxy {
 }
 
 interface IManagement {
-    function argPropose(uint256 _minNodeNum, uint256 _executeNodeNum) external;
     function addNodePropose(address _addr) external;
     function deleteNodePropose(address _addr) external;
     function updateProxyAdminPropose(address _targetAddr, address _addr) external;
@@ -19,8 +18,6 @@ interface IManagement {
 
 contract Management is IManagement{
     using SafeMath for uint256;
-    uint256 public minNodeNum;
-    uint256 public executeNodeNum;
     uint256 public  proposalCount;                           
     mapping(uint256 => ProposalMsg) public proposalMsg;
     uint256 public nodeNum;
@@ -38,9 +35,7 @@ contract Management is IManagement{
         address targetAddr;   
         address addr;  
         bytes data;
-		uint256 minNodeNum; 
-        uint256 executeNodeNum; 
-        uint256 expire; 
+		uint256 expire; 
         uint256 typeIndex;  
         string  label;  
         mapping(address => bool) voterSta;  
@@ -53,11 +48,9 @@ contract Management is IManagement{
         reentrancyLock = false;
     }
 
-    constructor(address[] memory _nodeAddrs, uint256 _executeNodeNum) {
-        require(_nodeAddrs.length > 1,"minNodeNum should be larger than 1");
-        require(_executeNodeNum > 1, "_executeNodeNum should be larger than 1");
-        minNodeNum = _nodeAddrs.length;
-        executeNodeNum = _executeNodeNum;
+    constructor(address[] memory _nodeAddrs) {
+        uint256 len = _nodeAddrs.length;
+        require( len> 4,"NodeNum should be larger than 5");
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             addNodeAddr(_nodeAddrs[i]);
         }
@@ -67,40 +60,35 @@ contract Management is IManagement{
 
     }
    
-    function argPropose(uint256 _minNodeNum, uint256 _executeNodeNum) override external{
-        _propose(address(0), address(0), new bytes(0x00), _minNodeNum, _executeNodeNum, 1, "updateArg");
-    }
-
     function addNodePropose(address _addr) override external{
         require(!nodeAddrSta[_addr], "This node is already a node address");
         bytes memory data = new bytes(0x00);
-        _propose(address(0), _addr, data, 0, 0, 2, "addNode");
+        _propose(address(0), _addr, data, 2, "addNode");
     }
   
     function deleteNodePropose(address _addr) override external{
         require(nodeAddrSta[_addr], "This node is not a node address");
-        _propose(address(0), _addr, new bytes(0x00), 0, 0, 3, "deleteNode");
+        require(nodeNum > 5, "The number of node addresses cannot be less than 5");
+        _propose(address(0), _addr, new bytes(0x00), 3, "deleteNode");
     }
      
     function updateProxyAdminPropose(address _targetAddr, address _addr) override external{
-        _propose(_targetAddr, _addr, new bytes(0x00), 0, 0, 4, "updateProxyAdmin");
+        _propose(_targetAddr, _addr, new bytes(0x00), 4, "updateProxyAdmin");
     }
       
     function updateProxyUpgradPropose(address _targetAddr, address _addr) override external{
-        _propose(_targetAddr, _addr, new bytes(0x00), 0, 0, 5, "updateProxyUpgrad");
+        _propose(_targetAddr, _addr, new bytes(0x00), 5, "updateProxyUpgrad");
     }
    
     function excContractPropose(address _targetAddr, bytes memory _data) override external{
         require(bytesToUint(_data) != 2401778032 && bytesToUint(_data) != 822583150, "Calls to methods of proxy contracts are not allowed");
-        _propose(_targetAddr, address(0), _data, 0, 0, 6, "excContract");
+        _propose(_targetAddr, address(0), _data, 6, "excContract");
     }
 
     function _propose(
         address _targetAddr, 
         address _addr, 
         bytes memory _data, 
-        uint256 _minNodeNum, 
-        uint256 _executeNodeNum, 
         uint256 _typeIndex, 
         string memory _label
     ) internal{
@@ -114,8 +102,6 @@ contract Management is IManagement{
         _proposalMsg.addr = _addr;
         _proposalMsg.data = _data;
         _proposalMsg.expire = _time.add(86400);
-        _proposalMsg.minNodeNum = _minNodeNum;
-        _proposalMsg.executeNodeNum = _executeNodeNum;
         _proposalMsg.typeIndex = _typeIndex;
         _proposalMsg.label = _label;
         _proposalMsg.voterSta[_sender] = true;
@@ -132,7 +118,7 @@ contract Management is IManagement{
         _proposalMsg.proposers.push(_sender);
         _proposalMsg.voterSta[_sender] = true;
         uint256 length = _proposalMsg.proposers.length;
-        if(length>=executeNodeNum && !_proposalMsg.proposalSta){
+        if(length> nodeNum/2 && !_proposalMsg.proposalSta){
             require(_actuator(_proposalId), "The method call failed");
             _proposalMsg.proposalSta = true;
         }
@@ -143,10 +129,7 @@ contract Management is IManagement{
         bool result = false;
         ProposalMsg storage _proposalMsg = proposalMsg[_proposalId];
         uint256 _typeIndex = _proposalMsg.typeIndex;
-        if(_typeIndex == 1){
-            updateArg(_proposalMsg.minNodeNum, _proposalMsg.executeNodeNum);
-            result = true;
-        }else if(_typeIndex == 2){
+        if(_typeIndex == 2){
             addNodeAddr(_proposalMsg.addr);
             result = true;
         }else if(_typeIndex == 3){
@@ -165,11 +148,6 @@ contract Management is IManagement{
         return result;
     }
 
-    function updateArg(uint256 _minNodeNum, uint256 _executeNodeNum) internal{
-        minNodeNum = _minNodeNum;
-        executeNodeNum = _executeNodeNum;
-    }
-    
     function addNodeAddr(address _nodeAddr) internal{
         require(!nodeAddrSta[_nodeAddr], "This node is already a node address");
         nodeAddrSta[_nodeAddr] = true;
@@ -193,7 +171,6 @@ contract Management is IManagement{
             nodeAddrIndex[_nodeAddr] = 0;
             nodeIndexAddr[_nodeNum] = address(0x0);
             nodeNum--;
-            require(nodeNum >= minNodeNum, "The number of node addresses cannot be less than MINNODENUM");
         }
     }
 
@@ -218,8 +195,6 @@ contract Management is IManagement{
             address,
             bytes memory, 
             uint256, 
-            uint256, 
-            uint256, 
             string memory)
     {
         ProposalMsg storage _proposalMsg = proposalMsg[_proposalId];
@@ -229,7 +204,7 @@ contract Management is IManagement{
             proposers[i] = _proposalMsg.proposers[i];
         }
         return (proposers, _proposalMsg.proposalSta, _proposalMsg.targetAddr, _proposalMsg.addr, _proposalMsg.data, 
-               _proposalMsg.minNodeNum,_proposalMsg.executeNodeNum,_proposalMsg.expire, _proposalMsg.label);
+               _proposalMsg.expire, _proposalMsg.label);
     }
 
     function queryNodes()  external view returns(address[] memory){
