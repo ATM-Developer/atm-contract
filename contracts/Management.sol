@@ -50,7 +50,7 @@ contract Management is IManagement{
 
     constructor(address[] memory _nodeAddrs) {
         uint256 len = _nodeAddrs.length;
-        require( len> 4,"NodeNum should be larger than 5");
+        require( len> 4,"The number of node addresses cannot be less than 5");
         for (uint256 i = 0; i< _nodeAddrs.length; i++){
             addNodeAddr(_nodeAddrs[i]);
         }
@@ -172,6 +172,7 @@ contract Management is IManagement{
             nodeIndexAddr[_nodeNum] = address(0x0);
             nodeNum--;
         }
+        require(nodeNum > 4, "The number of node addresses cannot be less than 5");
     }
 
     function bytesToUint(bytes memory _data) internal pure returns (uint256){
