@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./proxy.sol";
 
-contract CommunityFund is basePorxy{
+contract CommunityFundPorxy is basePorxy{
        constructor(address impl) {
         _setAdmin(msg.sender);
         _setLogic(impl);
