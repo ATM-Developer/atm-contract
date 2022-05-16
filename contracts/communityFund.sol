@@ -10,7 +10,7 @@ interface ICommunityFund {
     function addNodeAddr(address[] calldata _nodeAddrs) external;		
     function deleteNodeAddr(address[] calldata _nodeAddrs) external;				
     function propose(address targetAddr, uint256 amount, string memory content) external;		
-    function vote(uint256 _proposalId, bool _sta) external;	
+    function vote(uint256 _proposalId) external;	
 
 }
 
@@ -136,8 +136,6 @@ contract CommunityFund is ICommunityFund,Ownable{
         bool proposalSta; 
         uint256 expire; 
         address[] allProposers;
-        address[] agreeProposers;
-        address[] againstProposers;
         mapping(address => bool) voterSta;  
     }
 
@@ -149,8 +147,6 @@ contract CommunityFund is ICommunityFund,Ownable{
         bool[] proposalStas;
         uint256[] expires;
         address[] allProposers;
-        address[] agreeProposers;
-        address[] againstProposers;
     }
 
     modifier nonReentrant() {
@@ -231,6 +227,7 @@ contract CommunityFund is ICommunityFund,Ownable{
     {
         address _sender = msg.sender;
         require(nodeAddrSta[_sender], "The caller is not the nodeAddr"); 
+        require(nodeAddrSta[targetAddr], "The receiving address is not the node address"); 
         uint256 _time = block.timestamp;
         uint256 _proposalId = ++proposalCount;
         ProposalMsg storage _proposalMsg = proposalMsg[_proposalId];
@@ -240,26 +237,20 @@ contract CommunityFund is ICommunityFund,Ownable{
         _proposalMsg.amount = amount;
         _proposalMsg.expire = _time.add(votingPeriod);
         _proposalMsg.allProposers.push(_sender);
-        _proposalMsg.agreeProposers.push(_sender);
         _proposalMsg.voterSta[_sender] = true;
         emit Propose(_sender, _proposalId, targetAddr, amount, content);
     }
     
-    function vote(uint256 _proposalId, bool _sta) override external nonReentrant(){
+    function vote(uint256 _proposalId) override external nonReentrant(){
         address _sender = msg.sender;
         require(nodeAddrSta[_sender], "The caller is not the nodeAddr"); 
         uint256 _time = block.timestamp;
         ProposalMsg storage _proposalMsg = proposalMsg[_proposalId];
         require(_proposalMsg.expire > _time, "The vote on the proposal has expired");
         require(!_proposalMsg.voterSta[_sender], "The proposer has already voted");
-        if(_sta){
-            _proposalMsg.agreeProposers.push(_sender);
-        }else{
-            _proposalMsg.againstProposers.push(_sender);
-        }
         _proposalMsg.allProposers.push(_sender);
         _proposalMsg.voterSta[_sender] = true;
-        uint256 length = _proposalMsg.agreeProposers.length;
+        uint256 length = _proposalMsg.allProposers.length;
         if(length> nodeNum/2 && !_proposalMsg.proposalSta){
             require(lucaToken.balanceOf(address(this)) >= _proposalMsg.amount, "Insufficient balance");
             lucaToken.transfer(_proposalMsg.targetAddr, _proposalMsg.amount);
@@ -283,8 +274,7 @@ contract CommunityFund is ICommunityFund,Ownable{
             bool[] memory, 
             uint256[] memory,
             address[] memory, 
-            address[] memory, 
-            address[] memory,
+            uint256[] memory,
             uint256 
         )
     {   
@@ -305,8 +295,7 @@ contract CommunityFund is ICommunityFund,Ownable{
                 queryProposalMsgData.proposalStas,
                 queryProposalMsgData.expires,
                 queryProposalMsgData.allProposers,
-                queryProposalMsgData.agreeProposers,
-                queryProposalMsgData.againstProposers,
+                indexs,
                 _num);
 
     }
@@ -394,8 +383,6 @@ contract CommunityFund is ICommunityFund,Ownable{
         queryProposalMsgData.proposalStas = new bool[](len);
         queryProposalMsgData.expires = new uint256[](len);
         queryProposalMsgData.allProposers = new address[](len*_nodeNum);
-        queryProposalMsgData.agreeProposers = new address[](len*_nodeNum);
-        queryProposalMsgData.againstProposers = new address[](len*_nodeNum);
         ProposalMsg storage _proposalMsg;
         for (uint256 i = 0; i < len; i++) {
             _proposalMsg = proposalMsg[_proposalIds[i]];
@@ -408,12 +395,6 @@ contract CommunityFund is ICommunityFund,Ownable{
             for (uint256 j = 0; j < _proposalMsg.allProposers.length; j++) {
                 queryProposalMsgData.allProposers[i * _nodeNum +j] = _proposalMsg.allProposers[j];
             }
-            for (uint256 j = 0; j < _proposalMsg.agreeProposers.length; j++) {
-                queryProposalMsgData.agreeProposers[i * _nodeNum +j] = _proposalMsg.agreeProposers[j];
-            }
-            for (uint256 j = 0; j < _proposalMsg.againstProposers.length; j++) {
-                queryProposalMsgData.againstProposers[i * _nodeNum +j] = _proposalMsg.againstProposers[j];
-            }  
         }
     }
 
