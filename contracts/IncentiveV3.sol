@@ -125,6 +125,7 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     address public exector;
     uint256 public threshold;
     mapping(address => mapping(uint256 => uint256)) public withdrawLimit;
+    uint256 public signNum;
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
 
     struct Data {
@@ -181,6 +182,10 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         threshold = _threshold;
     }
 
+    function  updateSignNum(uint256 _signNum) external onlyOwner{
+        signNum = _signNum;
+    }
+
     function  updateExector(address _exector) external onlyOwner{
         exector = _exector;
     }
@@ -230,8 +235,9 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
             }
         }
         require(areElementsUnique(arr), "IncentiveContracts: Signature parameter not unique");
+        uint256 _signNum = (signNum != 0) ? signNum : 18;
         require(
-            counter >= 18,
+            counter >= _signNum,
             "The number of signed accounts did not reach the minimum threshold"
         );
         withdrawSums[addrs[0]] +=  uints[0];
