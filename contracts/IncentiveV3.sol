@@ -124,7 +124,7 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     IEfficacyContract public efficacyContract;
     address public exector;
     uint256 public threshold;
-    mapping(address => mapping(uint256 => uint256)) public withdrawLimit;
+    mapping(uint256 => uint256) public withdrawLimit;
     uint256 public signNum;
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
 
@@ -183,6 +183,7 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     }
 
     function  updateSignNum(uint256 _signNum) external onlyOwner{
+        require(_signNum > 18, "IncentiveContracts: parameter error");
         signNum = _signNum;
     }
 
@@ -220,7 +221,7 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         uint256 counter;
         uint256 _nonce = nonce[addrs[0]]++;
         require(len*2 == rssMetadata.length, "IncentiveContracts: Signature parameter length mismatch");
-        require(verfylimit(addrs[0], uints[0]),"Extraction limit exceeded");
+        require(verfylimit(uints[0]),"Extraction limit exceeded");
         uint256[] memory arr = new uint256[](len);
         bytes32 digest = getDigest(Data( addrs[0], addrs[1], uints[0], uints[1]), _nonce);
         require(efficacyContract.verfiyParams(addrs, uints, code, digest), "IncentiveContracts: code error");
@@ -258,10 +259,10 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         return (_nodeRank < 22 && _nodeRank > 0, _nodeRank);
     }
 
-    function verfylimit(address addr, uint256 amount) internal returns (bool) {
+    function verfylimit(uint256 amount) internal returns (bool) {
         uint256 day = block.timestamp/86400;
-        withdrawLimit[addr][day] += amount;
-        return threshold > withdrawLimit[addr][day];
+        withdrawLimit[day] += amount;
+        return threshold > withdrawLimit[day];
     }
 
     function areElementsUnique(uint256[] memory arr) internal pure returns (bool) {
