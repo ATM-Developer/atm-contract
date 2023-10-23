@@ -10,6 +10,11 @@ interface IPledgeContract {
     function queryNodeIndex(address _nodeAddr) external view returns(uint256);
 }
 
+interface Isenator{
+    function getExecuter() external view returns (address);
+    function isSenator(address user) external view returns (bool);
+}
+
 interface IEfficacyContract {
     function verfiyParams(address[2] calldata addrs,uint256[2] calldata uints,bytes32 code, bytes32 digest) external view returns(bool);
 }
@@ -114,6 +119,7 @@ contract Ownable is Initializable{
         _owner = newOwner;
     }
 }
+
 contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     IPledgeContract public pledgeContract;
     bytes32 public DOMAIN_SEPARATOR;
@@ -126,7 +132,16 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     uint256 public threshold;
     mapping(uint256 => uint256) public withdrawLimit;
     uint256 public signNum;
+    address public senator;
+    address public exectorTwo;
+    uint256 public voteNum;
+    mapping(uint256 => VoteMsg) public voteMsg;
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
+
+    struct VoteMsg {
+        mapping(address => bool) voteSta;
+        uint256 endTime;
+    }
 
     struct Data {
         address userAddr;
@@ -178,6 +193,10 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         pause = _sta;
     }
 
+    function  updateSenator(address _senator) external onlyOwner{
+        senator = _senator;
+    }
+
     function  updateThreshold(uint256 _threshold) external onlyOwner{
         threshold = _threshold;
     }
@@ -187,13 +206,27 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         signNum = _signNum;
     }
 
-    function  updateExector(address _exector) external onlyOwner{
-        exector = _exector;
+    function  updateExector(uint256 _index, address _exector) external onlyOwner{
+        if(_index ==1){
+            exector = _exector;
+        }else {
+            exectorTwo = _exector;
+        }
+        
     }
 
     function close() external{
-        require(exector == msg.sender, "IncentiveContracts: not exector");
-        pause = true;
+        require(exector == msg.sender || exectorTwo == msg.sender, "IncentiveContracts: not exector");
+        uint256 _voteNum = voteNum;
+        if(voteMsg[_voteNum].endTime > block.timestamp){
+            require(!voteMsg[_voteNum].voteSta[msg.sender], "voted");
+            voteMsg[_voteNum].voteSta[msg.sender] = true;
+            voteNum++;
+            pause = true;
+        }else {
+            voteMsg[_voteNum].endTime = block.timestamp + 180;
+            voteMsg[_voteNum].voteSta[msg.sender] = true;
+        }
     }
 
     function  updateEfficacyContract(address _addr) external onlyOwner{
@@ -226,21 +259,21 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         bytes32 digest = getDigest(Data( addrs[0], addrs[1], uints[0], uints[1]), _nonce);
         require(efficacyContract.verfiyParams(addrs, uints, code, digest), "IncentiveContracts: code error");
         for (uint256 i = 0; i < len; i++) {
-            (bool result, uint256 index) = verifySign(
+            (bool result, address signAddr) = verifySign(
                 digest,
                 Sig(vs[i], rssMetadata[i*2], rssMetadata[i*2+1])
             );
-            arr[i] = index;
             if (result){
+                arr[i] = uint256(uint160(signAddr));
                 counter++;
             }
         }
-        require(areElementsUnique(arr), "IncentiveContracts: Signature parameter not unique");
         uint256 _signNum = (signNum != 0) ? signNum : 18;
         require(
             counter >= _signNum,
             "The number of signed accounts did not reach the minimum threshold"
         );
+        require(areElementsUnique(arr), "IncentiveContracts: Signature parameter not unique");
         withdrawSums[addrs[0]] +=  uints[0];
         withdrawAmounts[addrs[0]][_nonce] =  uints[0];
         IERC20  token = IERC20(addrs[1]);
@@ -251,12 +284,14 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         emit WithdrawToken(addrs[0], _nonce, uints[0]);
     }
     
-    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool, uint256)  {
+    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool, address)  {
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 hash = keccak256(abi.encodePacked(prefix, _digest));
         address _accessAccount = ecrecover(hash, _sig.v, _sig.r, _sig.s);
-        uint256 _nodeRank = pledgeContract.queryNodeIndex(_accessAccount);
-        return (_nodeRank < 22 && _nodeRank > 0, _nodeRank);
+        bool result = Isenator(senator).isSenator(_accessAccount);
+        address executer = Isenator(senator).getExecuter();
+        if(!result && executer == _accessAccount)result=true;
+        return (result, _accessAccount);
     }
 
     function verfylimit(uint256 amount) internal returns (bool) {
