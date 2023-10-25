@@ -134,14 +134,9 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     uint256 public signNum;
     address public senator;
     address public exectorTwo;
-    uint256 public voteNum;
-    mapping(uint256 => VoteMsg) public voteMsg;
+    uint256 public lastExecuteTime;
+    address public lastExector;
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
-
-    struct VoteMsg {
-        mapping(address => bool) voteSta;
-        uint256 endTime;
-    }
 
     struct Data {
         address userAddr;
@@ -217,15 +212,14 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
 
     function close() external{
         require(exector == msg.sender || exectorTwo == msg.sender, "IncentiveContracts: not exector");
-        uint256 _voteNum = voteNum;
-        if(voteMsg[_voteNum].endTime > block.timestamp){
-            require(!voteMsg[_voteNum].voteSta[msg.sender], "voted");
-            voteMsg[_voteNum].voteSta[msg.sender] = true;
-            voteNum++;
+        if (lastExector == address(0) || lastExector == msg.sender) {
+            lastExector = msg.sender;
+            lastExecuteTime = block.timestamp;
+        } else if (block.timestamp - lastExecuteTime <= 2 days) {
             pause = true;
-        }else {
-            voteMsg[_voteNum].endTime = block.timestamp + 172800;
-            voteMsg[_voteNum].voteSta[msg.sender] = true;
+        } else {
+            lastExector = msg.sender;
+            lastExecuteTime = block.timestamp;
         }
     }
 
