@@ -348,16 +348,19 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         uint256 len = vs.length;
         uint256 counter;
         require(len*2 == rssMetadata.length, "Crosschain: Signature parameter length mismatch");
+        uint256[] memory arr = new uint256[](len);
         bytes32 digest = getDigest(Data( addrs[0], addrs[1], uints[0], uints[1], uints[2], strs[0], strs[1]));
         for (uint256 i = 0; i < len; i++) {
-            bool result = verifySign(
+            (bool result, uint256 index) = verifySign(
                 digest,
                 Sig(vs[i], rssMetadata[i*2], rssMetadata[i*2+1])
             );
+            arr[i] = index;
             if (result){
                 counter++;
             }
         }
+        require(areElementsUnique(arr), "IncentiveContracts: Signature parameter not unique");
         require(
             counter > nodeNum/2,
             "The number of signed accounts did not reach the minimum threshold"
@@ -411,12 +414,23 @@ contract Crosschain  is Initializable,Ownable,ICrosschain {
         }
     }
 
-    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool)  {
+    function areElementsUnique(uint256[] memory arr) internal pure returns (bool) {
+        for(uint i = 0; i < arr.length - 1; i++) {
+            for(uint j = i + 1; j < arr.length; j++) {
+                if (arr[i] == arr[j]) {
+                    return false; 
+                }
+            }
+        }
+        return true; 
+    }
+
+    function verifySign(bytes32 _digest,Sig memory _sig) internal view returns (bool,uint256)  {
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 hash = keccak256(abi.encodePacked(prefix, _digest));
         address _nodeAddr = ecrecover(hash, _sig.v, _sig.r, _sig.s);
         require(_nodeAddr !=address(0),"Illegal signature");
-        return nodeAddrSta[_nodeAddr];
+        return (nodeAddrSta[_nodeAddr],nodeAddrIndex[_nodeAddr]);
     }
     
     function getDigest(Data memory _data) internal view returns(bytes32 digest){
