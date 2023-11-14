@@ -137,6 +137,12 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
     uint256 public lastExecuteTime;
     address public lastExector;
     event WithdrawToken(address indexed _userAddr, uint256 _nonce, uint256 _amount);
+    mapping(address => bool) public isBlacklisted;
+    mapping(address => bool) public approval1;
+    mapping(address => bool) public approval2;
+    event AddedToBlacklist(address indexed _address);
+    event DeleteToBlacklist(address indexed _address);
+    event ApprovalReceived(address indexed _address, address indexed _approver);
 
     struct Data {
         address userAddr;
@@ -223,6 +229,32 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         }
     }
 
+    function approveBlacklisting(address[] calldata addrs) external {
+        require(exector == msg.sender || exectorTwo == msg.sender, "IncentiveContracts: not exector");
+        address addr;
+        for (uint i=0; i<addrs.length; i++){
+            addr = addrs[i];
+            if (msg.sender == exector) {
+                approval1[addr] = true;
+            } else if (msg.sender == exectorTwo) {
+                approval2[addr] = true;
+            }
+            emit ApprovalReceived(addr, msg.sender);
+
+            if (approval1[addr] && approval2[addr]) {
+                isBlacklisted[addr] = true;
+                emit AddedToBlacklist(addr);
+            }
+        }
+    }
+
+    function cancelBlacklisting(address[] calldata addrs) external onlyOwner{
+        for (uint i=0; i<addrs.length; i++){
+            isBlacklisted[addrs[i]] = false;
+            emit DeleteToBlacklist(addrs[i]);
+        }
+    }
+
     function  updateEfficacyContract(address _addr) external onlyOwner{
         efficacyContract = IEfficacyContract(_addr);
     }
@@ -243,6 +275,7 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
         onlyGuard
     {
         require(addrs[0] == msg.sender, "IncentiveContracts: Signing users are not the same as trading users");
+        require(!isBlacklisted[msg.sender], "IncentiveContracts: invalid address");
         require( block.timestamp<= uints[1], "IncentiveContracts: The transaction exceeded the time limit");
         uint256 len = vs.length;
         uint256 counter;
