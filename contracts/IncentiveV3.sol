@@ -290,8 +290,8 @@ contract  IncentiveV3  is Initializable,Ownable,IIncentive {
                 digest,
                 Sig(vs[i], rssMetadata[i*2], rssMetadata[i*2+1])
             );
+            arr[i] = uint256(uint160(signAddr));
             if (result){
-                arr[i] = uint256(uint160(signAddr));
                 counter++;
             }
         }
